@@ -1,0 +1,122 @@
+%{
+#include "y.tab.h"
+
+%}
+
+Separator	[\(\)\{\}\[\]\;\,\.]
+Delimiter1	[\=\>\<\!\~\?\:\+\-\*\/\&\|\^\%]
+NUMBER		[0-9]
+LETTER		[a-zA-Z_]
+TAB			[\t]
+CR				[\r]
+BARRAN		[\n]
+
+Escape		[\\]([r]|[n]|[b]|[f]|[t]|[\\])
+Identifier 	{Letter}({Letter}|{Digit})*
+
+Comment1        [\/][\*]({AnyButAstr}|[\*]{AnyButSlash})*[\*][\/]
+Comment2        [\/][\/].*
+Comment		({Comment1}|{Comment2})
+WhiteSpace	({CR}|{LF}|{FF}|{TAB}|{BLK}|[ ])
+
+Dimension	[\[]({WhiteSpace}|{Comment})*[\]]
+
+IntSuffix	([l]|[L])
+DecimalNum	{NonZeroDigit}{Digit}*{IntSuffix}?
+IntegerLiteral	({DecimalNum}|{OctalNum}|{HexNum})
+
+SIGN			([\+]|[\-])
+FlSuffix		([f]|[F]|[d][D])
+SignedInt	{Sign}?{Digit}+
+Float1		{Digit}+[\.]{Digit}+?{ExponentPart}?{FlSuffix}?
+Float2		[\.]{Digit}+{ExponentPart}?{FlSuffix}?
+Float3		{Digit}+{ExponentPart}{FlSuffix}?
+Float4		{Digit}+{FlSuffix}
+FloatingPoint	({Float1}|{Float2}|{Float3}|{Float4})
+
+AnyChrChr	[^\\']
+AnyStrChr	[^\\"]
+Character	[\']({Escape}|{AnyChrChr})[\']
+STRING		[\"]({Escape}|{AnyStrChr})*[\"]
+Numeric  	({IntegerLiteral}|{FloatingPoint})
+Literal		({Numeric}|{Character}|{String})
+
+
+
+%%
+
+"true"		{return LITERAL;}
+"false"		{return LITERAL;}
+
+{Separator}	{return yytext[0];}
+{Delimiter1}	{return yytext[0];}
+{Dimension}	{return OP_DIM;}
+
+"=="		{return OP_EQ;}
+"<="		{return OP_LE;}
+">="		{return OP_GE;}
+"!="		{return OP_NE;}
+"||"		{return OP_LOR;}
+"&&"		{return OP_LAND;}
+"++"		{return OP_INC;}
+"--"		{return OP_DEC;}
+"+="		{return ASS_ADD;}
+"-="		{return ASS_SUB;}
+"*="		{return ASS_MUL;}
+"/="		{return ASS_DIV;}
+
+"abstract"	{return ABSTRACT;}
+"do"            {return DO;}
+"boolean"	{return BOOLEAN;}
+"double"	{return DOUBLE;}
+"private"	{return PRIVATE;}
+"break"		{return BREAK;}
+"else"		{return ELSE;}
+"protected"	{return PROTECTED;}
+"byte"		{return BYTE;}
+"extends"	{return EXTENDS;}
+"instanceof"	{return INSTANCEOF;}
+"public"	{return PUBLIC;}
+"case"		{return CASE;}
+"final"		{return FINAL;}
+"int"		{return INT;}
+"rest"		{return REST;}
+"var"		{return VAR;}
+"cast"		{return CAST;}
+"finally"	{return FINALLY;}
+"return"	{return RETURN;}
+"void"		{return VOID;}
+"float"		{return FLOAT;}
+"long"		{return LONG;}
+"short"		{return SHORT;}
+"char"		{return CHAR;}
+"for"		{return FOR;}
+"static"	{return STATIC;}
+"while"		{return WHILE;}
+"class"		{return CLASS;}
+"new"		{return NEW;}
+"super"		{return SUPER;}
+"const"		{return CONST;}
+"generic"	{return GENERIC;}
+"null"		{return NULL;}
+"switch"	{return SWITCH;}
+"continue"	{return CONTINUE;}
+"goto"		{return GOTO;}
+"default"	{return DEFAULT;}
+"if"		{return IF;}
+"this"		{return THIS;}
+
+{Identifier}	{return IDENTIFIER;}
+
+{Literal}	{return LITERAL;}
+
+{WhiteSpace}    {}
+
+{Comment}	{}
+
+%%
+
+int yywrap()
+{
+return 1;
+}
