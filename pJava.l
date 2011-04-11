@@ -5,11 +5,20 @@
 
 Separator	[\(\)\{\}\[\]\;\,\.]
 Delimiter1	[\=\>\<\!\~\?\:\+\-\*\/\&\|\^\%]
-NUMBER		[0-9]
-LETTER		[a-zA-Z_]
-TAB			[\t]
-CR				[\r]
-BARRAN		[\n]
+HexDigit	[0-9a-fA-F]
+Digit		[0-9]
+OctalDigit	[0-7]
+TetraDigit	[0-3]
+NonZeroDigit	[1-9]
+Letter		[a-zA-Z_]
+AnyButSlash	[^\/]
+AnyButAstr	[^\*]
+BLK		[\b]
+TAB		[\t]
+FF		[\f]
+ESCCHR		[\\]
+CR		[\r]
+LF		[\n]
 
 Escape		[\\]([r]|[n]|[b]|[f]|[t]|[\\])
 Identifier 	{Letter}({Letter}|{Digit})*
@@ -23,12 +32,16 @@ Dimension	[\[]({WhiteSpace}|{Comment})*[\]]
 
 IntSuffix	([l]|[L])
 DecimalNum	{NonZeroDigit}{Digit}*{IntSuffix}?
+OctalNum	[0]{OctalDigit}*{IntSuffix}?
+HexNum		[0]([x]|[X]){HexDigit}{HexDigit}*{IntSuffix}?
 IntegerLiteral	({DecimalNum}|{OctalNum}|{HexNum})
 
-SIGN			([\+]|[\-])
-FlSuffix		([f]|[F]|[d][D])
+Sign		([\+]|[\-])
+FlSuffix	([f]|[F]|[d][D])
 SignedInt	{Sign}?{Digit}+
-Float1		{Digit}+[\.]{Digit}+?{ExponentPart}?{FlSuffix}?
+Expo		([e]|[E])
+ExponentPart	{Expo}{SignedInt}?
+Float1          {Digit}+[\.]{Digit}+?{ExponentPart}?{FlSuffix}? 
 Float2		[\.]{Digit}+{ExponentPart}?{FlSuffix}?
 Float3		{Digit}+{ExponentPart}{FlSuffix}?
 Float4		{Digit}+{FlSuffix}
@@ -37,7 +50,7 @@ FloatingPoint	({Float1}|{Float2}|{Float3}|{Float4})
 AnyChrChr	[^\\']
 AnyStrChr	[^\\"]
 Character	[\']({Escape}|{AnyChrChr})[\']
-STRING		[\"]({Escape}|{AnyStrChr})*[\"]
+String		[\"]({Escape}|{AnyStrChr})*[\"]
 Numeric  	({IntegerLiteral}|{FloatingPoint})
 Literal		({Numeric}|{Character}|{String})
 
@@ -98,7 +111,7 @@ Literal		({Numeric}|{Character}|{String})
 "super"		{return SUPER;}
 "const"		{return CONST;}
 "generic"	{return GENERIC;}
-"null"		{return NULL;}
+"null"		{return JNULL;}
 "switch"	{return SWITCH;}
 "continue"	{return CONTINUE;}
 "goto"		{return GOTO;}
