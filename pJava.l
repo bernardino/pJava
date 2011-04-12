@@ -78,8 +78,7 @@ Literal		({Numeric}|{Character}|{String})
 "*="		{return ASS_MUL;}
 "/="		{return ASS_DIV;}
 
-"abstract"	{return ABSTRACT;}
-"do"            {return DO;}
+"do"		{return DO;}
 "boolean"	{return BOOLEAN;}
 "double"	{return DOUBLE;}
 "private"	{return PRIVATE;}
@@ -87,16 +86,9 @@ Literal		({Numeric}|{Character}|{String})
 "else"		{return ELSE;}
 "protected"	{return PROTECTED;}
 "byte"		{return BYTE;}
-"extends"	{return EXTENDS;}
-"instanceof"	{return INSTANCEOF;}
 "public"	{return PUBLIC;}
 "case"		{return CASE;}
-"final"		{return FINAL;}
 "int"		{return INT;}
-"rest"		{return REST;}
-"var"		{return VAR;}
-"cast"		{return CAST;}
-"finally"	{return FINALLY;}
 "return"	{return RETURN;}
 "void"		{return VOID;}
 "float"		{return FLOAT;}
@@ -108,14 +100,9 @@ Literal		({Numeric}|{Character}|{String})
 "while"		{return WHILE;}
 "class"		{return CLASS;}
 "new"		{return NEW;}
-"super"		{return SUPER;}
-"const"		{return CONST;}
-"generic"	{return GENERIC;}
 "null"		{return JNULL;}
 "switch"	{return SWITCH;}
 "continue"	{return CONTINUE;}
-"goto"		{return GOTO;}
-"default"	{return DEFAULT;}
 "if"		{return IF;}
 "this"		{return THIS;}
 
