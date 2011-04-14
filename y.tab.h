@@ -49,79 +49,77 @@
      CATCH = 265,
      CHAR = 266,
      CLASS = 267,
-     CONST = 268,
-     CONTINUE = 269,
-     DEFAULT = 270,
-     DO = 271,
-     DOUBLE = 272,
-     ELSE = 273,
-     EXTENDS = 274,
-     FINAL = 275,
-     FINALLY = 276,
-     FLOAT = 277,
-     FOR = 278,
-     FUTURE = 279,
-     GENERIC = 280,
-     GOTO = 281,
-     IF = 282,
-     IMPLEMENTS = 283,
-     IMPORT = 284,
-     INNER = 285,
-     INSTANCEOF = 286,
-     INT = 287,
-     INTERFACE = 288,
-     LONG = 289,
-     NATIVE = 290,
-     NEW = 291,
-     JNULL = 292,
-     OPERATOR = 293,
-     OUTER = 294,
-     PACKAGE = 295,
-     PRIVATE = 296,
-     PROTECTED = 297,
-     PUBLIC = 298,
-     REST = 299,
-     RETURN = 300,
-     SHORT = 301,
-     STATIC = 302,
-     SUPER = 303,
-     SWITCH = 304,
-     SYNCHRONIZED = 305,
-     THIS = 306,
-     THROW = 307,
-     THROWS = 308,
-     TRANSIENT = 309,
-     TRY = 310,
-     VAR = 311,
-     VOID = 312,
-     VOLATILE = 313,
-     WHILE = 314,
-     OP_INC = 315,
-     OP_DEC = 316,
-     OP_SHL = 317,
-     OP_SHR = 318,
-     OP_SHRR = 319,
-     OP_GE = 320,
-     OP_LE = 321,
-     OP_EQ = 322,
-     OP_NE = 323,
-     OP_LAND = 324,
-     OP_LOR = 325,
-     OP_DIM = 326,
-     ASS_MUL = 327,
-     ASS_DIV = 328,
-     ASS_MOD = 329,
-     ASS_ADD = 330,
-     ASS_SUB = 331,
-     ASS_SHL = 332,
-     ASS_SHR = 333,
-     ASS_SHRR = 334,
-     ASS_AND = 335,
-     ASS_XOR = 336,
-     ASS_OR = 337,
-     IDENTIFIER = 338,
-     LITERAL = 339,
-     BOOLLIT = 340
+     CONTINUE = 268,
+     DEFAULT = 269,
+     DO = 270,
+     DOUBLE = 271,
+     ELSE = 272,
+     EXTENDS = 273,
+     FINAL = 274,
+     FINALLY = 275,
+     FLOAT = 276,
+     FOR = 277,
+     FUTURE = 278,
+     GENERIC = 279,
+     IF = 280,
+     IMPLEMENTS = 281,
+     IMPORT = 282,
+     INNER = 283,
+     INSTANCEOF = 284,
+     INT = 285,
+     INTERFACE = 286,
+     LONG = 287,
+     NATIVE = 288,
+     NEW = 289,
+     JNULL = 290,
+     OPERATOR = 291,
+     OUTER = 292,
+     PACKAGE = 293,
+     PRIVATE = 294,
+     PROTECTED = 295,
+     PUBLIC = 296,
+     REST = 297,
+     RETURN = 298,
+     SHORT = 299,
+     STATIC = 300,
+     SUPER = 301,
+     SWITCH = 302,
+     SYNCHRONIZED = 303,
+     THIS = 304,
+     THROW = 305,
+     THROWS = 306,
+     TRANSIENT = 307,
+     TRY = 308,
+     VAR = 309,
+     VOID = 310,
+     VOLATILE = 311,
+     WHILE = 312,
+     OP_INC = 313,
+     OP_DEC = 314,
+     OP_SHL = 315,
+     OP_SHR = 316,
+     OP_SHRR = 317,
+     OP_GE = 318,
+     OP_LE = 319,
+     OP_EQ = 320,
+     OP_NE = 321,
+     OP_LAND = 322,
+     OP_LOR = 323,
+     OP_DIM = 324,
+     ASS_MUL = 325,
+     ASS_DIV = 326,
+     ASS_MOD = 327,
+     ASS_ADD = 328,
+     ASS_SUB = 329,
+     ASS_SHL = 330,
+     ASS_SHR = 331,
+     ASS_SHRR = 332,
+     ASS_AND = 333,
+     ASS_XOR = 334,
+     ASS_OR = 335,
+     IDENTIFIER = 336,
+     LITERAL = 337,
+     BOOLLIT = 338
    };
 #endif
 /* Tokens.  */
@@ -135,79 +133,77 @@
 #define CATCH 265
 #define CHAR 266
 #define CLASS 267
-#define CONST 268
-#define CONTINUE 269
-#define DEFAULT 270
-#define DO 271
-#define DOUBLE 272
-#define ELSE 273
-#define EXTENDS 274
-#define FINAL 275
-#define FINALLY 276
-#define FLOAT 277
-#define FOR 278
-#define FUTURE 279
-#define GENERIC 280
-#define GOTO 281
-#define IF 282
-#define IMPLEMENTS 283
-#define IMPORT 284
-#define INNER 285
-#define INSTANCEOF 286
-#define INT 287
-#define INTERFACE 288
-#define LONG 289
-#define NATIVE 290
-#define NEW 291
-#define JNULL 292
-#define OPERATOR 293
-#define OUTER 294
-#define PACKAGE 295
-#define PRIVATE 296
-#define PROTECTED 297
-#define PUBLIC 298
-#define REST 299
-#define RETURN 300
-#define SHORT 301
-#define STATIC 302
-#define SUPER 303
-#define SWITCH 304
-#define SYNCHRONIZED 305
-#define THIS 306
-#define THROW 307
-#define THROWS 308
-#define TRANSIENT 309
-#define TRY 310
-#define VAR 311
-#define VOID 312
-#define VOLATILE 313
-#define WHILE 314
-#define OP_INC 315
-#define OP_DEC 316
-#define OP_SHL 317
-#define OP_SHR 318
-#define OP_SHRR 319
-#define OP_GE 320
-#define OP_LE 321
-#define OP_EQ 322
-#define OP_NE 323
-#define OP_LAND 324
-#define OP_LOR 325
-#define OP_DIM 326
-#define ASS_MUL 327
-#define ASS_DIV 328
-#define ASS_MOD 329
-#define ASS_ADD 330
-#define ASS_SUB 331
-#define ASS_SHL 332
-#define ASS_SHR 333
-#define ASS_SHRR 334
-#define ASS_AND 335
-#define ASS_XOR 336
-#define ASS_OR 337
-#define IDENTIFIER 338
-#define LITERAL 339
-#define BOOLLIT 340
+#define CONTINUE 268
+#define DEFAULT 269
+#define DO 270
+#define DOUBLE 271
+#define ELSE 272
+#define EXTENDS 273
+#define FINAL 274
+#define FINALLY 275
+#define FLOAT 276
+#define FOR 277
+#define FUTURE 278
+#define GENERIC 279
+#define IF 280
+#define IMPLEMENTS 281
+#define IMPORT 282
+#define INNER 283
+#define INSTANCEOF 284
+#define INT 285
+#define INTERFACE 286
+#define LONG 287
+#define NATIVE 288
+#define NEW 289
+#define JNULL 290
+#define OPERATOR 291
+#define OUTER 292
+#define PACKAGE 293
+#define PRIVATE 294
+#define PROTECTED 295
+#define PUBLIC 296
+#define REST 297
+#define RETURN 298
+#define SHORT 299
+#define STATIC 300
+#define SUPER 301
+#define SWITCH 302
+#define SYNCHRONIZED 303
+#define THIS 304
+#define THROW 305
+#define THROWS 306
+#define TRANSIENT 307
+#define TRY 308
+#define VAR 309
+#define VOID 310
+#define VOLATILE 311
+#define WHILE 312
+#define OP_INC 313
+#define OP_DEC 314
+#define OP_SHL 315
+#define OP_SHR 316
+#define OP_SHRR 317
+#define OP_GE 318
+#define OP_LE 319
+#define OP_EQ 320
+#define OP_NE 321
+#define OP_LAND 322
+#define OP_LOR 323
+#define OP_DIM 324
+#define ASS_MUL 325
+#define ASS_DIV 326
+#define ASS_MOD 327
+#define ASS_ADD 328
+#define ASS_SUB 329
+#define ASS_SHL 330
+#define ASS_SHR 331
+#define ASS_SHRR 332
+#define ASS_AND 333
+#define ASS_XOR 334
+#define ASS_OR 335
+#define IDENTIFIER 336
+#define LITERAL 337
+#define BOOLLIT 338
 
 
 
