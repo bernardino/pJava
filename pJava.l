@@ -52,14 +52,14 @@ AnyStrChr	[^\\"]
 Character	[\']({Escape}|{AnyChrChr})[\']
 String		[\"]({Escape}|{AnyStrChr})*[\"]
 Numeric  	({IntegerLiteral}|{FloatingPoint})
-Literal		({Numeric}|{Character}|{String})
+/*Literal		({Numeric}|{Character}|{String})*/
 
 
 
 %%
 
-"true"		{return LITERAL;}
-"false"		{return LITERAL;}
+"true"		{return TRUE;}
+"false"		{return FALSE;}
 
 {Separator}	{return yytext[0];}
 {Delimiter1}	{return yytext[0];}
@@ -105,10 +105,16 @@ Literal		({Numeric}|{Character}|{String})
 "continue"	{return CONTINUE;}
 "if"		{return IF;}
 "this"		{return THIS;}
+"String"	{return STRING;}
 
-{Identifier}	{return IDENTIFIER;}
+{Identifier}		{return ID;}
 
-{Literal}	{return LITERAL;}
+{Literal}			{return LITERAL;}
+
+{Numeric}		{return NUMBER;}
+
+{String}		{return STRING_VAL}
+{Character}		{return CHAR_VAL}
 
 {WhiteSpace}    {}
 
