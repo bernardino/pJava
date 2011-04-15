@@ -105,16 +105,14 @@ Numeric  	({IntegerLiteral}|{FloatingPoint})
 "continue"	{return CONTINUE;}
 "if"		{return IF;}
 "this"		{return THIS;}
+"main"		{return MAIN;}
+"args"		{return ARGS;}
 "String"	{return STRING;}
 
-{Identifier}		{return ID;}
-
-{Literal}			{return LITERAL;}
-
 {Numeric}		{return NUMBER;}
-
-{String}		{return STRING_VAL}
-{Character}		{return CHAR_VAL}
+{String}		{return STRING_VAL;}
+{Character}		{return CHAR_VAL;}
+{Identifier}		{return ID;}
 
 {WhiteSpace}    {}
 

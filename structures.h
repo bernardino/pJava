@@ -3,7 +3,7 @@
 
 typedef enum { is_char, is_int, is_boolean, is_float, is_double, is_string} unsignedVariableType;
 typedef enum { is_plus, is_minus, is_mult, is_div, is_and, is_percent, is_lshift, is_rshift} operationType;
-typedef enum { } is_operation;
+typedef enum { is_OP_EQ, is_OP_NE, is_OP_LE, is_OP_GE, is_OP_LOR, is_OP_LAND, is_ASS_ADD, is_ASS_SUB, is_ASS_MUL, is_ASS_DIV} is_operation;
 typedef enum { is_infix_exp, is_unary_exp, is_number, is_function } expressionType;
 typedef enum { is_before_plus, is_before_minus, is_after_plus, is_after_minus } unaryType;
 
@@ -13,6 +13,7 @@ typedef struct _value is_value;
 typedef struct _variable_list is_variable_list;
 typedef struct _expression is_expression;
 typedef struct _infix_expression is_infix_expression;
+typedef struct _unary_expression is_unary_expression;
 
 
 /* Cicles */
@@ -80,15 +81,15 @@ struct _expression{
 
 };
 
-typedef struct _unary_expression{
+struct _unary_expression{
 	char *id;
 	unaryType type;
-	
 };
 
-typedef struct _infix_expression{
+struct _infix_expression{
 	is_expression  *exp1;
 	operationType oper;
 	is_expression  *exp2;
 };
 
+#endif
