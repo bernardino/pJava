@@ -368,8 +368,8 @@ static void yy_fatal_error (yyconst char msg[]  );
 	*yy_cp = '\0'; \
 	(yy_c_buf_p) = yy_cp;
 
-#define YY_NUM_RULES 54
-#define YY_END_OF_BUFFER 55
+#define YY_NUM_RULES 55
+#define YY_END_OF_BUFFER 56
 /* This struct is not used in this scanner,
    but its presence is necessary. */
 struct yy_trans_info
@@ -379,33 +379,33 @@ struct yy_trans_info
 	};
 static yyconst flex_int16_t yy_accept[253] =
     {   0,
-        0,    0,   55,   54,   52,    4,   54,    4,    4,   54,
+        0,    0,   56,   55,   53,    4,   55,    4,    4,   55,
         3,    4,    4,    4,    3,    4,   48,   48,    4,    4,
-        4,   51,   51,    3,   51,   51,   51,   51,   51,   51,
-       51,   51,   51,   51,   51,   51,   51,   51,   51,   51,
-        4,    9,    0,   49,    0,   11,    0,    0,   16,   12,
-       14,   13,   15,   48,    0,   53,   17,   48,   48,    0,
-       48,   48,   48,    0,    0,   48,   48,    7,    6,    8,
-       51,   51,    0,    0,    5,   51,   51,   51,   51,   51,
-       51,   51,   51,   18,   51,   51,   51,   51,   43,   51,
-       51,   51,   51,   51,   51,   51,   51,   51,   51,   51,
+        4,   52,   52,    3,   52,   52,   52,   52,   52,   52,
+       52,   52,   52,   52,   52,   52,   52,   52,   52,   52,
+        4,    9,    0,   50,    0,   11,    0,    0,   16,   12,
+       14,   13,   15,   49,    0,   54,   17,   49,   48,    0,
+       49,   49,   48,    0,    0,   48,   48,    7,    6,    8,
+       52,   52,    0,    0,    5,   52,   52,   52,   52,   52,
+       52,   52,   52,   18,   52,   52,   52,   52,   43,   52,
+       52,   52,   52,   52,   52,   52,   52,   52,   52,   52,
 
-       51,   51,   51,   51,   10,   50,   48,   48,    0,    0,
-        0,   53,   48,   48,   48,    0,    0,   48,   48,    0,
-       48,   51,    0,    0,   51,   51,   51,   51,   51,   51,
-       51,   51,   51,   51,   51,   51,   35,   28,   51,   51,
-       39,   51,   51,   51,   51,   51,   51,   51,   51,   51,
-       51,   51,   51,    0,   48,   53,    0,   48,   48,   48,
-       51,    0,    0,    0,    0,    0,    5,   46,   51,   51,
-       25,   27,   34,   51,   51,   51,   23,   51,   51,   32,
-       45,   40,   51,   51,   51,   51,   51,   51,   51,   44,
-        1,   30,   51,   51,    0,    0,    0,   51,   22,   38,
+       52,   52,   52,   52,   10,   51,   49,   49,    0,    0,
+        0,   54,   49,   49,   49,    0,    0,   49,   49,    0,
+       48,   52,    0,    0,   52,   52,   52,   52,   52,   52,
+       52,   52,   52,   52,   52,   52,   35,   28,   52,   52,
+       39,   52,   52,   52,   52,   52,   52,   52,   52,   52,
+       52,   52,   52,    0,   49,   54,    0,   49,   48,   48,
+       52,    0,    0,    0,    0,    0,    5,   46,   52,   52,
+       25,   27,   34,   52,   52,   52,   23,   52,   52,   32,
+       45,   40,   52,   52,   52,   52,   52,   52,   52,   44,
+        1,   30,   52,   52,    0,    0,    0,   52,   22,   38,
 
-       51,   51,    2,   31,   51,   51,   51,   51,   33,   51,
-       51,   37,   47,    0,    0,    0,    0,    0,    5,   51,
-       51,   20,   51,   51,   26,   29,   36,   41,    0,    5,
-        0,    0,    0,   19,   51,   21,   51,    0,    0,    0,
-        0,    0,    0,    0,    5,   42,   51,    0,    0,    0,
+       52,   52,    2,   31,   52,   52,   52,   52,   33,   52,
+       52,   37,   47,    0,    0,    0,    0,    0,    5,   52,
+       52,   20,   52,   52,   26,   29,   36,   41,    0,    5,
+        0,    0,    0,   19,   52,   21,   52,    0,    0,    0,
+        0,    0,    0,    0,    5,   42,   52,    0,    0,    0,
        24,    0
     } ;
 
@@ -789,10 +789,11 @@ int yy_flex_debug = 0;
 char *yytext;
 #line 1 "pJava.l"
 #line 2 "pJava.l"
+#include "structures.h"
 #include "y.tab.h"
-
+/*Numeric  	({IntegerLiteral}|{FloatingPoint})*/
 /*Literal		({Numeric}|{Character}|{String})*/
-#line 796 "lex.yy.c"
+#line 797 "lex.yy.c"
 
 #define INITIAL 0
 
@@ -982,7 +983,7 @@ YY_DECL
 #line 59 "pJava.l"
 
 
-#line 986 "lex.yy.c"
+#line 987 "lex.yy.c"
 
 	if ( !(yy_init) )
 		{
@@ -1304,43 +1305,48 @@ YY_RULE_SETUP
 case 48:
 YY_RULE_SETUP
 #line 112 "pJava.l"
-{return NUMBER;}
+{return NUMBER_VAL;}
 	YY_BREAK
 case 49:
-/* rule 49 can match eol */
 YY_RULE_SETUP
 #line 113 "pJava.l"
-{return STRING_VAL;}
+{return DOUBLE_VAL;}
 	YY_BREAK
 case 50:
 /* rule 50 can match eol */
 YY_RULE_SETUP
 #line 114 "pJava.l"
-{return CHAR_VAL;}
+{return STRING_VAL;}
 	YY_BREAK
 case 51:
+/* rule 51 can match eol */
 YY_RULE_SETUP
 #line 115 "pJava.l"
-{return ID;}
+{return CHAR_VAL;}
 	YY_BREAK
 case 52:
-/* rule 52 can match eol */
 YY_RULE_SETUP
-#line 117 "pJava.l"
-{}
+#line 116 "pJava.l"
+{return ID;}
 	YY_BREAK
 case 53:
 /* rule 53 can match eol */
 YY_RULE_SETUP
-#line 119 "pJava.l"
+#line 118 "pJava.l"
 {}
 	YY_BREAK
 case 54:
+/* rule 54 can match eol */
 YY_RULE_SETUP
-#line 121 "pJava.l"
+#line 120 "pJava.l"
+{}
+	YY_BREAK
+case 55:
+YY_RULE_SETUP
+#line 122 "pJava.l"
 ECHO;
 	YY_BREAK
-#line 1344 "lex.yy.c"
+#line 1350 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -2338,7 +2344,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 121 "pJava.l"
+#line 122 "pJava.l"
 
 
 

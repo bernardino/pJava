@@ -1,6 +1,6 @@
 %{
+#include "structures.h"
 #include "y.tab.h"
-
 %}
 
 Separator	[\(\)\{\}\[\]\;\,\.]
@@ -51,7 +51,7 @@ AnyChrChr	[^\\']
 AnyStrChr	[^\\"]
 Character	[\']({Escape}|{AnyChrChr})[\']
 String		[\"]({Escape}|{AnyStrChr})*[\"]
-Numeric  	({IntegerLiteral}|{FloatingPoint})
+/*Numeric  	({IntegerLiteral}|{FloatingPoint})*/
 /*Literal		({Numeric}|{Character}|{String})*/
 
 
@@ -109,7 +109,8 @@ Numeric  	({IntegerLiteral}|{FloatingPoint})
 "args"		{return ARGS;}
 "String"	{return STRING;}
 
-{Numeric}		{return NUMBER;}
+{IntegerLiteral}	{return NUMBER_VAL;}
+{FloatingPoint}		{return DOUBLE_VAL;}
 {String}		{return STRING_VAL;}
 {Character}		{return CHAR_VAL;}
 {Identifier}		{return ID;}

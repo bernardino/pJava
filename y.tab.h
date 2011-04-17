@@ -56,48 +56,50 @@
      BYTE = 272,
      CASE = 273,
      CHAR = 274,
-     CHAR_VAL = 275,
-     CLASS = 276,
-     CONTINUE = 277,
-     DO = 278,
-     DOUBLE = 279,
-     ELSE = 280,
-     FALSE = 281,
-     FLOAT = 282,
-     FOR = 283,
-     ID = 284,
-     IF = 285,
-     INT = 286,
-     LONG = 287,
-     MAIN = 288,
-     NEW = 289,
-     NUMBER = 290,
-     JNULL = 291,
-     OP_INC = 292,
-     OP_DEC = 293,
-     OP_SHL = 294,
-     OP_SHR = 295,
-     OP_SHRR = 296,
-     OP_GE = 297,
-     OP_LE = 298,
-     OP_EQ = 299,
-     OP_NE = 300,
-     OP_LAND = 301,
-     OP_LOR = 302,
-     OP_DIM = 303,
-     PRIVATE = 304,
-     PROTECTED = 305,
-     PUBLIC = 306,
-     SHORT = 307,
-     STATIC = 308,
-     STRING = 309,
-     STRING_VAL = 310,
-     SWITCH = 311,
-     RETURN = 312,
-     TRUE = 313,
-     THIS = 314,
-     VOID = 315,
-     WHILE = 316
+     CLASS = 275,
+     CONTINUE = 276,
+     DO = 277,
+     DOUBLE = 278,
+     ELSE = 279,
+     FALSE = 280,
+     FLOAT = 281,
+     FOR = 282,
+     IF = 283,
+     INT = 284,
+     LONG = 285,
+     MAIN = 286,
+     NEW = 287,
+     JNULL = 288,
+     OP_INC = 289,
+     OP_DEC = 290,
+     OP_SHL = 291,
+     OP_SHR = 292,
+     OP_SHRR = 293,
+     OP_GE = 294,
+     OP_LE = 295,
+     OP_EQ = 296,
+     OP_NE = 297,
+     OP_LAND = 298,
+     OP_LOR = 299,
+     OP_DIM = 300,
+     PRIVATE = 301,
+     PROTECTED = 302,
+     PUBLIC = 303,
+     SHORT = 304,
+     STATIC = 305,
+     STRING = 306,
+     SWITCH = 307,
+     RETURN = 308,
+     TRUE = 309,
+     THIS = 310,
+     VOID = 311,
+     WHILE = 312,
+     NUMBER_VAL = 313,
+     DOUBLE_VAL = 314,
+     STRING_VAL = 315,
+     CHAR_VAL = 316,
+     ID = 317,
+     UMINUS = 318
    };
 #endif
 /* Tokens.  */
@@ -118,54 +120,96 @@
 #define BYTE 272
 #define CASE 273
 #define CHAR 274
-#define CHAR_VAL 275
-#define CLASS 276
-#define CONTINUE 277
-#define DO 278
-#define DOUBLE 279
-#define ELSE 280
-#define FALSE 281
-#define FLOAT 282
-#define FOR 283
-#define ID 284
-#define IF 285
-#define INT 286
-#define LONG 287
-#define MAIN 288
-#define NEW 289
-#define NUMBER 290
-#define JNULL 291
-#define OP_INC 292
-#define OP_DEC 293
-#define OP_SHL 294
-#define OP_SHR 295
-#define OP_SHRR 296
-#define OP_GE 297
-#define OP_LE 298
-#define OP_EQ 299
-#define OP_NE 300
-#define OP_LAND 301
-#define OP_LOR 302
-#define OP_DIM 303
-#define PRIVATE 304
-#define PROTECTED 305
-#define PUBLIC 306
-#define SHORT 307
-#define STATIC 308
-#define STRING 309
-#define STRING_VAL 310
-#define SWITCH 311
-#define RETURN 312
-#define TRUE 313
-#define THIS 314
-#define VOID 315
-#define WHILE 316
+#define CLASS 275
+#define CONTINUE 276
+#define DO 277
+#define DOUBLE 278
+#define ELSE 279
+#define FALSE 280
+#define FLOAT 281
+#define FOR 282
+#define IF 283
+#define INT 284
+#define LONG 285
+#define MAIN 286
+#define NEW 287
+#define JNULL 288
+#define OP_INC 289
+#define OP_DEC 290
+#define OP_SHL 291
+#define OP_SHR 292
+#define OP_SHRR 293
+#define OP_GE 294
+#define OP_LE 295
+#define OP_EQ 296
+#define OP_NE 297
+#define OP_LAND 298
+#define OP_LOR 299
+#define OP_DIM 300
+#define PRIVATE 301
+#define PROTECTED 302
+#define PUBLIC 303
+#define SHORT 304
+#define STATIC 305
+#define STRING 306
+#define SWITCH 307
+#define RETURN 308
+#define TRUE 309
+#define THIS 310
+#define VOID 311
+#define WHILE 312
+#define NUMBER_VAL 313
+#define DOUBLE_VAL 314
+#define STRING_VAL 315
+#define CHAR_VAL 316
+#define ID 317
+#define UMINUS 318
 
 
 
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-typedef int YYSTYPE;
+typedef union YYSTYPE
+{
+
+/* Line 1676 of yacc.c  */
+#line 31 "comp.y"
+
+is_program *prog;
+is_main *m;
+is_function_list *func_list;
+is_function *func;
+is_code *cod;
+is_argument_list *arg_list;
+is_argument *arg;
+is_operation_list *oper_list;
+is_operation *oper;
+is_declaration *declar;
+is_assignment *assign;
+is_variable *var;
+is_cycle *cycle;
+is_if *condition;
+is_value *val;
+is_variable_list *var_l;
+is_expression *exp;
+is_infix_expression *infix;
+is_unary_expression *unary;
+unsignedVariableType uvt;
+operationType ot;
+assignmentType at;
+expressionType et;
+unaryType ut;
+scopeType st;
+int val_i;
+double doubleval;
+char chr;
+char *string;
+
+
+
+/* Line 1676 of yacc.c  */
+#line 212 "y.tab.h"
+} YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
