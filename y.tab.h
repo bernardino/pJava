@@ -42,128 +42,130 @@
      ARGS = 258,
      ASS_MUL = 259,
      ASS_DIV = 260,
-     ASS_MOD = 261,
-     ASS_ADD = 262,
-     ASS_SUB = 263,
-     ASS_SHL = 264,
-     ASS_SHR = 265,
-     ASS_SHRR = 266,
-     ASS_AND = 267,
-     ASS_XOR = 268,
-     ASS_OR = 269,
-     BOOLEAN = 270,
-     BREAK = 271,
-     BYTE = 272,
-     CASE = 273,
-     CHAR = 274,
-     CLASS = 275,
-     CONTINUE = 276,
-     DO = 277,
-     DOUBLE = 278,
-     ELSE = 279,
-     FALSE = 280,
-     FLOAT = 281,
-     FOR = 282,
-     IF = 283,
-     INT = 284,
-     LONG = 285,
-     MAIN = 286,
-     NEW = 287,
-     JNULL = 288,
-     OP_INC = 289,
-     OP_DEC = 290,
-     OP_SHL = 291,
-     OP_SHR = 292,
-     OP_SHRR = 293,
-     OP_GE = 294,
-     OP_LE = 295,
-     OP_EQ = 296,
-     OP_NE = 297,
-     OP_LAND = 298,
-     OP_LOR = 299,
-     OP_DIM = 300,
-     PRIVATE = 301,
-     PROTECTED = 302,
-     PUBLIC = 303,
-     SHORT = 304,
-     STATIC = 305,
-     STRING = 306,
-     SWITCH = 307,
-     RETURN = 308,
-     TRUE = 309,
-     THIS = 310,
-     VOID = 311,
-     WHILE = 312,
-     NUMBER_VAL = 313,
-     DOUBLE_VAL = 314,
-     STRING_VAL = 315,
-     CHAR_VAL = 316,
-     ID = 317,
-     UMINUS = 318
+     ASS_ADD = 261,
+     ASS_SUB = 262,
+     ASS_EQ = 263,
+     ASS_AND = 264,
+     ASS_LS = 265,
+     ASS_RS = 266,
+     BOOLEAN = 267,
+     BREAK = 268,
+     BYTE = 269,
+     CASE = 270,
+     CHAR = 271,
+     CLASS = 272,
+     CONTINUE = 273,
+     DO = 274,
+     DOUBLE = 275,
+     ELSE = 276,
+     FALSE = 277,
+     FLOAT = 278,
+     FOR = 279,
+     IF = 280,
+     INT = 281,
+     LONG = 282,
+     LS = 283,
+     MAIN = 284,
+     NEW = 285,
+     JNULL = 286,
+     OP_INC = 287,
+     OP_DEC = 288,
+     OP_SHL = 289,
+     OP_SHR = 290,
+     OP_SHRR = 291,
+     OP_GE = 292,
+     OP_LE = 293,
+     OP_EQ = 294,
+     OP_NE = 295,
+     OP_LAND = 296,
+     OP_LOR = 297,
+     OP_DIM = 298,
+     PRIVATE = 299,
+     PROTECTED = 300,
+     PUBLIC = 301,
+     SHORT = 302,
+     STATIC = 303,
+     STRING = 304,
+     SWITCH = 305,
+     RETURN = 306,
+     RS = 307,
+     TRUE = 308,
+     THIS = 309,
+     VOID = 310,
+     WHILE = 311,
+     NUMBER_VAL = 312,
+     DOUBLE_VAL = 313,
+     STRING_VAL = 314,
+     CHAR_VAL = 315,
+     ID = 316,
+     ASS_PERC = 317,
+     ASS_SUM = 318,
+     UMINUS = 319
    };
 #endif
 /* Tokens.  */
 #define ARGS 258
 #define ASS_MUL 259
 #define ASS_DIV 260
-#define ASS_MOD 261
-#define ASS_ADD 262
-#define ASS_SUB 263
-#define ASS_SHL 264
-#define ASS_SHR 265
-#define ASS_SHRR 266
-#define ASS_AND 267
-#define ASS_XOR 268
-#define ASS_OR 269
-#define BOOLEAN 270
-#define BREAK 271
-#define BYTE 272
-#define CASE 273
-#define CHAR 274
-#define CLASS 275
-#define CONTINUE 276
-#define DO 277
-#define DOUBLE 278
-#define ELSE 279
-#define FALSE 280
-#define FLOAT 281
-#define FOR 282
-#define IF 283
-#define INT 284
-#define LONG 285
-#define MAIN 286
-#define NEW 287
-#define JNULL 288
-#define OP_INC 289
-#define OP_DEC 290
-#define OP_SHL 291
-#define OP_SHR 292
-#define OP_SHRR 293
-#define OP_GE 294
-#define OP_LE 295
-#define OP_EQ 296
-#define OP_NE 297
-#define OP_LAND 298
-#define OP_LOR 299
-#define OP_DIM 300
-#define PRIVATE 301
-#define PROTECTED 302
-#define PUBLIC 303
-#define SHORT 304
-#define STATIC 305
-#define STRING 306
-#define SWITCH 307
-#define RETURN 308
-#define TRUE 309
-#define THIS 310
-#define VOID 311
-#define WHILE 312
-#define NUMBER_VAL 313
-#define DOUBLE_VAL 314
-#define STRING_VAL 315
-#define CHAR_VAL 316
-#define ID 317
-#define UMINUS 318
+#define ASS_ADD 261
+#define ASS_SUB 262
+#define ASS_EQ 263
+#define ASS_AND 264
+#define ASS_LS 265
+#define ASS_RS 266
+#define BOOLEAN 267
+#define BREAK 268
+#define BYTE 269
+#define CASE 270
+#define CHAR 271
+#define CLASS 272
+#define CONTINUE 273
+#define DO 274
+#define DOUBLE 275
+#define ELSE 276
+#define FALSE 277
+#define FLOAT 278
+#define FOR 279
+#define IF 280
+#define INT 281
+#define LONG 282
+#define LS 283
+#define MAIN 284
+#define NEW 285
+#define JNULL 286
+#define OP_INC 287
+#define OP_DEC 288
+#define OP_SHL 289
+#define OP_SHR 290
+#define OP_SHRR 291
+#define OP_GE 292
+#define OP_LE 293
+#define OP_EQ 294
+#define OP_NE 295
+#define OP_LAND 296
+#define OP_LOR 297
+#define OP_DIM 298
+#define PRIVATE 299
+#define PROTECTED 300
+#define PUBLIC 301
+#define SHORT 302
+#define STATIC 303
+#define STRING 304
+#define SWITCH 305
+#define RETURN 306
+#define RS 307
+#define TRUE 308
+#define THIS 309
+#define VOID 310
+#define WHILE 311
+#define NUMBER_VAL 312
+#define DOUBLE_VAL 313
+#define STRING_VAL 314
+#define CHAR_VAL 315
+#define ID 316
+#define ASS_PERC 317
+#define ASS_SUM 318
+#define UMINUS 319
 
 
 
@@ -173,31 +175,34 @@ typedef union YYSTYPE
 {
 
 /* Line 1676 of yacc.c  */
-#line 31 "comp.y"
+#line 32 "comp.y"
 
 is_program *prog;
 is_main *m;
 is_function_list *func_list;
 is_function *func;
 is_code *cod;
+is_parameter_list *param;
 is_argument_list *arg_list;
 is_argument *arg;
 is_operation_list *oper_list;
 is_operation *oper;
 is_declaration *declar;
 is_assignment *assign;
-is_variable *var;
+is_unary *un;
 is_cycle *cycle;
 is_if *condition;
+is_variable *var;
 is_value *val;
 is_variable_list *var_l;
 is_expression *exp;
+is_function_call *call;
 is_infix_expression *infix;
-is_unary_expression *unary;
 unsignedVariableType uvt;
 operationType ot;
 assignmentType at;
 expressionType et;
+infixType it;
 unaryType ut;
 scopeType st;
 int val_i;
@@ -208,7 +213,7 @@ char *string;
 
 
 /* Line 1676 of yacc.c  */
-#line 212 "y.tab.h"
+#line 217 "y.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

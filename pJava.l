@@ -13,46 +13,29 @@ NonZeroDigit	[1-9]
 Letter		[a-zA-Z_]
 AnyButSlash	[^\/]
 AnyButAstr	[^\*]
-BLK		[\b]
-TAB		[\t]
-FF		[\f]
-ESCCHR		[\\]
-CR		[\r]
-LF		[\n]
 
-Escape		[\\]([r]|[n]|[b]|[f]|[t]|[\\])
-Identifier 	{Letter}({Letter}|{Digit})*
+Identifier 	{Letter}(({Letter}|{Digit})+)?
 
 Comment1        [\/][\*]({AnyButAstr}|[\*]{AnyButSlash})*[\*][\/]
 Comment2        [\/][\/].*
 Comment		({Comment1}|{Comment2})
-WhiteSpace	({CR}|{LF}|{FF}|{TAB}|{BLK}|[ ])
-
-Dimension	[\[]({WhiteSpace}|{Comment})*[\]]
+WhiteSpace	[' ''\n''\t']
 
 IntSuffix	([l]|[L])
-DecimalNum	{NonZeroDigit}{Digit}*{IntSuffix}?
-OctalNum	[0]{OctalDigit}*{IntSuffix}?
-HexNum		[0]([x]|[X]){HexDigit}{HexDigit}*{IntSuffix}?
-IntegerLiteral	({DecimalNum}|{OctalNum}|{HexNum})
+Integer		[+-]?{NonZeroDigit}{Digit}*{IntSuffix}?
 
-Sign		([\+]|[\-])
-FlSuffix	([f]|[F]|[d][D])
-SignedInt	{Sign}?{Digit}+
+SignedInt	[+-]?{Digit}+
 Expo		([e]|[E])
 ExponentPart	{Expo}{SignedInt}?
-Float1          {Digit}+[\.]{Digit}+?{ExponentPart}?{FlSuffix}? 
-Float2		[\.]{Digit}+{ExponentPart}?{FlSuffix}?
-Float3		{Digit}+{ExponentPart}{FlSuffix}?
-Float4		{Digit}+{FlSuffix}
-FloatingPoint	({Float1}|{Float2}|{Float3}|{Float4})
+FlSuffix	([f]|[F]|[d][D])
 
-AnyChrChr	[^\\']
-AnyStrChr	[^\\"]
-Character	[\']({Escape}|{AnyChrChr})[\']
-String		[\"]({Escape}|{AnyStrChr})*[\"]
-/*Numeric  	({IntegerLiteral}|{FloatingPoint})*/
-/*Literal		({Numeric}|{Character}|{String})*/
+Float1		[\.]{Digit}+{ExponentPart}?{FlSuffix}?
+Float2		{Digit}+{ExponentPart}{FlSuffix}?
+Float3		{Digit}+{FlSuffix}
+Double		({Float1}|{Float2}|{Float3})
+
+String		\"[^"\n]*\"
+Char		\'.\'		
 
 
 
@@ -61,22 +44,24 @@ String		[\"]({Escape}|{AnyStrChr})*[\"]
 "true"		{return TRUE;}
 "false"		{return FALSE;}
 
-{Separator}	{return yytext[0];}
-{Delimiter1}	{return yytext[0];}
-{Dimension}	{return OP_DIM;}
-
+"<<="		{return ASS_LS;}
+">>="		{return ASS_RS;}
+"<<"		{return LS;}
+">>"		{return RS;}
 "=="		{return OP_EQ;}
 "<="		{return OP_LE;}
 ">="		{return OP_GE;}
 "!="		{return OP_NE;}
 "||"		{return OP_LOR;}
 "&&"		{return OP_LAND;}
-"++"		{return OP_INC;}
+"++"		{printf("oi oi\n");return OP_INC;}
 "--"		{return OP_DEC;}
 "+="		{return ASS_ADD;}
 "-="		{return ASS_SUB;}
 "*="		{return ASS_MUL;}
 "/="		{return ASS_DIV;}
+"%="		{return ASS_PERC;}
+"&="		{return ASS_AND;}
 
 "do"		{return DO;}
 "boolean"	{return BOOLEAN;}
@@ -109,15 +94,18 @@ String		[\"]({Escape}|{AnyStrChr})*[\"]
 "args"		{return ARGS;}
 "String"	{return STRING;}
 
-{IntegerLiteral}	{return NUMBER_VAL;}
-{FloatingPoint}		{return DOUBLE_VAL;}
-{String}		{return STRING_VAL;}
-{Character}		{return CHAR_VAL;}
 {Identifier}		{return ID;}
+{Integer}		{printf("int %s\n",&yytext[0]);return NUMBER_VAL;}
+{Double}		{printf("double %s\n",&yytext[0]);return DOUBLE_VAL;}
+{String}		{printf("string %s\n",&yytext[0]);return STRING_VAL;}
+{Char}			{printf("char %s\n",&yytext[0]);return CHAR_VAL;}
 
 {WhiteSpace}    {}
 
-{Comment}	{}
+{Comment}	{printf("comment\n");}
+
+.	{ return yytext[0];}
+
 
 %%
 
