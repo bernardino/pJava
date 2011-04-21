@@ -163,6 +163,15 @@ is_operation* insert_operation_unary(is_unary *unary){
 	return operation;
 }
 
+is_operation* insert_operation_if(is_condition_statement *condition){
+
+	is_operation *operation = (is_operation*)malloc(sizeof(is_operation));
+	operation->type = is_cond;
+	operation->oper.condition = condition;
+
+	return operation;
+}
+
 is_declaration* insert_declaration(unsignedVariableType type, is_variable_list* var_list){
 
 	is_declaration *declaration = (is_declaration*)malloc(sizeof(is_declaration));
@@ -230,6 +239,25 @@ is_expression* insert_expression( is_expression *exp){
 	
 }
 
+is_expression* insert_expression_if(is_if_expression *if_expression){
+	
+	is_expression *express = (is_expression*)malloc(sizeof(is_expression));
+	express->type = is_if_exp;
+	express->exp.if_expression = if_expression;
+
+	return express;
+
+}
+
+is_expression* insert_expression_control(is_control* control){
+
+	is_expression *express = (is_expression*)malloc(sizeof(is_expression));
+	express->type = is_control_exp;
+	express->exp.control = control;
+
+	return express;
+}
+
 is_infix_expression* insert_infix( is_expression* exp1, infixType type, is_expression *exp2){
 
 	is_infix_expression *infix = (is_infix_expression*)malloc(sizeof(is_infix_expression));
@@ -240,6 +268,94 @@ is_infix_expression* insert_infix( is_expression* exp1, infixType type, is_expre
 
 	return infix;
 }
+
+is_if_expression* insert_if(is_expression *exp1, if_exp_type type, is_expression *exp2){
+
+	is_if_expression *if_expression = (is_if_expression*)malloc(sizeof(is_if_expression));
+
+	if_expression->exp1 = exp1;
+	if_expression->type = type;
+	if_expression->exp2 = exp2;
+
+	return if_expression;
+}
+
+is_control* insert_control(controlType type, is_expression *exp){
+
+	is_control *control = (is_control*)malloc(sizeof(is_control));
+	
+	control->type = type;
+	control->expression = exp;
+
+	return control;
+}
+
+is_switch_case* insert_switch_case(switchType type, is_value *val, is_operation_list *operation_list, is_switch_case *next){
+
+	is_switch_case *sw = (is_switch_case*)malloc(sizeof(is_switch_case));
+	
+	sw->type = type;
+	sw->value = val;
+	sw->operation_list = operation_list;
+	sw->next = next;
+
+	return sw;
+}
+
+is_condition_code* insert_condition_code(is_operation_list *operation_list, is_operation *operation){
+
+	is_condition_code *code = (is_condition_code*)malloc(sizeof(is_condition_code));
+
+	code->operation_list = operation_list;
+	code->operation = operation;
+
+	return code;
+
+}
+
+is_condition_statement* insert_if_statement(is_expression *expression,is_condition_code *code){
+
+	is_if *statement = (is_if*)malloc(sizeof(is_if));
+	statement->expression = expression;
+	statement->code = code;
+
+	is_condition_statement  *stat = (is_condition_statement*)malloc(sizeof(is_condition_statement));
+	stat->type = is_if_statement;
+	stat->stat.if_statement = statement;
+
+	return stat;
+}
+
+is_condition_statement* insert_if_else_statement(is_expression *expression,is_condition_code *if_code, is_condition_code *else_code){
+
+	is_if_else *statement = (is_if_else*)malloc(sizeof(is_if_else));
+
+	statement->expression = expression;
+	statement->if_code = if_code;
+	statement->else_code = else_code;
+
+	is_condition_statement  *stat = (is_condition_statement*)malloc(sizeof(is_condition_statement));
+	stat->type = is_if_else_statement;
+	stat->stat.if_else_statement = statement;
+
+	return stat;
+}
+
+is_condition_statement* insert_switch_statement(is_expression *expression, is_switch_case *switch_case){
+
+	is_switch *sw = (is_switch*)malloc(sizeof(is_switch));
+	sw->expression = expression;
+	sw->cases = switch_case;
+
+	is_condition_statement  *stat = (is_condition_statement*)malloc(sizeof(is_condition_statement));
+	stat->type = is_switch_statement;
+	stat->stat.switch_statement = sw;
+
+	return stat;
+
+}
+
+
 is_variable_list* insert_variable_list(is_variable_list *list, is_variable* var){
 	
 	is_variable_list *variable_list = (is_variable_list*)malloc(sizeof(is_variable_list));

@@ -14,6 +14,7 @@ is_operation_list* insert_operation_list(is_operation_list *list, is_operation *
 is_operation* insert_operation_dec(is_declaration *dec);
 is_operation* insert_operation_assign(is_assignment *assign);
 is_operation* insert_operation_unary(is_unary* unary);
+is_operation* insert_operation_if(is_condition_statement *condition);
 
 /* insert functions */
 is_function_list* insert_function_list(is_function_list *list, is_function *function);
@@ -30,11 +31,22 @@ is_assignment *insert_assignment(char *id, assignmentType type, is_expression* e
 is_unary* insert_unary(char *id, unaryType type);
 
 /* insert expressions */
+is_expression* insert_expression( is_expression *exp);
 is_expression* insert_expression_value( is_value *val);
 is_expression* insert_expression_func( is_function_call *call);
-is_expression* insert_expression_infix(is_infix_expression* infix);
-is_expression* insert_expression( is_expression *exp);
+is_expression* insert_expression_infix(is_infix_expression *infix);
+is_expression* insert_expression_if(is_if_expression *if_expression);
+is_expression* insert_expression_control(is_control* control);
+
 is_infix_expression* insert_infix( is_expression* exp1, infixType type, is_expression *exp2);
+is_if_expression* insert_if(is_expression *exp1, if_exp_type type, is_expression *exp2);
+is_control* insert_control(controlType type, is_expression *exp);
+
+is_condition_code* insert_condition_code(is_operation_list *operation_list, is_operation *operation);
+is_condition_statement* insert_if_statement(is_expression *expression,is_condition_code *code);
+is_condition_statement* insert_if_else_statement(is_expression *expression,is_condition_code *if_code, is_condition_code *else_code);
+is_condition_statement* insert_switch_statement(is_expression *expression, is_switch_case *switch_case);
+is_switch_case* insert_switch_case(switchType type, is_value *val, is_operation_list *operation_list, is_switch_case *next);
 
 
 /* insert variables */

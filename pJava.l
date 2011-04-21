@@ -54,7 +54,7 @@ Char		\'.\'
 "!="		{return OP_NE;}
 "||"		{return OP_LOR;}
 "&&"		{return OP_LAND;}
-"++"		{printf("oi oi\n");return OP_INC;}
+"++"		{return OP_INC;}
 "--"		{return OP_DEC;}
 "+="		{return ASS_ADD;}
 "-="		{return ASS_SUB;}
@@ -66,6 +66,7 @@ Char		\'.\'
 "do"		{return DO;}
 "boolean"	{return BOOLEAN;}
 "double"	{return DOUBLE;}
+"default"	{return DEFAULT;}
 "private"	{return PRIVATE;}
 "break"		{return BREAK;}
 "else"		{return ELSE;}

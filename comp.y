@@ -8,10 +8,10 @@ is_program *myprogram;
 %token ARGS ASS_MUL ASS_DIV ASS_ADD ASS_SUB ASS_EQ ASS_AND ASS_LS ASS_RS
 %token BOOLEAN BREAK BYTE
 %token CASE CHAR CLASS CONTINUE
-%token DO DOUBLE
+%token DEFAULT DO DOUBLE
 %token ELSE
 %token FALSE FLOAT FOR
-%token IF INT
+%token IF IFELSE INT
 %token LONG LS
 %token MAIN
 %token NEW JNULL
@@ -44,13 +44,17 @@ is_declaration *declar;
 is_assignment *assign;
 is_unary *un;
 is_cycle *cycle;
-is_if *condition;
+is_condition_statement *cond;
 is_variable *var;
 is_value *val;
 is_variable_list *var_l;
 is_expression *exp;
 is_function_call *call;
 is_infix_expression *infix;
+is_if_expression *is_if;
+is_switch_case *sw;
+is_control *cont;
+is_condition_code *cond_code;
 unsignedVariableType uvt;
 operationType ot;
 assignmentType at;
@@ -84,17 +88,22 @@ char *string;
 %type<param>parameter_list
 %type<call>function_call
 %type<infix>infix_expression
-/*%type<cycle>cycle
-%type<condition>if*/
+%type<is_if>if_expression
+%type<cont>control
+/*%type<cycle>cycle*/
+%type<cond>if
+%type<cond_code>condition_code
+%type<sw>switch
 %type<val>value
 %type<uvt>type
 %type<at>assign_operator
 
+%nonassoc IFPREC
+%nonassoc ELSE
 %left  '+' '-'
 %left  '*' '/' '%' '&' LS RS
+%left OP_EQ OP_NE OP_LE OP_GE OP_LAND OP_LOR
 %right '=' ASS_SUM ASS_SUB ASS_MUL ASS_DIV ASS_AND ASS_PERC ASS_LS ASS_RS
-%nonassoc UMINUS
-%start init
 %%
 
 init: 	
@@ -110,7 +119,6 @@ function_list:
 	| function_list function 	{ $$ = insert_function_list($1,$2);}
 	;
 
-/*TODO */
 function:
 	scope STATIC type ID '(' argument_list ')' code	{ $$ = insert_function($1, $3, $4, $6, $8);}
 	;
@@ -120,8 +128,8 @@ scope:	PRIVATE		{$$ = is_private;}
 	| PUBLIC	{$$ = is_public;}
 	;
 
-code:	'{' '}' 			{ $$ = insert_code(NULL); }
-	| '{' operation_list '}'	{ $$ = insert_code($2); }
+code:	'{' '}' 			{ $$ = insert_code(NULL);}
+	| '{' operation_list '}'	{ $$ = insert_code($2);}
 	;
 
 operation_list: 
@@ -133,8 +141,8 @@ operation:
 	declaration	{ $$ = insert_operation_dec($1);}
 	| assignment	{ $$ = insert_operation_assign($1);}
 	| unary	';'	{ $$ = insert_operation_unary($1);}
-	/*| cycle		{}
-	| if		{}*/
+	| if		{ $$ = insert_operation_if($1);}
+	/*| cycle		{}*/
 	;
 
 declaration:
@@ -156,6 +164,8 @@ expression:
 	| value			{ $$ = insert_expression_value($1);}
 	| function_call		{ $$ = insert_expression_func($1);}
 	| infix_expression 	{ $$ = insert_expression_infix($1);}
+	| if_expression		{ $$ = insert_expression_if($1);}
+	| control ';'		{ $$ = insert_expression_control($1);}
 	;
 
 function_call:
@@ -172,6 +182,15 @@ infix_expression:
 	| expression '&' expression	{ $$ = insert_infix($1, is_and, $3);}
 	| expression LS expression	{ $$ = insert_infix($1, is_lshift, $3);}
 	| expression RS expression	{ $$ = insert_infix($1, is_rshift, $3);}
+	;
+
+if_expression:
+	expression OP_EQ expression	{ $$ = insert_if($1, is_OP_EQ, $3);}
+	| expression OP_LE expression	{ $$ = insert_if($1, is_OP_LE, $3);}
+	| expression OP_GE expression	{ $$ = insert_if($1, is_OP_GE, $3);}
+	| expression OP_NE expression 	{ $$ = insert_if($1, is_OP_NE, $3);}
+	| expression OP_LOR expression	{ $$ = insert_if($1, is_OP_LOR, $3);}
+	| expression OP_LAND expression { $$ = insert_if($1, is_OP_LAND, $3);}
 	;
 
 parameter_list:	
@@ -201,9 +220,31 @@ argument:
 	
 
 /*cycle:
-	;
-if:
 	;*/
+if:	IF '(' expression ')' condition_code %prec IFPREC			{ $$ = insert_if_statement($3, $5); }
+	| IF '(' expression ')' condition_code ELSE condition_code		{ $$ = insert_if_else_statement($3,$5,$7);}
+	| SWITCH '(' expression ')' '{' switch '}'				{ $$ = insert_switch_statement($3,$6);}
+	;
+
+condition_code:
+	'{' operation_list '}'	{ $$ = insert_condition_code($2, NULL);}
+	| operation		{ $$ = insert_condition_code(NULL,$1);}
+	;
+	
+
+switch: 
+	CASE value ':' operation_list switch 	{ $$ = insert_switch_case(is_NORMAL,$2,$4,$5);}
+	| DEFAULT ':' operation_list switch	{ $$ = insert_switch_case(is_DEFAULT,NULL,$3,$4);}
+	| CASE value ':' operation_list 	{ $$ = insert_switch_case(is_NORMAL,$2,$4,NULL);}
+	| DEFAULT ':' operation_list		{ $$ = insert_switch_case(is_DEFAULT,NULL,$3,NULL);}
+	;
+
+control:
+	BREAK			{ $$ = insert_control(is_break,NULL);}
+	| CONTINUE		{ $$ = insert_control(is_continue,NULL);}
+	| RETURN		{ $$ = insert_control(is_return,NULL);}
+	| RETURN expression	{ $$ = insert_control(is_return_exp,$2);}
+	;
 
 assign_operator:
 	'='		{ $$ = is_ASS_EQ;}
