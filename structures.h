@@ -5,11 +5,10 @@ typedef enum { is_char, is_int, is_boolean, is_double, is_string, is_void} unsig
 typedef enum { is_id, is_array} identiferType;
 typedef enum { is_plus, is_minus, is_mult, is_div, is_and, is_percent, is_lshift, is_rshift} infixType;
 typedef enum { is_ASS_EQ, is_ASS_ADD, is_ASS_SUB, is_ASS_MUL, is_ASS_DIV , is_ASS_AND, is_ASS_PERC, is_ASS_LS, is_ASS_RS} assignmentType;
-typedef enum { is_infix, is_val, is_funct_call, is_exp, is_if_exp, is_control_exp} expressionType;
+typedef enum { is_infix, is_val, is_funct_call, is_exp, is_if_exp } expressionType;
 typedef enum { is_before_plus, is_before_minus, is_after_plus, is_after_minus } unaryType;
-typedef enum { is_private, is_public, is_protected } scopeType;
-typedef enum { is_dec, is_assign, is_funct, is_un, is_cyc, is_cond} operationType;
-typedef enum { is_OP_EQ, is_OP_NE, is_OP_LE, is_OP_GE, is_OP_LOR, is_OP_LAND } if_exp_type;
+typedef enum { is_dec, is_assign, is_funct, is_un, is_cyc, is_cond, is_cont} operationType;
+typedef enum { is_OP_BIGGER, is_OP_LOWER, is_OP_EQ, is_OP_NE, is_OP_LE, is_OP_GE, is_OP_LOR, is_OP_LAND } if_exp_type;
 typedef enum { is_break, is_continue, is_return, is_return_exp } controlType;
 
 
@@ -19,35 +18,40 @@ typedef struct _function_list is_function_list;
 typedef struct _function is_function;
 typedef struct _function_call is_function_call;
 typedef struct _code is_code;
+
 typedef struct _parameter_list is_parameter_list;
 typedef struct _argument_list is_argument_list;
 typedef struct _argument is_argument;
+
 typedef struct _operation_list is_operation_list;
 typedef struct _operation is_operation;
 typedef struct _declaration is_declaration;
 typedef struct _unary is_unary;
 typedef struct _assign is_assignment;
-typedef struct _variable is_variable;
+
 typedef struct _is_cycle is_cycle;
+typedef struct _for is_for;
+typedef struct _while is_while;
+typedef struct _doWhile is_do_while;
+
+typedef struct _increase_list is_increase_list;
+typedef struct _increase is_increase;
+
 typedef struct _condition_statement is_condition_statement;
 typedef struct _condition_code is_condition_code;
 typedef struct _is_if is_if;
 typedef struct _is_if_else is_if_else;
 typedef struct _is_switch is_switch;
 typedef struct _switch_case is_switch_case;
+
 typedef struct _value is_value;
 typedef struct _variable_list is_variable_list;
+typedef struct _variable is_variable;
 typedef struct _expression is_expression;
 typedef struct _infix_expression is_infix_expression;
 typedef struct _if_expression is_if_expression;
-
 typedef struct _control is_control;
 
-
-/* Cicles */
-typedef struct _for is_for;
-typedef struct _doWhile is_do_while;
-typedef struct _while is_while;
 
 /* Variable */
 
@@ -63,8 +67,8 @@ struct _value{
 };
 
 struct _variable{
-	is_value *value;
 	char *id;
+	is_expression *expression;
 };
 
 struct _variable_list{
@@ -84,6 +88,7 @@ struct _operation{
 		is_unary *unary;
 		is_cycle *cycle;
 		is_condition_statement *condition;
+		is_control *control;
 	}oper;
 };
 
@@ -113,8 +118,51 @@ struct _unary{
 	unaryType type;
 };
 
+typedef enum { is_for_cycle, is_while_cycle, is_do_while_cycle } cycleType;
+
 struct _is_cycle{
-	
+	cycleType type;
+	union{
+		is_for *for_cycle;
+		is_while *while_cycle;
+		is_do_while *do_while;
+	}cyc;
+
+};
+
+struct _for{
+	is_assignment *assignment;
+	is_if_expression *if_expression;
+	is_increase_list *increase;
+	is_condition_code *code;
+};
+
+struct _while{
+	is_if_expression *if_expression;
+	is_condition_code *code;
+
+};
+
+struct _doWhile{
+	is_if_expression *if_expression;
+	is_condition_code *code;
+};
+
+struct _increase_list{
+	is_increase *inc;
+	is_increase_list *next;
+
+};
+
+typedef enum { is_assign_inc, is_unary_inc } increaseType;
+
+struct _increase{
+	increaseType type;
+	union{
+		is_assignment *assign;
+		is_unary *unary;
+
+	}inc;
 
 };
 
@@ -172,8 +220,7 @@ struct _expression{
 		is_infix_expression *infix;
 		is_function_call *function;
 		is_expression *expression;
-		is_if_expression *if_expression;
-		is_control *control;		
+		is_if_expression *if_expression;	
 	}exp;
 	is_expression *next;	
 
@@ -194,7 +241,6 @@ struct _if_expression{
 struct _control{
 	is_expression *expression;
 	controlType type;
-
 };
 
 
@@ -225,10 +271,12 @@ struct _function_call{
 
 };
 
+typedef enum { is_private, is_public, is_protected } scopeType;
+
 struct _function{
 	char *id;
-	scopeType scopeType;
-	unsignedVariableType returnType;
+	scopeType scope_type;
+	unsignedVariableType return_type;
 	is_argument_list *argument_list;
 	is_code *code;
 

@@ -61,8 +61,8 @@ is_function_call* insert_function_call(char *id, is_parameter_list *param){
 is_function* insert_function(scopeType sT, unsignedVariableType uT, char *id, is_argument_list *list, is_code *code){
 
 	is_function *func = (is_function*)malloc(sizeof(is_function));
-	func->scopeType = sT;
-	func->returnType = uT;
+	func->scope_type = sT;
+	func->return_type = uT;
 	func->id = id;
 	func->argument_list = list;
 	func->code = code;	
@@ -172,6 +172,25 @@ is_operation* insert_operation_if(is_condition_statement *condition){
 	return operation;
 }
 
+is_operation* insert_operation_cycle(is_cycle *cycle){
+
+	is_operation *operation = (is_operation*)malloc(sizeof(is_operation));
+	operation->type = is_cyc;
+	operation->oper.cycle = cycle;
+
+	return operation;
+}
+
+is_operation* insert_operation_control(is_control* control){
+
+	is_operation *operation = (is_operation*)malloc(sizeof(is_operation));
+	operation->type = is_cont;
+	operation->oper.control = control;
+
+	return operation;
+
+}
+
 is_declaration* insert_declaration(unsignedVariableType type, is_variable_list* var_list){
 
 	is_declaration *declaration = (is_declaration*)malloc(sizeof(is_declaration));
@@ -249,15 +268,6 @@ is_expression* insert_expression_if(is_if_expression *if_expression){
 
 }
 
-is_expression* insert_expression_control(is_control* control){
-
-	is_expression *express = (is_expression*)malloc(sizeof(is_expression));
-	express->type = is_control_exp;
-	express->exp.control = control;
-
-	return express;
-}
-
 is_infix_expression* insert_infix( is_expression* exp1, infixType type, is_expression *exp2){
 
 	is_infix_expression *infix = (is_infix_expression*)malloc(sizeof(is_infix_expression));
@@ -302,17 +312,7 @@ is_switch_case* insert_switch_case(switchType type, is_value *val, is_operation_
 	return sw;
 }
 
-is_condition_code* insert_condition_code(is_operation_list *operation_list, is_operation *operation){
-
-	is_condition_code *code = (is_condition_code*)malloc(sizeof(is_condition_code));
-
-	code->operation_list = operation_list;
-	code->operation = operation;
-
-	return code;
-
-}
-
+/* insert conditions */
 is_condition_statement* insert_if_statement(is_expression *expression,is_condition_code *code){
 
 	is_if *statement = (is_if*)malloc(sizeof(is_if));
@@ -355,6 +355,105 @@ is_condition_statement* insert_switch_statement(is_expression *expression, is_sw
 
 }
 
+is_condition_code* insert_condition_code(is_operation_list *operation_list, is_operation *operation){
+
+	is_condition_code *code = (is_condition_code*)malloc(sizeof(is_condition_code));
+
+	code->operation_list = operation_list;
+	code->operation = operation;
+
+	return code;
+
+}
+
+/* insert cycles */
+is_cycle* insert_for(is_assignment *assign, is_if_expression *if_expression, is_increase_list *inc, is_condition_code *code){
+
+	is_for *for_cyc = (is_for*)malloc(sizeof(is_for));
+
+	for_cyc->assignment = assign;
+	for_cyc->if_expression = if_expression;
+	for_cyc->increase = inc;
+	for_cyc->code = code;
+
+	is_cycle *cycle = (is_cycle*)malloc(sizeof(is_cycle));
+
+	cycle->type = is_for_cycle;
+	cycle->cyc.for_cycle = for_cyc;
+
+	return cycle;
+}
+
+is_cycle* insert_while(is_if_expression *if_expression, is_condition_code *code){
+
+	is_while *while_cyc = (is_while*)malloc(sizeof(is_while));
+
+	while_cyc->if_expression = if_expression;
+	while_cyc->code = code;
+
+	is_cycle *cycle = (is_cycle*)malloc(sizeof(is_cycle));
+
+	cycle->type = is_while_cycle;
+	cycle->cyc.while_cycle = while_cyc;
+
+	return cycle;
+}
+
+is_cycle* insert_do_while(is_condition_code *code, is_if_expression *if_expression){
+
+	is_do_while *do_while = (is_do_while*)malloc(sizeof(is_do_while));
+
+	do_while->code = code;
+	do_while->if_expression = if_expression;
+
+	is_cycle *cycle = (is_cycle*)malloc(sizeof(is_cycle));
+
+	cycle->type = is_do_while_cycle;
+	cycle->cyc.do_while = do_while;
+
+	return cycle;
+}
+
+is_increase* insert_assign_inc(is_assignment *assign){
+
+	is_increase *inc = (is_increase*)malloc(sizeof(is_increase));
+
+	inc->type = is_assign_inc;
+	inc->inc.assign = assign;
+
+	return inc;
+}
+
+is_increase* insert_unary_inc(is_unary *unary){
+
+	is_increase *inc = (is_increase*)malloc(sizeof(is_increase));
+
+	inc->type = is_unary_inc;
+	inc->inc.unary = unary;
+
+	return inc;
+
+}
+
+is_increase_list* insert_increase_list(is_increase_list *inc_list, is_increase *inc){
+
+	is_increase_list *increase_list = (is_increase_list*)malloc(sizeof(is_increase_list));
+	increase_list->inc= inc;
+	increase_list->next = NULL;
+	
+	if(!inc_list)
+		return increase_list;
+	
+	is_increase_list *aux = inc_list;
+
+	while(aux->next!=NULL)
+		aux=aux->next;
+
+	aux->next = increase_list;
+	return inc_list;
+
+
+}
 
 is_variable_list* insert_variable_list(is_variable_list *list, is_variable* var){
 	
@@ -375,13 +474,13 @@ is_variable_list* insert_variable_list(is_variable_list *list, is_variable* var)
 	
 }
 
-is_variable* insert_variable(identiferType type, char *id, is_value* val){
+is_variable* insert_variable(identiferType type, char *id, is_expression* exp){
 	
 	/* Arrays are still not working */
 
 	is_variable *var = (is_variable*)malloc(sizeof(is_variable));
 	var->id = id;
-	var->value = val;
+	var->expression = exp;
 
 	return var;	
 

@@ -22,7 +22,8 @@ Comment		({Comment1}|{Comment2})
 WhiteSpace	[' ''\n''\t']
 
 IntSuffix	([l]|[L])
-Integer		[+-]?{NonZeroDigit}{Digit}*{IntSuffix}?
+Decimal		[+-]?{NonZeroDigit}{Digit}*{IntSuffix}?
+Integer		({Decimal}|[0])
 
 SignedInt	[+-]?{Digit}+
 Expo		([e]|[E])
@@ -95,15 +96,15 @@ Char		\'.\'
 "args"		{return ARGS;}
 "String"	{return STRING;}
 
-{Identifier}		{return ID;}
-{Integer}		{printf("int %s\n",&yytext[0]);return NUMBER_VAL;}
-{Double}		{printf("double %s\n",&yytext[0]);return DOUBLE_VAL;}
-{String}		{printf("string %s\n",&yytext[0]);return STRING_VAL;}
-{Char}			{printf("char %s\n",&yytext[0]);return CHAR_VAL;}
+{Identifier}		{ yylval.string = (char*)strdup(yytext); return ID;}
+{Integer}		{ yylval.val_i = atoi(yytext); return NUMBER_VAL;}
+{Double}		{ yylval.doubleval = atof(yytext); return DOUBLE_VAL;}
+{String}		{ yylval.string = (char*)strdup(yytext+1); yylval.string[strlen(yytext)-2]='\0';return STRING_VAL;}
+{Char}			{ yylval.chr = yytext[1]; return CHAR_VAL;}
 
 {WhiteSpace}    {}
 
-{Comment}	{printf("comment\n");}
+{Comment}	{}
 
 .	{ return yytext[0];}
 

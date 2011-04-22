@@ -179,7 +179,7 @@ typedef union YYSTYPE
 {
 
 /* Line 1676 of yacc.c  */
-#line 32 "comp.y"
+#line 33 "comp.y"
 
 is_program *prog;
 is_main *m;
@@ -195,6 +195,8 @@ is_declaration *declar;
 is_assignment *assign;
 is_unary *un;
 is_cycle *cycle;
+is_increase_list *inc_list;
+is_increase *inc;
 is_condition_statement *cond;
 is_variable *var;
 is_value *val;
@@ -221,7 +223,7 @@ char *string;
 
 
 /* Line 1676 of yacc.c  */
-#line 225 "y.tab.h"
+#line 227 "y.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

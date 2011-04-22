@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include "structures.h"
 #include "functions.h"
+#include "shows.h"
 
 is_program *myprogram;
 %}
@@ -44,6 +45,8 @@ is_declaration *declar;
 is_assignment *assign;
 is_unary *un;
 is_cycle *cycle;
+is_increase_list *inc_list;
+is_increase *inc;
 is_condition_statement *cond;
 is_variable *var;
 is_value *val;
@@ -90,7 +93,9 @@ char *string;
 %type<infix>infix_expression
 %type<is_if>if_expression
 %type<cont>control
-/*%type<cycle>cycle*/
+%type<cycle>cycle
+%type<inc_list>increase_list
+%type<inc>increase
 %type<cond>if
 %type<cond_code>condition_code
 %type<sw>switch
@@ -101,8 +106,8 @@ char *string;
 %nonassoc IFPREC
 %nonassoc ELSE
 %left  '+' '-'
-%left  '*' '/' '%' '&' LS RS
-%left OP_EQ OP_NE OP_LE OP_GE OP_LAND OP_LOR
+%left  '*' '/' '%' '&' LS RS '(' ')'
+%left OP_EQ OP_NE OP_LE OP_GE OP_LAND OP_LOR '<' '>'
 %right '=' ASS_SUM ASS_SUB ASS_MUL ASS_DIV ASS_AND ASS_PERC ASS_LS ASS_RS
 %%
 
@@ -138,18 +143,19 @@ operation_list:
 	;
 
 operation:
-	declaration	{ $$ = insert_operation_dec($1);}
-	| assignment	{ $$ = insert_operation_assign($1);}
-	| unary	';'	{ $$ = insert_operation_unary($1);}
+	declaration ';'	{ $$ = insert_operation_dec($1);}
+	| assignment';'	{ $$ = insert_operation_assign($1);}
+	| unary	';'	{ $$ = insert_operation_unary($1); }
 	| if		{ $$ = insert_operation_if($1);}
-	/*| cycle		{}*/
+	| cycle		{ $$ = insert_operation_cycle($1);}
+	| control ';'	{ $$ = insert_operation_control($1);}
 	;
 
 declaration:
-	type var_list ';' 	{ $$ = insert_declaration($1,$2);}
+	type var_list 	 	{ $$ = insert_declaration($1,$2);}
 	;
 assignment:
-	ID assign_operator expression ';'	{ $$ = insert_assignment($1,$2,$3);}
+	ID assign_operator expression			{ $$ = insert_assignment($1,$2,$3);}
 	/*| ID '[' expression ']' operator expression	{ $$ = insert_assignment( );}*/
 	;
 unary:
@@ -159,13 +165,20 @@ unary:
 	| OP_DEC ID	{ $$ = insert_unary($2, is_before_minus);}
 	;
 
+control:
+	BREAK			{ $$ = insert_control(is_break,NULL);}
+	| CONTINUE		{ $$ = insert_control(is_continue,NULL);}
+	| RETURN		{ $$ = insert_control(is_return,NULL);}
+	| RETURN expression	{ $$ = insert_control(is_return_exp,$2);}
+	;
+
+
 expression:
 	'(' expression ')'	{ $$ = insert_expression($2);}
 	| value			{ $$ = insert_expression_value($1);}
 	| function_call		{ $$ = insert_expression_func($1);}
 	| infix_expression 	{ $$ = insert_expression_infix($1);}
 	| if_expression		{ $$ = insert_expression_if($1);}
-	| control ';'		{ $$ = insert_expression_control($1);}
 	;
 
 function_call:
@@ -185,7 +198,9 @@ infix_expression:
 	;
 
 if_expression:
-	expression OP_EQ expression	{ $$ = insert_if($1, is_OP_EQ, $3);}
+	expression '>' expression 	{ $$ = insert_if($1, is_OP_BIGGER, $3);}
+	| expression '<' expression 	{ $$ = insert_if($1, is_OP_LOWER, $3);}
+	| expression OP_EQ expression	{ $$ = insert_if($1, is_OP_EQ, $3);}
 	| expression OP_LE expression	{ $$ = insert_if($1, is_OP_LE, $3);}
 	| expression OP_GE expression	{ $$ = insert_if($1, is_OP_GE, $3);}
 	| expression OP_NE expression 	{ $$ = insert_if($1, is_OP_NE, $3);}
@@ -205,7 +220,7 @@ var_list:
 
 var:
 	ID			{ $$ = insert_variable(is_id, $1, NULL);}
-	| ID '=' value		{ $$ = insert_variable(is_id, $1, $3);}
+	| ID '=' expression	{ $$ = insert_variable(is_id, $1, $3);}
 	/*| ID '[' value ']'	{ $$ = insert_variable(is_array, $1, $3);}*/
 	;
 
@@ -218,17 +233,33 @@ argument:
 	type ID  	{ $$ = insert_argument($1, $2);};
 	;
 	
+cycle:
+	FOR '(' assignment ';' if_expression ';' increase_list ')' condition_code	{ $$ = insert_for($3,$5,$7,$9);}
+	| WHILE '(' if_expression ')' condition_code					{ $$ = insert_while($3,$5);}
+	| DO condition_code WHILE '(' if_expression ')' ';'				{ $$ = insert_do_while($2,$5);}
+	;
 
-/*cycle:
-	;*/
 if:	IF '(' expression ')' condition_code %prec IFPREC			{ $$ = insert_if_statement($3, $5); }
 	| IF '(' expression ')' condition_code ELSE condition_code		{ $$ = insert_if_else_statement($3,$5,$7);}
 	| SWITCH '(' expression ')' '{' switch '}'				{ $$ = insert_switch_statement($3,$6);}
 	;
 
+increase_list:
+	increase			{ $$ = insert_increase_list(NULL,$1);}
+	| increase_list ',' increase 	{ $$ = insert_increase_list($1,$3);}
+	;
+
+increase:
+	assignment	{ $$ = insert_assign_inc($1);}
+	| unary		{ $$ = insert_unary_inc($1);}
+	;
+	
+
 condition_code:
 	'{' operation_list '}'	{ $$ = insert_condition_code($2, NULL);}
 	| operation		{ $$ = insert_condition_code(NULL,$1);}
+	| ';'			{ $$ = insert_condition_code(NULL,NULL);}
+	| '{' '}'		{ $$ = insert_condition_code(NULL, NULL);}
 	;
 	
 
@@ -237,13 +268,6 @@ switch:
 	| DEFAULT ':' operation_list switch	{ $$ = insert_switch_case(is_DEFAULT,NULL,$3,$4);}
 	| CASE value ':' operation_list 	{ $$ = insert_switch_case(is_NORMAL,$2,$4,NULL);}
 	| DEFAULT ':' operation_list		{ $$ = insert_switch_case(is_DEFAULT,NULL,$3,NULL);}
-	;
-
-control:
-	BREAK			{ $$ = insert_control(is_break,NULL);}
-	| CONTINUE		{ $$ = insert_control(is_continue,NULL);}
-	| RETURN		{ $$ = insert_control(is_return,NULL);}
-	| RETURN expression	{ $$ = insert_control(is_return_exp,$2);}
 	;
 
 assign_operator:
@@ -257,13 +281,13 @@ assign_operator:
 	;
 
 value:
-	STRING_VAL	{ $$ = insert_string(is_string, $1);}
+	ID		{ $$ = insert_string(is_string, $1);}
+	| STRING_VAL	{ $$ = insert_string(is_string, $1);}
 	| NUMBER_VAL	{ $$ = insert_int(is_int, $1);}
 	| DOUBLE_VAL	{ $$ = insert_double(is_double, $1);}
 	| CHAR_VAL	{ $$ = insert_char(is_char, $1);}
 	| TRUE		{ $$ = insert_boolean(is_boolean, 1);}
 	| FALSE		{ $$ = insert_boolean(is_boolean, 0);}
-	| ID		{ $$ = insert_string(is_string, $1);}
 	;
 
 type:
@@ -283,8 +307,8 @@ int yyerror (char *s)
 	printf ("%s\n", s);
 }
 
-int main()
-{
+int main(){
 	yyparse();
+	show_program(myprogram);
 	return 0;
 }
