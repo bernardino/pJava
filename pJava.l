@@ -22,7 +22,7 @@ Comment		({Comment1}|{Comment2})
 WhiteSpace	[' ''\n''\t']
 
 IntSuffix	([l]|[L])
-Decimal		[+-]?{NonZeroDigit}{Digit}*{IntSuffix}?
+Decimal		{NonZeroDigit}{Digit}*{IntSuffix}?
 Integer		({Decimal}|[0])
 
 SignedInt	[+-]?{Digit}+
