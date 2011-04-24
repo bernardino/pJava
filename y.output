@@ -1,4 +1,4 @@
-Terminals unused in grammar
+Terminals which are not used
 
    ASS_EQ
    ASS_LS
@@ -104,7 +104,7 @@ Grammar
 
    61 argument: type ID
 
-   62 cycle: FOR '(' assignment ';' if_expression ';' for_incr ')' condition_code
+   62 cycle: FOR '(' assignment ';' if_expression ';' increase_list ')' condition_code
    63      | WHILE '(' if_expression ')' condition_code
    64      | DO condition_code WHILE '(' if_expression ')' ';'
 
@@ -112,11 +112,11 @@ Grammar
    66   | IF '(' expression ')' condition_code ELSE condition_code
    67   | SWITCH '(' expression ')' '{' switch '}'
 
-   68 for_incr: incr
-   69         | for_incr ',' incr
+   68 increase_list: increase
+   69              | increase_list ',' increase
 
-   70 incr: assignment
-   71     | unary
+   70 increase: assignment
+   71         | unary
 
    72 condition_code: '{' operation_list '}'
    73               | operation
@@ -291,9 +291,9 @@ cycle (107)
     on left: 62 63 64, on right: 18
 if (108)
     on left: 65 66 67, on right: 17
-for_incr (109)
+increase_list (109)
     on left: 68 69, on right: 62 69
-incr (110)
+increase (110)
     on left: 70 71, on right: 68 69
 condition_code (111)
     on left: 72 73 74 75, on right: 62 63 64 65 66
@@ -310,8 +310,6 @@ type (115)
 state 0
 
     0 $accept: . init $end
-    1 init: . CLASS ID '{' main '}'
-    2     | . CLASS ID '{' main function_list '}'
 
     CLASS  shift, and go to state 1
 
@@ -352,7 +350,6 @@ state 5
 
     1 init: CLASS ID '{' . main '}'
     2     | CLASS ID '{' . main function_list '}'
-    3 main: . PUBLIC STATIC VOID MAIN '(' STRING '[' ']' ARGS ')' code
 
     PUBLIC  shift, and go to state 6
 
@@ -370,12 +367,6 @@ state 7
 
     1 init: CLASS ID '{' main . '}'
     2     | CLASS ID '{' main . function_list '}'
-    4 function_list: . function
-    5              | . function_list function
-    6 function: . scope STATIC type ID '(' argument_list ')' code
-    7 scope: . PRIVATE
-    8      | . PROTECTED
-    9      | . PUBLIC
 
     PRIVATE    shift, and go to state 9
     PROTECTED  shift, and go to state 10
@@ -426,10 +417,6 @@ state 13
 
     2 init: CLASS ID '{' main function_list . '}'
     5 function_list: function_list . function
-    6 function: . scope STATIC type ID '(' argument_list ')' code
-    7 scope: . PRIVATE
-    8      | . PROTECTED
-    9      | . PUBLIC
 
     PRIVATE    shift, and go to state 9
     PROTECTED  shift, and go to state 10
@@ -478,12 +465,6 @@ state 18
 state 19
 
     6 function: scope STATIC . type ID '(' argument_list ')' code
-   94 type: . CHAR
-   95     | . INT
-   96     | . STRING
-   97     | . BOOLEAN
-   98     | . FLOAT
-   99     | . VOID
 
     BOOLEAN  shift, and go to state 21
     CHAR     shift, and go to state 22
@@ -575,15 +556,6 @@ state 30
 state 31
 
     6 function: scope STATIC type ID '(' . argument_list ')' code
-   59 argument_list: . argument
-   60              | . argument_list ',' argument
-   61 argument: . type ID
-   94 type: . CHAR
-   95     | . INT
-   96     | . STRING
-   97     | . BOOLEAN
-   98     | . FLOAT
-   99     | . VOID
 
     BOOLEAN  shift, and go to state 21
     CHAR     shift, and go to state 22
@@ -637,8 +609,6 @@ state 36
 state 37
 
     6 function: scope STATIC type ID '(' argument_list ')' . code
-   10 code: . '{' '}'
-   11     | . '{' operation_list '}'
 
     '{'  shift, and go to state 41
 
@@ -648,13 +618,6 @@ state 37
 state 38
 
    60 argument_list: argument_list ',' . argument
-   61 argument: . type ID
-   94 type: . CHAR
-   95     | . INT
-   96     | . STRING
-   97     | . BOOLEAN
-   98     | . FLOAT
-   99     | . VOID
 
     BOOLEAN  shift, and go to state 21
     CHAR     shift, and go to state 22
@@ -685,36 +648,6 @@ state 41
 
    10 code: '{' . '}'
    11     | '{' . operation_list '}'
-   12 operation_list: . operation
-   13               | . operation_list operation
-   14 operation: . declaration ';'
-   15          | . assignment ';'
-   16          | . unary ';'
-   17          | . if
-   18          | . cycle
-   19          | . control ';'
-   20 declaration: . type var_list
-   21 assignment: . ID assign_operator expression
-   22 unary: . ID OP_INC
-   23      | . OP_INC ID
-   24      | . ID OP_DEC
-   25      | . OP_DEC ID
-   26 control: . BREAK
-   27        | . CONTINUE
-   28        | . RETURN
-   29        | . RETURN expression
-   62 cycle: . FOR '(' assignment ';' if_expression ';' for_incr ')' condition_code
-   63      | . WHILE '(' if_expression ')' condition_code
-   64      | . DO condition_code WHILE '(' if_expression ')' ';'
-   65 if: . IF '(' expression ')' condition_code
-   66   | . IF '(' expression ')' condition_code ELSE condition_code
-   67   | . SWITCH '(' expression ')' '{' switch '}'
-   94 type: . CHAR
-   95     | . INT
-   96     | . STRING
-   97     | . BOOLEAN
-   98     | . FLOAT
-   99     | . VOID
 
     BOOLEAN   shift, and go to state 21
     BREAK     shift, and go to state 45
@@ -763,8 +696,6 @@ state 43
 state 44
 
     3 main: PUBLIC STATIC VOID MAIN '(' STRING '[' ']' ARGS ')' . code
-   10 code: . '{' '}'
-   11     | . '{' operation_list '}'
 
     '{'  shift, and go to state 41
 
@@ -787,39 +718,7 @@ state 46
 
 state 47
 
-   14 operation: . declaration ';'
-   15          | . assignment ';'
-   16          | . unary ';'
-   17          | . if
-   18          | . cycle
-   19          | . control ';'
-   20 declaration: . type var_list
-   21 assignment: . ID assign_operator expression
-   22 unary: . ID OP_INC
-   23      | . OP_INC ID
-   24      | . ID OP_DEC
-   25      | . OP_DEC ID
-   26 control: . BREAK
-   27        | . CONTINUE
-   28        | . RETURN
-   29        | . RETURN expression
-   62 cycle: . FOR '(' assignment ';' if_expression ';' for_incr ')' condition_code
-   63      | . WHILE '(' if_expression ')' condition_code
-   64      | . DO condition_code WHILE '(' if_expression ')' ';'
-   64      | DO . condition_code WHILE '(' if_expression ')' ';'
-   65 if: . IF '(' expression ')' condition_code
-   66   | . IF '(' expression ')' condition_code ELSE condition_code
-   67   | . SWITCH '(' expression ')' '{' switch '}'
-   72 condition_code: . '{' operation_list '}'
-   73               | . operation
-   74               | . ';'
-   75               | . '{' '}'
-   94 type: . CHAR
-   95     | . INT
-   96     | . STRING
-   97     | . BOOLEAN
-   98     | . FLOAT
-   99     | . VOID
+   64 cycle: DO . condition_code WHILE '(' if_expression ')' ';'
 
     BOOLEAN   shift, and go to state 21
     BREAK     shift, and go to state 45
@@ -854,7 +753,7 @@ state 47
 
 state 48
 
-   62 cycle: FOR . '(' assignment ';' if_expression ';' for_incr ')' condition_code
+   62 cycle: FOR . '(' assignment ';' if_expression ';' increase_list ')' condition_code
 
     '('  shift, and go to state 71
 
@@ -890,38 +789,8 @@ state 52
 
 state 53
 
-   28 control: RETURN .  [';']
+   28 control: RETURN .
    29        | RETURN . expression
-   30 expression: . '(' expression ')'
-   31           | . value
-   32           | . function_call
-   33           | . infix_expression
-   34           | . if_expression
-   35 function_call: . ID '(' ')'
-   36              | . ID '(' parameter_list ')'
-   37 infix_expression: . expression '+' expression
-   38                 | . expression '-' expression
-   39                 | . expression '*' expression
-   40                 | . expression '/' expression
-   41                 | . expression '%' expression
-   42                 | . expression '&' expression
-   43                 | . expression LS expression
-   44                 | . expression RS expression
-   45 if_expression: . expression '>' expression
-   46              | . expression '<' expression
-   47              | . expression OP_EQ expression
-   48              | . expression OP_LE expression
-   49              | . expression OP_GE expression
-   50              | . expression OP_NE expression
-   51              | . expression OP_LOR expression
-   52              | . expression OP_LAND expression
-   87 value: . ID
-   88      | . STRING_VAL
-   89      | . NUMBER_VAL
-   90      | . DOUBLE_VAL
-   91      | . CHAR_VAL
-   92      | . TRUE
-   93      | . FALSE
 
     FALSE       shift, and go to state 76
     TRUE        shift, and go to state 77
@@ -953,13 +822,6 @@ state 55
    21 assignment: ID . assign_operator expression
    22 unary: ID . OP_INC
    24      | ID . OP_DEC
-   80 assign_operator: . '='
-   81                | . ASS_ADD
-   82                | . ASS_SUB
-   83                | . ASS_MUL
-   84                | . ASS_DIV
-   85                | . ASS_PERC
-   86                | . ASS_AND
 
     ASS_MUL   shift, and go to state 90
     ASS_DIV   shift, and go to state 91
@@ -985,34 +847,6 @@ state 57
 
    11 code: '{' operation_list . '}'
    13 operation_list: operation_list . operation
-   14 operation: . declaration ';'
-   15          | . assignment ';'
-   16          | . unary ';'
-   17          | . if
-   18          | . cycle
-   19          | . control ';'
-   20 declaration: . type var_list
-   21 assignment: . ID assign_operator expression
-   22 unary: . ID OP_INC
-   23      | . OP_INC ID
-   24      | . ID OP_DEC
-   25      | . OP_DEC ID
-   26 control: . BREAK
-   27        | . CONTINUE
-   28        | . RETURN
-   29        | . RETURN expression
-   62 cycle: . FOR '(' assignment ';' if_expression ';' for_incr ')' condition_code
-   63      | . WHILE '(' if_expression ')' condition_code
-   64      | . DO condition_code WHILE '(' if_expression ')' ';'
-   65 if: . IF '(' expression ')' condition_code
-   66   | . IF '(' expression ')' condition_code ELSE condition_code
-   67   | . SWITCH '(' expression ')' '{' switch '}'
-   94 type: . CHAR
-   95     | . INT
-   96     | . STRING
-   97     | . BOOLEAN
-   98     | . FLOAT
-   99     | . VOID
 
     BOOLEAN   shift, and go to state 21
     BREAK     shift, and go to state 45
@@ -1095,10 +929,6 @@ state 64
 state 65
 
    20 declaration: type . var_list
-   55 var_list: . var
-   56         | . var_list ',' var
-   57 var: . ID
-   58    | . ID '=' expression
 
     ID  shift, and go to state 106
 
@@ -1115,38 +945,8 @@ state 66
 
 state 67
 
-   12 operation_list: . operation
-   13               | . operation_list operation
-   14 operation: . declaration ';'
-   15          | . assignment ';'
-   16          | . unary ';'
-   17          | . if
-   18          | . cycle
-   19          | . control ';'
-   20 declaration: . type var_list
-   21 assignment: . ID assign_operator expression
-   22 unary: . ID OP_INC
-   23      | . OP_INC ID
-   24      | . ID OP_DEC
-   25      | . OP_DEC ID
-   26 control: . BREAK
-   27        | . CONTINUE
-   28        | . RETURN
-   29        | . RETURN expression
-   62 cycle: . FOR '(' assignment ';' if_expression ';' for_incr ')' condition_code
-   63      | . WHILE '(' if_expression ')' condition_code
-   64      | . DO condition_code WHILE '(' if_expression ')' ';'
-   65 if: . IF '(' expression ')' condition_code
-   66   | . IF '(' expression ')' condition_code ELSE condition_code
-   67   | . SWITCH '(' expression ')' '{' switch '}'
    72 condition_code: '{' . operation_list '}'
    75               | '{' . '}'
-   94 type: . CHAR
-   95     | . INT
-   96     | . STRING
-   97     | . BOOLEAN
-   98     | . FLOAT
-   99     | . VOID
 
     BOOLEAN   shift, and go to state 21
     BREAK     shift, and go to state 45
@@ -1201,8 +1001,7 @@ state 70
 
 state 71
 
-   21 assignment: . ID assign_operator expression
-   62 cycle: FOR '(' . assignment ';' if_expression ';' for_incr ')' condition_code
+   62 cycle: FOR '(' . assignment ';' if_expression ';' increase_list ')' condition_code
 
     ID  shift, and go to state 112
 
@@ -1211,38 +1010,8 @@ state 71
 
 state 72
 
-   30 expression: . '(' expression ')'
-   31           | . value
-   32           | . function_call
-   33           | . infix_expression
-   34           | . if_expression
-   35 function_call: . ID '(' ')'
-   36              | . ID '(' parameter_list ')'
-   37 infix_expression: . expression '+' expression
-   38                 | . expression '-' expression
-   39                 | . expression '*' expression
-   40                 | . expression '/' expression
-   41                 | . expression '%' expression
-   42                 | . expression '&' expression
-   43                 | . expression LS expression
-   44                 | . expression RS expression
-   45 if_expression: . expression '>' expression
-   46              | . expression '<' expression
-   47              | . expression OP_EQ expression
-   48              | . expression OP_LE expression
-   49              | . expression OP_GE expression
-   50              | . expression OP_NE expression
-   51              | . expression OP_LOR expression
-   52              | . expression OP_LAND expression
    65 if: IF '(' . expression ')' condition_code
    66   | IF '(' . expression ')' condition_code ELSE condition_code
-   87 value: . ID
-   88      | . STRING_VAL
-   89      | . NUMBER_VAL
-   90      | . DOUBLE_VAL
-   91      | . CHAR_VAL
-   92      | . TRUE
-   93      | . FALSE
 
     FALSE       shift, and go to state 76
     TRUE        shift, and go to state 77
@@ -1276,37 +1045,7 @@ state 74
 
 state 75
 
-   30 expression: . '(' expression ')'
-   31           | . value
-   32           | . function_call
-   33           | . infix_expression
-   34           | . if_expression
-   35 function_call: . ID '(' ')'
-   36              | . ID '(' parameter_list ')'
-   37 infix_expression: . expression '+' expression
-   38                 | . expression '-' expression
-   39                 | . expression '*' expression
-   40                 | . expression '/' expression
-   41                 | . expression '%' expression
-   42                 | . expression '&' expression
-   43                 | . expression LS expression
-   44                 | . expression RS expression
-   45 if_expression: . expression '>' expression
-   46              | . expression '<' expression
-   47              | . expression OP_EQ expression
-   48              | . expression OP_LE expression
-   49              | . expression OP_GE expression
-   50              | . expression OP_NE expression
-   51              | . expression OP_LOR expression
-   52              | . expression OP_LAND expression
    67 if: SWITCH '(' . expression ')' '{' switch '}'
-   87 value: . ID
-   88      | . STRING_VAL
-   89      | . NUMBER_VAL
-   90      | . DOUBLE_VAL
-   91      | . CHAR_VAL
-   92      | . TRUE
-   93      | . FALSE
 
     FALSE       shift, and go to state 76
     TRUE        shift, and go to state 77
@@ -1370,7 +1109,7 @@ state 82
 
    35 function_call: ID . '(' ')'
    36              | ID . '(' parameter_list ')'
-   87 value: ID .  [LS, OP_GE, OP_LE, OP_EQ, OP_NE, OP_LAND, OP_LOR, RS, '+', '-', '*', '/', '%', '&', ')', '<', '>', ';', ',']
+   87 value: ID .
 
     '('  shift, and go to state 116
 
@@ -1379,37 +1118,7 @@ state 82
 
 state 83
 
-   30 expression: . '(' expression ')'
-   30           | '(' . expression ')'
-   31           | . value
-   32           | . function_call
-   33           | . infix_expression
-   34           | . if_expression
-   35 function_call: . ID '(' ')'
-   36              | . ID '(' parameter_list ')'
-   37 infix_expression: . expression '+' expression
-   38                 | . expression '-' expression
-   39                 | . expression '*' expression
-   40                 | . expression '/' expression
-   41                 | . expression '%' expression
-   42                 | . expression '&' expression
-   43                 | . expression LS expression
-   44                 | . expression RS expression
-   45 if_expression: . expression '>' expression
-   46              | . expression '<' expression
-   47              | . expression OP_EQ expression
-   48              | . expression OP_LE expression
-   49              | . expression OP_GE expression
-   50              | . expression OP_NE expression
-   51              | . expression OP_LOR expression
-   52              | . expression OP_LAND expression
-   87 value: . ID
-   88      | . STRING_VAL
-   89      | . NUMBER_VAL
-   90      | . DOUBLE_VAL
-   91      | . CHAR_VAL
-   92      | . TRUE
-   93      | . FALSE
+   30 expression: '(' . expression ')'
 
     FALSE       shift, and go to state 76
     TRUE        shift, and go to state 77
@@ -1429,7 +1138,7 @@ state 83
 
 state 84
 
-   29 control: RETURN expression .  [';']
+   29 control: RETURN expression .
    37 infix_expression: expression . '+' expression
    38                 | expression . '-' expression
    39                 | expression . '*' expression
@@ -1497,37 +1206,7 @@ state 88
 
 state 89
 
-   30 expression: . '(' expression ')'
-   31           | . value
-   32           | . function_call
-   33           | . infix_expression
-   34           | . if_expression
-   35 function_call: . ID '(' ')'
-   36              | . ID '(' parameter_list ')'
-   37 infix_expression: . expression '+' expression
-   38                 | . expression '-' expression
-   39                 | . expression '*' expression
-   40                 | . expression '/' expression
-   41                 | . expression '%' expression
-   42                 | . expression '&' expression
-   43                 | . expression LS expression
-   44                 | . expression RS expression
-   45 if_expression: . expression '>' expression
-   46              | . expression '<' expression
-   47              | . expression OP_EQ expression
-   48              | . expression OP_LE expression
-   49              | . expression OP_GE expression
-   50              | . expression OP_NE expression
-   51              | . expression OP_LOR expression
-   52              | . expression OP_LAND expression
    63 cycle: WHILE '(' . if_expression ')' condition_code
-   87 value: . ID
-   88      | . STRING_VAL
-   89      | . NUMBER_VAL
-   90      | . DOUBLE_VAL
-   91      | . CHAR_VAL
-   92      | . TRUE
-   93      | . FALSE
 
     FALSE       shift, and go to state 76
     TRUE        shift, and go to state 77
@@ -1611,36 +1290,6 @@ state 98
 state 99
 
    21 assignment: ID assign_operator . expression
-   30 expression: . '(' expression ')'
-   31           | . value
-   32           | . function_call
-   33           | . infix_expression
-   34           | . if_expression
-   35 function_call: . ID '(' ')'
-   36              | . ID '(' parameter_list ')'
-   37 infix_expression: . expression '+' expression
-   38                 | . expression '-' expression
-   39                 | . expression '*' expression
-   40                 | . expression '/' expression
-   41                 | . expression '%' expression
-   42                 | . expression '&' expression
-   43                 | . expression LS expression
-   44                 | . expression RS expression
-   45 if_expression: . expression '>' expression
-   46              | . expression '<' expression
-   47              | . expression OP_EQ expression
-   48              | . expression OP_LE expression
-   49              | . expression OP_GE expression
-   50              | . expression OP_NE expression
-   51              | . expression OP_LOR expression
-   52              | . expression OP_LAND expression
-   87 value: . ID
-   88      | . STRING_VAL
-   89      | . NUMBER_VAL
-   90      | . DOUBLE_VAL
-   91      | . CHAR_VAL
-   92      | . TRUE
-   93      | . FALSE
 
     FALSE       shift, and go to state 76
     TRUE        shift, and go to state 77
@@ -1702,7 +1351,7 @@ state 105
 
 state 106
 
-   57 var: ID .  [';', ',']
+   57 var: ID .
    58    | ID . '=' expression
 
     '='  shift, and go to state 137
@@ -1712,7 +1361,7 @@ state 106
 
 state 107
 
-   20 declaration: type var_list .  [';']
+   20 declaration: type var_list .
    56 var_list: var_list . ',' var
 
     ','  shift, and go to state 138
@@ -1737,35 +1386,7 @@ state 109
 state 110
 
    13 operation_list: operation_list . operation
-   14 operation: . declaration ';'
-   15          | . assignment ';'
-   16          | . unary ';'
-   17          | . if
-   18          | . cycle
-   19          | . control ';'
-   20 declaration: . type var_list
-   21 assignment: . ID assign_operator expression
-   22 unary: . ID OP_INC
-   23      | . OP_INC ID
-   24      | . ID OP_DEC
-   25      | . OP_DEC ID
-   26 control: . BREAK
-   27        | . CONTINUE
-   28        | . RETURN
-   29        | . RETURN expression
-   62 cycle: . FOR '(' assignment ';' if_expression ';' for_incr ')' condition_code
-   63      | . WHILE '(' if_expression ')' condition_code
-   64      | . DO condition_code WHILE '(' if_expression ')' ';'
-   65 if: . IF '(' expression ')' condition_code
-   66   | . IF '(' expression ')' condition_code ELSE condition_code
-   67   | . SWITCH '(' expression ')' '{' switch '}'
    72 condition_code: '{' operation_list . '}'
-   94 type: . CHAR
-   95     | . INT
-   96     | . STRING
-   97     | . BOOLEAN
-   98     | . FLOAT
-   99     | . VOID
 
     BOOLEAN   shift, and go to state 21
     BREAK     shift, and go to state 45
@@ -1806,13 +1427,6 @@ state 111
 state 112
 
    21 assignment: ID . assign_operator expression
-   80 assign_operator: . '='
-   81                | . ASS_ADD
-   82                | . ASS_SUB
-   83                | . ASS_MUL
-   84                | . ASS_DIV
-   85                | . ASS_PERC
-   86                | . ASS_AND
 
     ASS_MUL   shift, and go to state 90
     ASS_DIV   shift, and go to state 91
@@ -1827,7 +1441,7 @@ state 112
 
 state 113
 
-   62 cycle: FOR '(' assignment . ';' if_expression ';' for_incr ')' condition_code
+   62 cycle: FOR '(' assignment . ';' if_expression ';' increase_list ')' condition_code
 
     ';'  shift, and go to state 141
 
@@ -1913,40 +1527,8 @@ state 115
 
 state 116
 
-   30 expression: . '(' expression ')'
-   31           | . value
-   32           | . function_call
-   33           | . infix_expression
-   34           | . if_expression
-   35 function_call: . ID '(' ')'
-   35              | ID '(' . ')'
-   36              | . ID '(' parameter_list ')'
+   35 function_call: ID '(' . ')'
    36              | ID '(' . parameter_list ')'
-   37 infix_expression: . expression '+' expression
-   38                 | . expression '-' expression
-   39                 | . expression '*' expression
-   40                 | . expression '/' expression
-   41                 | . expression '%' expression
-   42                 | . expression '&' expression
-   43                 | . expression LS expression
-   44                 | . expression RS expression
-   45 if_expression: . expression '>' expression
-   46              | . expression '<' expression
-   47              | . expression OP_EQ expression
-   48              | . expression OP_LE expression
-   49              | . expression OP_GE expression
-   50              | . expression OP_NE expression
-   51              | . expression OP_LOR expression
-   52              | . expression OP_LAND expression
-   53 parameter_list: . expression
-   54               | . parameter_list ',' expression
-   87 value: . ID
-   88      | . STRING_VAL
-   89      | . NUMBER_VAL
-   90      | . DOUBLE_VAL
-   91      | . CHAR_VAL
-   92      | . TRUE
-   93      | . FALSE
 
     FALSE       shift, and go to state 76
     TRUE        shift, and go to state 77
@@ -2007,37 +1589,7 @@ state 117
 
 state 118
 
-   30 expression: . '(' expression ')'
-   31           | . value
-   32           | . function_call
-   33           | . infix_expression
-   34           | . if_expression
-   35 function_call: . ID '(' ')'
-   36              | . ID '(' parameter_list ')'
-   37 infix_expression: . expression '+' expression
-   38                 | . expression '-' expression
-   39                 | . expression '*' expression
-   40                 | . expression '/' expression
-   41                 | . expression '%' expression
-   42                 | . expression '&' expression
-   43                 | . expression LS expression
-   43                 | expression LS . expression
-   44                 | . expression RS expression
-   45 if_expression: . expression '>' expression
-   46              | . expression '<' expression
-   47              | . expression OP_EQ expression
-   48              | . expression OP_LE expression
-   49              | . expression OP_GE expression
-   50              | . expression OP_NE expression
-   51              | . expression OP_LOR expression
-   52              | . expression OP_LAND expression
-   87 value: . ID
-   88      | . STRING_VAL
-   89      | . NUMBER_VAL
-   90      | . DOUBLE_VAL
-   91      | . CHAR_VAL
-   92      | . TRUE
-   93      | . FALSE
+   43 infix_expression: expression LS . expression
 
     FALSE       shift, and go to state 76
     TRUE        shift, and go to state 77
@@ -2057,37 +1609,7 @@ state 118
 
 state 119
 
-   30 expression: . '(' expression ')'
-   31           | . value
-   32           | . function_call
-   33           | . infix_expression
-   34           | . if_expression
-   35 function_call: . ID '(' ')'
-   36              | . ID '(' parameter_list ')'
-   37 infix_expression: . expression '+' expression
-   38                 | . expression '-' expression
-   39                 | . expression '*' expression
-   40                 | . expression '/' expression
-   41                 | . expression '%' expression
-   42                 | . expression '&' expression
-   43                 | . expression LS expression
-   44                 | . expression RS expression
-   45 if_expression: . expression '>' expression
-   46              | . expression '<' expression
-   47              | . expression OP_EQ expression
-   48              | . expression OP_LE expression
-   49              | . expression OP_GE expression
-   49              | expression OP_GE . expression
-   50              | . expression OP_NE expression
-   51              | . expression OP_LOR expression
-   52              | . expression OP_LAND expression
-   87 value: . ID
-   88      | . STRING_VAL
-   89      | . NUMBER_VAL
-   90      | . DOUBLE_VAL
-   91      | . CHAR_VAL
-   92      | . TRUE
-   93      | . FALSE
+   49 if_expression: expression OP_GE . expression
 
     FALSE       shift, and go to state 76
     TRUE        shift, and go to state 77
@@ -2107,37 +1629,7 @@ state 119
 
 state 120
 
-   30 expression: . '(' expression ')'
-   31           | . value
-   32           | . function_call
-   33           | . infix_expression
-   34           | . if_expression
-   35 function_call: . ID '(' ')'
-   36              | . ID '(' parameter_list ')'
-   37 infix_expression: . expression '+' expression
-   38                 | . expression '-' expression
-   39                 | . expression '*' expression
-   40                 | . expression '/' expression
-   41                 | . expression '%' expression
-   42                 | . expression '&' expression
-   43                 | . expression LS expression
-   44                 | . expression RS expression
-   45 if_expression: . expression '>' expression
-   46              | . expression '<' expression
-   47              | . expression OP_EQ expression
-   48              | . expression OP_LE expression
-   48              | expression OP_LE . expression
-   49              | . expression OP_GE expression
-   50              | . expression OP_NE expression
-   51              | . expression OP_LOR expression
-   52              | . expression OP_LAND expression
-   87 value: . ID
-   88      | . STRING_VAL
-   89      | . NUMBER_VAL
-   90      | . DOUBLE_VAL
-   91      | . CHAR_VAL
-   92      | . TRUE
-   93      | . FALSE
+   48 if_expression: expression OP_LE . expression
 
     FALSE       shift, and go to state 76
     TRUE        shift, and go to state 77
@@ -2157,37 +1649,7 @@ state 120
 
 state 121
 
-   30 expression: . '(' expression ')'
-   31           | . value
-   32           | . function_call
-   33           | . infix_expression
-   34           | . if_expression
-   35 function_call: . ID '(' ')'
-   36              | . ID '(' parameter_list ')'
-   37 infix_expression: . expression '+' expression
-   38                 | . expression '-' expression
-   39                 | . expression '*' expression
-   40                 | . expression '/' expression
-   41                 | . expression '%' expression
-   42                 | . expression '&' expression
-   43                 | . expression LS expression
-   44                 | . expression RS expression
-   45 if_expression: . expression '>' expression
-   46              | . expression '<' expression
-   47              | . expression OP_EQ expression
-   47              | expression OP_EQ . expression
-   48              | . expression OP_LE expression
-   49              | . expression OP_GE expression
-   50              | . expression OP_NE expression
-   51              | . expression OP_LOR expression
-   52              | . expression OP_LAND expression
-   87 value: . ID
-   88      | . STRING_VAL
-   89      | . NUMBER_VAL
-   90      | . DOUBLE_VAL
-   91      | . CHAR_VAL
-   92      | . TRUE
-   93      | . FALSE
+   47 if_expression: expression OP_EQ . expression
 
     FALSE       shift, and go to state 76
     TRUE        shift, and go to state 77
@@ -2207,37 +1669,7 @@ state 121
 
 state 122
 
-   30 expression: . '(' expression ')'
-   31           | . value
-   32           | . function_call
-   33           | . infix_expression
-   34           | . if_expression
-   35 function_call: . ID '(' ')'
-   36              | . ID '(' parameter_list ')'
-   37 infix_expression: . expression '+' expression
-   38                 | . expression '-' expression
-   39                 | . expression '*' expression
-   40                 | . expression '/' expression
-   41                 | . expression '%' expression
-   42                 | . expression '&' expression
-   43                 | . expression LS expression
-   44                 | . expression RS expression
-   45 if_expression: . expression '>' expression
-   46              | . expression '<' expression
-   47              | . expression OP_EQ expression
-   48              | . expression OP_LE expression
-   49              | . expression OP_GE expression
-   50              | . expression OP_NE expression
-   50              | expression OP_NE . expression
-   51              | . expression OP_LOR expression
-   52              | . expression OP_LAND expression
-   87 value: . ID
-   88      | . STRING_VAL
-   89      | . NUMBER_VAL
-   90      | . DOUBLE_VAL
-   91      | . CHAR_VAL
-   92      | . TRUE
-   93      | . FALSE
+   50 if_expression: expression OP_NE . expression
 
     FALSE       shift, and go to state 76
     TRUE        shift, and go to state 77
@@ -2257,37 +1689,7 @@ state 122
 
 state 123
 
-   30 expression: . '(' expression ')'
-   31           | . value
-   32           | . function_call
-   33           | . infix_expression
-   34           | . if_expression
-   35 function_call: . ID '(' ')'
-   36              | . ID '(' parameter_list ')'
-   37 infix_expression: . expression '+' expression
-   38                 | . expression '-' expression
-   39                 | . expression '*' expression
-   40                 | . expression '/' expression
-   41                 | . expression '%' expression
-   42                 | . expression '&' expression
-   43                 | . expression LS expression
-   44                 | . expression RS expression
-   45 if_expression: . expression '>' expression
-   46              | . expression '<' expression
-   47              | . expression OP_EQ expression
-   48              | . expression OP_LE expression
-   49              | . expression OP_GE expression
-   50              | . expression OP_NE expression
-   51              | . expression OP_LOR expression
-   52              | . expression OP_LAND expression
-   52              | expression OP_LAND . expression
-   87 value: . ID
-   88      | . STRING_VAL
-   89      | . NUMBER_VAL
-   90      | . DOUBLE_VAL
-   91      | . CHAR_VAL
-   92      | . TRUE
-   93      | . FALSE
+   52 if_expression: expression OP_LAND . expression
 
     FALSE       shift, and go to state 76
     TRUE        shift, and go to state 77
@@ -2307,37 +1709,7 @@ state 123
 
 state 124
 
-   30 expression: . '(' expression ')'
-   31           | . value
-   32           | . function_call
-   33           | . infix_expression
-   34           | . if_expression
-   35 function_call: . ID '(' ')'
-   36              | . ID '(' parameter_list ')'
-   37 infix_expression: . expression '+' expression
-   38                 | . expression '-' expression
-   39                 | . expression '*' expression
-   40                 | . expression '/' expression
-   41                 | . expression '%' expression
-   42                 | . expression '&' expression
-   43                 | . expression LS expression
-   44                 | . expression RS expression
-   45 if_expression: . expression '>' expression
-   46              | . expression '<' expression
-   47              | . expression OP_EQ expression
-   48              | . expression OP_LE expression
-   49              | . expression OP_GE expression
-   50              | . expression OP_NE expression
-   51              | . expression OP_LOR expression
-   51              | expression OP_LOR . expression
-   52              | . expression OP_LAND expression
-   87 value: . ID
-   88      | . STRING_VAL
-   89      | . NUMBER_VAL
-   90      | . DOUBLE_VAL
-   91      | . CHAR_VAL
-   92      | . TRUE
-   93      | . FALSE
+   51 if_expression: expression OP_LOR . expression
 
     FALSE       shift, and go to state 76
     TRUE        shift, and go to state 77
@@ -2357,37 +1729,7 @@ state 124
 
 state 125
 
-   30 expression: . '(' expression ')'
-   31           | . value
-   32           | . function_call
-   33           | . infix_expression
-   34           | . if_expression
-   35 function_call: . ID '(' ')'
-   36              | . ID '(' parameter_list ')'
-   37 infix_expression: . expression '+' expression
-   38                 | . expression '-' expression
-   39                 | . expression '*' expression
-   40                 | . expression '/' expression
-   41                 | . expression '%' expression
-   42                 | . expression '&' expression
-   43                 | . expression LS expression
-   44                 | . expression RS expression
-   44                 | expression RS . expression
-   45 if_expression: . expression '>' expression
-   46              | . expression '<' expression
-   47              | . expression OP_EQ expression
-   48              | . expression OP_LE expression
-   49              | . expression OP_GE expression
-   50              | . expression OP_NE expression
-   51              | . expression OP_LOR expression
-   52              | . expression OP_LAND expression
-   87 value: . ID
-   88      | . STRING_VAL
-   89      | . NUMBER_VAL
-   90      | . DOUBLE_VAL
-   91      | . CHAR_VAL
-   92      | . TRUE
-   93      | . FALSE
+   44 infix_expression: expression RS . expression
 
     FALSE       shift, and go to state 76
     TRUE        shift, and go to state 77
@@ -2407,37 +1749,7 @@ state 125
 
 state 126
 
-   30 expression: . '(' expression ')'
-   31           | . value
-   32           | . function_call
-   33           | . infix_expression
-   34           | . if_expression
-   35 function_call: . ID '(' ')'
-   36              | . ID '(' parameter_list ')'
-   37 infix_expression: . expression '+' expression
-   37                 | expression '+' . expression
-   38                 | . expression '-' expression
-   39                 | . expression '*' expression
-   40                 | . expression '/' expression
-   41                 | . expression '%' expression
-   42                 | . expression '&' expression
-   43                 | . expression LS expression
-   44                 | . expression RS expression
-   45 if_expression: . expression '>' expression
-   46              | . expression '<' expression
-   47              | . expression OP_EQ expression
-   48              | . expression OP_LE expression
-   49              | . expression OP_GE expression
-   50              | . expression OP_NE expression
-   51              | . expression OP_LOR expression
-   52              | . expression OP_LAND expression
-   87 value: . ID
-   88      | . STRING_VAL
-   89      | . NUMBER_VAL
-   90      | . DOUBLE_VAL
-   91      | . CHAR_VAL
-   92      | . TRUE
-   93      | . FALSE
+   37 infix_expression: expression '+' . expression
 
     FALSE       shift, and go to state 76
     TRUE        shift, and go to state 77
@@ -2457,37 +1769,7 @@ state 126
 
 state 127
 
-   30 expression: . '(' expression ')'
-   31           | . value
-   32           | . function_call
-   33           | . infix_expression
-   34           | . if_expression
-   35 function_call: . ID '(' ')'
-   36              | . ID '(' parameter_list ')'
-   37 infix_expression: . expression '+' expression
-   38                 | . expression '-' expression
-   38                 | expression '-' . expression
-   39                 | . expression '*' expression
-   40                 | . expression '/' expression
-   41                 | . expression '%' expression
-   42                 | . expression '&' expression
-   43                 | . expression LS expression
-   44                 | . expression RS expression
-   45 if_expression: . expression '>' expression
-   46              | . expression '<' expression
-   47              | . expression OP_EQ expression
-   48              | . expression OP_LE expression
-   49              | . expression OP_GE expression
-   50              | . expression OP_NE expression
-   51              | . expression OP_LOR expression
-   52              | . expression OP_LAND expression
-   87 value: . ID
-   88      | . STRING_VAL
-   89      | . NUMBER_VAL
-   90      | . DOUBLE_VAL
-   91      | . CHAR_VAL
-   92      | . TRUE
-   93      | . FALSE
+   38 infix_expression: expression '-' . expression
 
     FALSE       shift, and go to state 76
     TRUE        shift, and go to state 77
@@ -2507,37 +1789,7 @@ state 127
 
 state 128
 
-   30 expression: . '(' expression ')'
-   31           | . value
-   32           | . function_call
-   33           | . infix_expression
-   34           | . if_expression
-   35 function_call: . ID '(' ')'
-   36              | . ID '(' parameter_list ')'
-   37 infix_expression: . expression '+' expression
-   38                 | . expression '-' expression
-   39                 | . expression '*' expression
-   39                 | expression '*' . expression
-   40                 | . expression '/' expression
-   41                 | . expression '%' expression
-   42                 | . expression '&' expression
-   43                 | . expression LS expression
-   44                 | . expression RS expression
-   45 if_expression: . expression '>' expression
-   46              | . expression '<' expression
-   47              | . expression OP_EQ expression
-   48              | . expression OP_LE expression
-   49              | . expression OP_GE expression
-   50              | . expression OP_NE expression
-   51              | . expression OP_LOR expression
-   52              | . expression OP_LAND expression
-   87 value: . ID
-   88      | . STRING_VAL
-   89      | . NUMBER_VAL
-   90      | . DOUBLE_VAL
-   91      | . CHAR_VAL
-   92      | . TRUE
-   93      | . FALSE
+   39 infix_expression: expression '*' . expression
 
     FALSE       shift, and go to state 76
     TRUE        shift, and go to state 77
@@ -2557,37 +1809,7 @@ state 128
 
 state 129
 
-   30 expression: . '(' expression ')'
-   31           | . value
-   32           | . function_call
-   33           | . infix_expression
-   34           | . if_expression
-   35 function_call: . ID '(' ')'
-   36              | . ID '(' parameter_list ')'
-   37 infix_expression: . expression '+' expression
-   38                 | . expression '-' expression
-   39                 | . expression '*' expression
-   40                 | . expression '/' expression
-   40                 | expression '/' . expression
-   41                 | . expression '%' expression
-   42                 | . expression '&' expression
-   43                 | . expression LS expression
-   44                 | . expression RS expression
-   45 if_expression: . expression '>' expression
-   46              | . expression '<' expression
-   47              | . expression OP_EQ expression
-   48              | . expression OP_LE expression
-   49              | . expression OP_GE expression
-   50              | . expression OP_NE expression
-   51              | . expression OP_LOR expression
-   52              | . expression OP_LAND expression
-   87 value: . ID
-   88      | . STRING_VAL
-   89      | . NUMBER_VAL
-   90      | . DOUBLE_VAL
-   91      | . CHAR_VAL
-   92      | . TRUE
-   93      | . FALSE
+   40 infix_expression: expression '/' . expression
 
     FALSE       shift, and go to state 76
     TRUE        shift, and go to state 77
@@ -2607,37 +1829,7 @@ state 129
 
 state 130
 
-   30 expression: . '(' expression ')'
-   31           | . value
-   32           | . function_call
-   33           | . infix_expression
-   34           | . if_expression
-   35 function_call: . ID '(' ')'
-   36              | . ID '(' parameter_list ')'
-   37 infix_expression: . expression '+' expression
-   38                 | . expression '-' expression
-   39                 | . expression '*' expression
-   40                 | . expression '/' expression
-   41                 | . expression '%' expression
-   41                 | expression '%' . expression
-   42                 | . expression '&' expression
-   43                 | . expression LS expression
-   44                 | . expression RS expression
-   45 if_expression: . expression '>' expression
-   46              | . expression '<' expression
-   47              | . expression OP_EQ expression
-   48              | . expression OP_LE expression
-   49              | . expression OP_GE expression
-   50              | . expression OP_NE expression
-   51              | . expression OP_LOR expression
-   52              | . expression OP_LAND expression
-   87 value: . ID
-   88      | . STRING_VAL
-   89      | . NUMBER_VAL
-   90      | . DOUBLE_VAL
-   91      | . CHAR_VAL
-   92      | . TRUE
-   93      | . FALSE
+   41 infix_expression: expression '%' . expression
 
     FALSE       shift, and go to state 76
     TRUE        shift, and go to state 77
@@ -2657,37 +1849,7 @@ state 130
 
 state 131
 
-   30 expression: . '(' expression ')'
-   31           | . value
-   32           | . function_call
-   33           | . infix_expression
-   34           | . if_expression
-   35 function_call: . ID '(' ')'
-   36              | . ID '(' parameter_list ')'
-   37 infix_expression: . expression '+' expression
-   38                 | . expression '-' expression
-   39                 | . expression '*' expression
-   40                 | . expression '/' expression
-   41                 | . expression '%' expression
-   42                 | . expression '&' expression
-   42                 | expression '&' . expression
-   43                 | . expression LS expression
-   44                 | . expression RS expression
-   45 if_expression: . expression '>' expression
-   46              | . expression '<' expression
-   47              | . expression OP_EQ expression
-   48              | . expression OP_LE expression
-   49              | . expression OP_GE expression
-   50              | . expression OP_NE expression
-   51              | . expression OP_LOR expression
-   52              | . expression OP_LAND expression
-   87 value: . ID
-   88      | . STRING_VAL
-   89      | . NUMBER_VAL
-   90      | . DOUBLE_VAL
-   91      | . CHAR_VAL
-   92      | . TRUE
-   93      | . FALSE
+   42 infix_expression: expression '&' . expression
 
     FALSE       shift, and go to state 76
     TRUE        shift, and go to state 77
@@ -2707,37 +1869,7 @@ state 131
 
 state 132
 
-   30 expression: . '(' expression ')'
-   31           | . value
-   32           | . function_call
-   33           | . infix_expression
-   34           | . if_expression
-   35 function_call: . ID '(' ')'
-   36              | . ID '(' parameter_list ')'
-   37 infix_expression: . expression '+' expression
-   38                 | . expression '-' expression
-   39                 | . expression '*' expression
-   40                 | . expression '/' expression
-   41                 | . expression '%' expression
-   42                 | . expression '&' expression
-   43                 | . expression LS expression
-   44                 | . expression RS expression
-   45 if_expression: . expression '>' expression
-   46              | . expression '<' expression
-   46              | expression '<' . expression
-   47              | . expression OP_EQ expression
-   48              | . expression OP_LE expression
-   49              | . expression OP_GE expression
-   50              | . expression OP_NE expression
-   51              | . expression OP_LOR expression
-   52              | . expression OP_LAND expression
-   87 value: . ID
-   88      | . STRING_VAL
-   89      | . NUMBER_VAL
-   90      | . DOUBLE_VAL
-   91      | . CHAR_VAL
-   92      | . TRUE
-   93      | . FALSE
+   46 if_expression: expression '<' . expression
 
     FALSE       shift, and go to state 76
     TRUE        shift, and go to state 77
@@ -2757,37 +1889,7 @@ state 132
 
 state 133
 
-   30 expression: . '(' expression ')'
-   31           | . value
-   32           | . function_call
-   33           | . infix_expression
-   34           | . if_expression
-   35 function_call: . ID '(' ')'
-   36              | . ID '(' parameter_list ')'
-   37 infix_expression: . expression '+' expression
-   38                 | . expression '-' expression
-   39                 | . expression '*' expression
-   40                 | . expression '/' expression
-   41                 | . expression '%' expression
-   42                 | . expression '&' expression
-   43                 | . expression LS expression
-   44                 | . expression RS expression
-   45 if_expression: . expression '>' expression
-   45              | expression '>' . expression
-   46              | . expression '<' expression
-   47              | . expression OP_EQ expression
-   48              | . expression OP_LE expression
-   49              | . expression OP_GE expression
-   50              | . expression OP_NE expression
-   51              | . expression OP_LOR expression
-   52              | . expression OP_LAND expression
-   87 value: . ID
-   88      | . STRING_VAL
-   89      | . NUMBER_VAL
-   90      | . DOUBLE_VAL
-   91      | . CHAR_VAL
-   92      | . TRUE
-   93      | . FALSE
+   45 if_expression: expression '>' . expression
 
     FALSE       shift, and go to state 76
     TRUE        shift, and go to state 77
@@ -2844,7 +1946,7 @@ state 134
 
 state 135
 
-   34 expression: if_expression .  [LS, OP_GE, OP_LE, OP_EQ, OP_NE, OP_LAND, OP_LOR, RS, '+', '-', '*', '/', '%', '&', '<', '>']
+   34 expression: if_expression .
    63 cycle: WHILE '(' if_expression . ')' condition_code
 
     ')'  shift, and go to state 164
@@ -2854,7 +1956,7 @@ state 135
 
 state 136
 
-   21 assignment: ID assign_operator expression .  [')', ';', ',']
+   21 assignment: ID assign_operator expression .
    37 infix_expression: expression . '+' expression
    38                 | expression . '-' expression
    39                 | expression . '*' expression
@@ -2894,37 +1996,7 @@ state 136
 
 state 137
 
-   30 expression: . '(' expression ')'
-   31           | . value
-   32           | . function_call
-   33           | . infix_expression
-   34           | . if_expression
-   35 function_call: . ID '(' ')'
-   36              | . ID '(' parameter_list ')'
-   37 infix_expression: . expression '+' expression
-   38                 | . expression '-' expression
-   39                 | . expression '*' expression
-   40                 | . expression '/' expression
-   41                 | . expression '%' expression
-   42                 | . expression '&' expression
-   43                 | . expression LS expression
-   44                 | . expression RS expression
-   45 if_expression: . expression '>' expression
-   46              | . expression '<' expression
-   47              | . expression OP_EQ expression
-   48              | . expression OP_LE expression
-   49              | . expression OP_GE expression
-   50              | . expression OP_NE expression
-   51              | . expression OP_LOR expression
-   52              | . expression OP_LAND expression
    58 var: ID '=' . expression
-   87 value: . ID
-   88      | . STRING_VAL
-   89      | . NUMBER_VAL
-   90      | . DOUBLE_VAL
-   91      | . CHAR_VAL
-   92      | . TRUE
-   93      | . FALSE
 
     FALSE       shift, and go to state 76
     TRUE        shift, and go to state 77
@@ -2945,8 +2017,6 @@ state 137
 state 138
 
    56 var_list: var_list ',' . var
-   57 var: . ID
-   58    | . ID '=' expression
 
     ID  shift, and go to state 106
 
@@ -2962,37 +2032,7 @@ state 139
 
 state 140
 
-   30 expression: . '(' expression ')'
-   31           | . value
-   32           | . function_call
-   33           | . infix_expression
-   34           | . if_expression
-   35 function_call: . ID '(' ')'
-   36              | . ID '(' parameter_list ')'
-   37 infix_expression: . expression '+' expression
-   38                 | . expression '-' expression
-   39                 | . expression '*' expression
-   40                 | . expression '/' expression
-   41                 | . expression '%' expression
-   42                 | . expression '&' expression
-   43                 | . expression LS expression
-   44                 | . expression RS expression
-   45 if_expression: . expression '>' expression
-   46              | . expression '<' expression
-   47              | . expression OP_EQ expression
-   48              | . expression OP_LE expression
-   49              | . expression OP_GE expression
-   50              | . expression OP_NE expression
-   51              | . expression OP_LOR expression
-   52              | . expression OP_LAND expression
    64 cycle: DO condition_code WHILE '(' . if_expression ')' ';'
-   87 value: . ID
-   88      | . STRING_VAL
-   89      | . NUMBER_VAL
-   90      | . DOUBLE_VAL
-   91      | . CHAR_VAL
-   92      | . TRUE
-   93      | . FALSE
 
     FALSE       shift, and go to state 76
     TRUE        shift, and go to state 77
@@ -3012,37 +2052,7 @@ state 140
 
 state 141
 
-   30 expression: . '(' expression ')'
-   31           | . value
-   32           | . function_call
-   33           | . infix_expression
-   34           | . if_expression
-   35 function_call: . ID '(' ')'
-   36              | . ID '(' parameter_list ')'
-   37 infix_expression: . expression '+' expression
-   38                 | . expression '-' expression
-   39                 | . expression '*' expression
-   40                 | . expression '/' expression
-   41                 | . expression '%' expression
-   42                 | . expression '&' expression
-   43                 | . expression LS expression
-   44                 | . expression RS expression
-   45 if_expression: . expression '>' expression
-   46              | . expression '<' expression
-   47              | . expression OP_EQ expression
-   48              | . expression OP_LE expression
-   49              | . expression OP_GE expression
-   50              | . expression OP_NE expression
-   51              | . expression OP_LOR expression
-   52              | . expression OP_LAND expression
-   62 cycle: FOR '(' assignment ';' . if_expression ';' for_incr ')' condition_code
-   87 value: . ID
-   88      | . STRING_VAL
-   89      | . NUMBER_VAL
-   90      | . DOUBLE_VAL
-   91      | . CHAR_VAL
-   92      | . TRUE
-   93      | . FALSE
+   62 cycle: FOR '(' assignment ';' . if_expression ';' increase_list ')' condition_code
 
     FALSE       shift, and go to state 76
     TRUE        shift, and go to state 77
@@ -3062,40 +2072,8 @@ state 141
 
 state 142
 
-   14 operation: . declaration ';'
-   15          | . assignment ';'
-   16          | . unary ';'
-   17          | . if
-   18          | . cycle
-   19          | . control ';'
-   20 declaration: . type var_list
-   21 assignment: . ID assign_operator expression
-   22 unary: . ID OP_INC
-   23      | . OP_INC ID
-   24      | . ID OP_DEC
-   25      | . OP_DEC ID
-   26 control: . BREAK
-   27        | . CONTINUE
-   28        | . RETURN
-   29        | . RETURN expression
-   62 cycle: . FOR '(' assignment ';' if_expression ';' for_incr ')' condition_code
-   63      | . WHILE '(' if_expression ')' condition_code
-   64      | . DO condition_code WHILE '(' if_expression ')' ';'
-   65 if: . IF '(' expression ')' condition_code
-   65   | IF '(' expression ')' . condition_code
-   66   | . IF '(' expression ')' condition_code ELSE condition_code
+   65 if: IF '(' expression ')' . condition_code
    66   | IF '(' expression ')' . condition_code ELSE condition_code
-   67   | . SWITCH '(' expression ')' '{' switch '}'
-   72 condition_code: . '{' operation_list '}'
-   73               | . operation
-   74               | . ';'
-   75               | . '{' '}'
-   94 type: . CHAR
-   95     | . INT
-   96     | . STRING
-   97     | . BOOLEAN
-   98     | . FLOAT
-   99     | . VOID
 
     BOOLEAN   shift, and go to state 21
     BREAK     shift, and go to state 45
@@ -3160,7 +2138,7 @@ state 145
    50              | expression . OP_NE expression
    51              | expression . OP_LOR expression
    52              | expression . OP_LAND expression
-   53 parameter_list: expression .  [')', ',']
+   53 parameter_list: expression .
 
     LS       shift, and go to state 118
     OP_GE    shift, and go to state 119
@@ -3207,7 +2185,7 @@ state 148
    41                 | expression . '%' expression
    42                 | expression . '&' expression
    43                 | expression . LS expression
-   43                 | expression LS expression .  [LS, RS, '+', '-', '*', '/', '%', '&', ')', ';', ',']
+   43                 | expression LS expression .
    44                 | expression . RS expression
    45 if_expression: expression . '>' expression
    46              | expression . '<' expression
@@ -3229,23 +2207,6 @@ state 148
 
     $default  reduce using rule 43 (infix_expression)
 
-    Conflict between rule 43 and token LS resolved as reduce (%left LS).
-    Conflict between rule 43 and token OP_GE resolved as shift (LS < OP_GE).
-    Conflict between rule 43 and token OP_LE resolved as shift (LS < OP_LE).
-    Conflict between rule 43 and token OP_EQ resolved as shift (LS < OP_EQ).
-    Conflict between rule 43 and token OP_NE resolved as shift (LS < OP_NE).
-    Conflict between rule 43 and token OP_LAND resolved as shift (LS < OP_LAND).
-    Conflict between rule 43 and token OP_LOR resolved as shift (LS < OP_LOR).
-    Conflict between rule 43 and token RS resolved as reduce (%left RS).
-    Conflict between rule 43 and token '+' resolved as reduce ('+' < LS).
-    Conflict between rule 43 and token '-' resolved as reduce ('-' < LS).
-    Conflict between rule 43 and token '*' resolved as reduce (%left '*').
-    Conflict between rule 43 and token '/' resolved as reduce (%left '/').
-    Conflict between rule 43 and token '%' resolved as reduce (%left '%').
-    Conflict between rule 43 and token '&' resolved as reduce (%left '&').
-    Conflict between rule 43 and token '<' resolved as shift (LS < '<').
-    Conflict between rule 43 and token '>' resolved as shift (LS < '>').
-
 
 state 149
 
@@ -3262,29 +2223,12 @@ state 149
    47              | expression . OP_EQ expression
    48              | expression . OP_LE expression
    49              | expression . OP_GE expression
-   49              | expression OP_GE expression .  [LS, OP_GE, OP_LE, OP_EQ, OP_NE, OP_LAND, OP_LOR, RS, '+', '-', '*', '/', '%', '&', ')', '<', '>', ';', ',']
+   49              | expression OP_GE expression .
    50              | expression . OP_NE expression
    51              | expression . OP_LOR expression
    52              | expression . OP_LAND expression
 
     $default  reduce using rule 49 (if_expression)
-
-    Conflict between rule 49 and token LS resolved as reduce (LS < OP_GE).
-    Conflict between rule 49 and token OP_GE resolved as reduce (%left OP_GE).
-    Conflict between rule 49 and token OP_LE resolved as reduce (%left OP_LE).
-    Conflict between rule 49 and token OP_EQ resolved as reduce (%left OP_EQ).
-    Conflict between rule 49 and token OP_NE resolved as reduce (%left OP_NE).
-    Conflict between rule 49 and token OP_LAND resolved as reduce (%left OP_LAND).
-    Conflict between rule 49 and token OP_LOR resolved as reduce (%left OP_LOR).
-    Conflict between rule 49 and token RS resolved as reduce (RS < OP_GE).
-    Conflict between rule 49 and token '+' resolved as reduce ('+' < OP_GE).
-    Conflict between rule 49 and token '-' resolved as reduce ('-' < OP_GE).
-    Conflict between rule 49 and token '*' resolved as reduce ('*' < OP_GE).
-    Conflict between rule 49 and token '/' resolved as reduce ('/' < OP_GE).
-    Conflict between rule 49 and token '%' resolved as reduce ('%' < OP_GE).
-    Conflict between rule 49 and token '&' resolved as reduce ('&' < OP_GE).
-    Conflict between rule 49 and token '<' resolved as reduce (%left '<').
-    Conflict between rule 49 and token '>' resolved as reduce (%left '>').
 
 
 state 150
@@ -3301,30 +2245,13 @@ state 150
    46              | expression . '<' expression
    47              | expression . OP_EQ expression
    48              | expression . OP_LE expression
-   48              | expression OP_LE expression .  [LS, OP_GE, OP_LE, OP_EQ, OP_NE, OP_LAND, OP_LOR, RS, '+', '-', '*', '/', '%', '&', ')', '<', '>', ';', ',']
+   48              | expression OP_LE expression .
    49              | expression . OP_GE expression
    50              | expression . OP_NE expression
    51              | expression . OP_LOR expression
    52              | expression . OP_LAND expression
 
     $default  reduce using rule 48 (if_expression)
-
-    Conflict between rule 48 and token LS resolved as reduce (LS < OP_LE).
-    Conflict between rule 48 and token OP_GE resolved as reduce (%left OP_GE).
-    Conflict between rule 48 and token OP_LE resolved as reduce (%left OP_LE).
-    Conflict between rule 48 and token OP_EQ resolved as reduce (%left OP_EQ).
-    Conflict between rule 48 and token OP_NE resolved as reduce (%left OP_NE).
-    Conflict between rule 48 and token OP_LAND resolved as reduce (%left OP_LAND).
-    Conflict between rule 48 and token OP_LOR resolved as reduce (%left OP_LOR).
-    Conflict between rule 48 and token RS resolved as reduce (RS < OP_LE).
-    Conflict between rule 48 and token '+' resolved as reduce ('+' < OP_LE).
-    Conflict between rule 48 and token '-' resolved as reduce ('-' < OP_LE).
-    Conflict between rule 48 and token '*' resolved as reduce ('*' < OP_LE).
-    Conflict between rule 48 and token '/' resolved as reduce ('/' < OP_LE).
-    Conflict between rule 48 and token '%' resolved as reduce ('%' < OP_LE).
-    Conflict between rule 48 and token '&' resolved as reduce ('&' < OP_LE).
-    Conflict between rule 48 and token '<' resolved as reduce (%left '<').
-    Conflict between rule 48 and token '>' resolved as reduce (%left '>').
 
 
 state 151
@@ -3340,7 +2267,7 @@ state 151
    45 if_expression: expression . '>' expression
    46              | expression . '<' expression
    47              | expression . OP_EQ expression
-   47              | expression OP_EQ expression .  [LS, OP_GE, OP_LE, OP_EQ, OP_NE, OP_LAND, OP_LOR, RS, '+', '-', '*', '/', '%', '&', ')', '<', '>', ';', ',']
+   47              | expression OP_EQ expression .
    48              | expression . OP_LE expression
    49              | expression . OP_GE expression
    50              | expression . OP_NE expression
@@ -3348,23 +2275,6 @@ state 151
    52              | expression . OP_LAND expression
 
     $default  reduce using rule 47 (if_expression)
-
-    Conflict between rule 47 and token LS resolved as reduce (LS < OP_EQ).
-    Conflict between rule 47 and token OP_GE resolved as reduce (%left OP_GE).
-    Conflict between rule 47 and token OP_LE resolved as reduce (%left OP_LE).
-    Conflict between rule 47 and token OP_EQ resolved as reduce (%left OP_EQ).
-    Conflict between rule 47 and token OP_NE resolved as reduce (%left OP_NE).
-    Conflict between rule 47 and token OP_LAND resolved as reduce (%left OP_LAND).
-    Conflict between rule 47 and token OP_LOR resolved as reduce (%left OP_LOR).
-    Conflict between rule 47 and token RS resolved as reduce (RS < OP_EQ).
-    Conflict between rule 47 and token '+' resolved as reduce ('+' < OP_EQ).
-    Conflict between rule 47 and token '-' resolved as reduce ('-' < OP_EQ).
-    Conflict between rule 47 and token '*' resolved as reduce ('*' < OP_EQ).
-    Conflict between rule 47 and token '/' resolved as reduce ('/' < OP_EQ).
-    Conflict between rule 47 and token '%' resolved as reduce ('%' < OP_EQ).
-    Conflict between rule 47 and token '&' resolved as reduce ('&' < OP_EQ).
-    Conflict between rule 47 and token '<' resolved as reduce (%left '<').
-    Conflict between rule 47 and token '>' resolved as reduce (%left '>').
 
 
 state 152
@@ -3383,28 +2293,11 @@ state 152
    48              | expression . OP_LE expression
    49              | expression . OP_GE expression
    50              | expression . OP_NE expression
-   50              | expression OP_NE expression .  [LS, OP_GE, OP_LE, OP_EQ, OP_NE, OP_LAND, OP_LOR, RS, '+', '-', '*', '/', '%', '&', ')', '<', '>', ';', ',']
+   50              | expression OP_NE expression .
    51              | expression . OP_LOR expression
    52              | expression . OP_LAND expression
 
     $default  reduce using rule 50 (if_expression)
-
-    Conflict between rule 50 and token LS resolved as reduce (LS < OP_NE).
-    Conflict between rule 50 and token OP_GE resolved as reduce (%left OP_GE).
-    Conflict between rule 50 and token OP_LE resolved as reduce (%left OP_LE).
-    Conflict between rule 50 and token OP_EQ resolved as reduce (%left OP_EQ).
-    Conflict between rule 50 and token OP_NE resolved as reduce (%left OP_NE).
-    Conflict between rule 50 and token OP_LAND resolved as reduce (%left OP_LAND).
-    Conflict between rule 50 and token OP_LOR resolved as reduce (%left OP_LOR).
-    Conflict between rule 50 and token RS resolved as reduce (RS < OP_NE).
-    Conflict between rule 50 and token '+' resolved as reduce ('+' < OP_NE).
-    Conflict between rule 50 and token '-' resolved as reduce ('-' < OP_NE).
-    Conflict between rule 50 and token '*' resolved as reduce ('*' < OP_NE).
-    Conflict between rule 50 and token '/' resolved as reduce ('/' < OP_NE).
-    Conflict between rule 50 and token '%' resolved as reduce ('%' < OP_NE).
-    Conflict between rule 50 and token '&' resolved as reduce ('&' < OP_NE).
-    Conflict between rule 50 and token '<' resolved as reduce (%left '<').
-    Conflict between rule 50 and token '>' resolved as reduce (%left '>').
 
 
 state 153
@@ -3425,26 +2318,9 @@ state 153
    50              | expression . OP_NE expression
    51              | expression . OP_LOR expression
    52              | expression . OP_LAND expression
-   52              | expression OP_LAND expression .  [LS, OP_GE, OP_LE, OP_EQ, OP_NE, OP_LAND, OP_LOR, RS, '+', '-', '*', '/', '%', '&', ')', '<', '>', ';', ',']
+   52              | expression OP_LAND expression .
 
     $default  reduce using rule 52 (if_expression)
-
-    Conflict between rule 52 and token LS resolved as reduce (LS < OP_LAND).
-    Conflict between rule 52 and token OP_GE resolved as reduce (%left OP_GE).
-    Conflict between rule 52 and token OP_LE resolved as reduce (%left OP_LE).
-    Conflict between rule 52 and token OP_EQ resolved as reduce (%left OP_EQ).
-    Conflict between rule 52 and token OP_NE resolved as reduce (%left OP_NE).
-    Conflict between rule 52 and token OP_LAND resolved as reduce (%left OP_LAND).
-    Conflict between rule 52 and token OP_LOR resolved as reduce (%left OP_LOR).
-    Conflict between rule 52 and token RS resolved as reduce (RS < OP_LAND).
-    Conflict between rule 52 and token '+' resolved as reduce ('+' < OP_LAND).
-    Conflict between rule 52 and token '-' resolved as reduce ('-' < OP_LAND).
-    Conflict between rule 52 and token '*' resolved as reduce ('*' < OP_LAND).
-    Conflict between rule 52 and token '/' resolved as reduce ('/' < OP_LAND).
-    Conflict between rule 52 and token '%' resolved as reduce ('%' < OP_LAND).
-    Conflict between rule 52 and token '&' resolved as reduce ('&' < OP_LAND).
-    Conflict between rule 52 and token '<' resolved as reduce (%left '<').
-    Conflict between rule 52 and token '>' resolved as reduce (%left '>').
 
 
 state 154
@@ -3464,27 +2340,10 @@ state 154
    49              | expression . OP_GE expression
    50              | expression . OP_NE expression
    51              | expression . OP_LOR expression
-   51              | expression OP_LOR expression .  [LS, OP_GE, OP_LE, OP_EQ, OP_NE, OP_LAND, OP_LOR, RS, '+', '-', '*', '/', '%', '&', ')', '<', '>', ';', ',']
+   51              | expression OP_LOR expression .
    52              | expression . OP_LAND expression
 
     $default  reduce using rule 51 (if_expression)
-
-    Conflict between rule 51 and token LS resolved as reduce (LS < OP_LOR).
-    Conflict between rule 51 and token OP_GE resolved as reduce (%left OP_GE).
-    Conflict between rule 51 and token OP_LE resolved as reduce (%left OP_LE).
-    Conflict between rule 51 and token OP_EQ resolved as reduce (%left OP_EQ).
-    Conflict between rule 51 and token OP_NE resolved as reduce (%left OP_NE).
-    Conflict between rule 51 and token OP_LAND resolved as reduce (%left OP_LAND).
-    Conflict between rule 51 and token OP_LOR resolved as reduce (%left OP_LOR).
-    Conflict between rule 51 and token RS resolved as reduce (RS < OP_LOR).
-    Conflict between rule 51 and token '+' resolved as reduce ('+' < OP_LOR).
-    Conflict between rule 51 and token '-' resolved as reduce ('-' < OP_LOR).
-    Conflict between rule 51 and token '*' resolved as reduce ('*' < OP_LOR).
-    Conflict between rule 51 and token '/' resolved as reduce ('/' < OP_LOR).
-    Conflict between rule 51 and token '%' resolved as reduce ('%' < OP_LOR).
-    Conflict between rule 51 and token '&' resolved as reduce ('&' < OP_LOR).
-    Conflict between rule 51 and token '<' resolved as reduce (%left '<').
-    Conflict between rule 51 and token '>' resolved as reduce (%left '>').
 
 
 state 155
@@ -3497,7 +2356,7 @@ state 155
    42                 | expression . '&' expression
    43                 | expression . LS expression
    44                 | expression . RS expression
-   44                 | expression RS expression .  [LS, RS, '+', '-', '*', '/', '%', '&', ')', ';', ',']
+   44                 | expression RS expression .
    45 if_expression: expression . '>' expression
    46              | expression . '<' expression
    47              | expression . OP_EQ expression
@@ -3518,28 +2377,11 @@ state 155
 
     $default  reduce using rule 44 (infix_expression)
 
-    Conflict between rule 44 and token LS resolved as reduce (%left LS).
-    Conflict between rule 44 and token OP_GE resolved as shift (RS < OP_GE).
-    Conflict between rule 44 and token OP_LE resolved as shift (RS < OP_LE).
-    Conflict between rule 44 and token OP_EQ resolved as shift (RS < OP_EQ).
-    Conflict between rule 44 and token OP_NE resolved as shift (RS < OP_NE).
-    Conflict between rule 44 and token OP_LAND resolved as shift (RS < OP_LAND).
-    Conflict between rule 44 and token OP_LOR resolved as shift (RS < OP_LOR).
-    Conflict between rule 44 and token RS resolved as reduce (%left RS).
-    Conflict between rule 44 and token '+' resolved as reduce ('+' < RS).
-    Conflict between rule 44 and token '-' resolved as reduce ('-' < RS).
-    Conflict between rule 44 and token '*' resolved as reduce (%left '*').
-    Conflict between rule 44 and token '/' resolved as reduce (%left '/').
-    Conflict between rule 44 and token '%' resolved as reduce (%left '%').
-    Conflict between rule 44 and token '&' resolved as reduce (%left '&').
-    Conflict between rule 44 and token '<' resolved as shift (RS < '<').
-    Conflict between rule 44 and token '>' resolved as shift (RS < '>').
-
 
 state 156
 
    37 infix_expression: expression . '+' expression
-   37                 | expression '+' expression .  ['+', '-', ')', ';', ',']
+   37                 | expression '+' expression .
    38                 | expression . '-' expression
    39                 | expression . '*' expression
    40                 | expression . '/' expression
@@ -3573,29 +2415,12 @@ state 156
 
     $default  reduce using rule 37 (infix_expression)
 
-    Conflict between rule 37 and token LS resolved as shift ('+' < LS).
-    Conflict between rule 37 and token OP_GE resolved as shift ('+' < OP_GE).
-    Conflict between rule 37 and token OP_LE resolved as shift ('+' < OP_LE).
-    Conflict between rule 37 and token OP_EQ resolved as shift ('+' < OP_EQ).
-    Conflict between rule 37 and token OP_NE resolved as shift ('+' < OP_NE).
-    Conflict between rule 37 and token OP_LAND resolved as shift ('+' < OP_LAND).
-    Conflict between rule 37 and token OP_LOR resolved as shift ('+' < OP_LOR).
-    Conflict between rule 37 and token RS resolved as shift ('+' < RS).
-    Conflict between rule 37 and token '+' resolved as reduce (%left '+').
-    Conflict between rule 37 and token '-' resolved as reduce (%left '-').
-    Conflict between rule 37 and token '*' resolved as shift ('+' < '*').
-    Conflict between rule 37 and token '/' resolved as shift ('+' < '/').
-    Conflict between rule 37 and token '%' resolved as shift ('+' < '%').
-    Conflict between rule 37 and token '&' resolved as shift ('+' < '&').
-    Conflict between rule 37 and token '<' resolved as shift ('+' < '<').
-    Conflict between rule 37 and token '>' resolved as shift ('+' < '>').
-
 
 state 157
 
    37 infix_expression: expression . '+' expression
    38                 | expression . '-' expression
-   38                 | expression '-' expression .  ['+', '-', ')', ';', ',']
+   38                 | expression '-' expression .
    39                 | expression . '*' expression
    40                 | expression . '/' expression
    41                 | expression . '%' expression
@@ -3628,30 +2453,13 @@ state 157
 
     $default  reduce using rule 38 (infix_expression)
 
-    Conflict between rule 38 and token LS resolved as shift ('-' < LS).
-    Conflict between rule 38 and token OP_GE resolved as shift ('-' < OP_GE).
-    Conflict between rule 38 and token OP_LE resolved as shift ('-' < OP_LE).
-    Conflict between rule 38 and token OP_EQ resolved as shift ('-' < OP_EQ).
-    Conflict between rule 38 and token OP_NE resolved as shift ('-' < OP_NE).
-    Conflict between rule 38 and token OP_LAND resolved as shift ('-' < OP_LAND).
-    Conflict between rule 38 and token OP_LOR resolved as shift ('-' < OP_LOR).
-    Conflict between rule 38 and token RS resolved as shift ('-' < RS).
-    Conflict between rule 38 and token '+' resolved as reduce (%left '+').
-    Conflict between rule 38 and token '-' resolved as reduce (%left '-').
-    Conflict between rule 38 and token '*' resolved as shift ('-' < '*').
-    Conflict between rule 38 and token '/' resolved as shift ('-' < '/').
-    Conflict between rule 38 and token '%' resolved as shift ('-' < '%').
-    Conflict between rule 38 and token '&' resolved as shift ('-' < '&').
-    Conflict between rule 38 and token '<' resolved as shift ('-' < '<').
-    Conflict between rule 38 and token '>' resolved as shift ('-' < '>').
-
 
 state 158
 
    37 infix_expression: expression . '+' expression
    38                 | expression . '-' expression
    39                 | expression . '*' expression
-   39                 | expression '*' expression .  [LS, RS, '+', '-', '*', '/', '%', '&', ')', ';', ',']
+   39                 | expression '*' expression .
    40                 | expression . '/' expression
    41                 | expression . '%' expression
    42                 | expression . '&' expression
@@ -3677,23 +2485,6 @@ state 158
 
     $default  reduce using rule 39 (infix_expression)
 
-    Conflict between rule 39 and token LS resolved as reduce (%left LS).
-    Conflict between rule 39 and token OP_GE resolved as shift ('*' < OP_GE).
-    Conflict between rule 39 and token OP_LE resolved as shift ('*' < OP_LE).
-    Conflict between rule 39 and token OP_EQ resolved as shift ('*' < OP_EQ).
-    Conflict between rule 39 and token OP_NE resolved as shift ('*' < OP_NE).
-    Conflict between rule 39 and token OP_LAND resolved as shift ('*' < OP_LAND).
-    Conflict between rule 39 and token OP_LOR resolved as shift ('*' < OP_LOR).
-    Conflict between rule 39 and token RS resolved as reduce (%left RS).
-    Conflict between rule 39 and token '+' resolved as reduce ('+' < '*').
-    Conflict between rule 39 and token '-' resolved as reduce ('-' < '*').
-    Conflict between rule 39 and token '*' resolved as reduce (%left '*').
-    Conflict between rule 39 and token '/' resolved as reduce (%left '/').
-    Conflict between rule 39 and token '%' resolved as reduce (%left '%').
-    Conflict between rule 39 and token '&' resolved as reduce (%left '&').
-    Conflict between rule 39 and token '<' resolved as shift ('*' < '<').
-    Conflict between rule 39 and token '>' resolved as shift ('*' < '>').
-
 
 state 159
 
@@ -3701,7 +2492,7 @@ state 159
    38                 | expression . '-' expression
    39                 | expression . '*' expression
    40                 | expression . '/' expression
-   40                 | expression '/' expression .  [LS, RS, '+', '-', '*', '/', '%', '&', ')', ';', ',']
+   40                 | expression '/' expression .
    41                 | expression . '%' expression
    42                 | expression . '&' expression
    43                 | expression . LS expression
@@ -3726,23 +2517,6 @@ state 159
 
     $default  reduce using rule 40 (infix_expression)
 
-    Conflict between rule 40 and token LS resolved as reduce (%left LS).
-    Conflict between rule 40 and token OP_GE resolved as shift ('/' < OP_GE).
-    Conflict between rule 40 and token OP_LE resolved as shift ('/' < OP_LE).
-    Conflict between rule 40 and token OP_EQ resolved as shift ('/' < OP_EQ).
-    Conflict between rule 40 and token OP_NE resolved as shift ('/' < OP_NE).
-    Conflict between rule 40 and token OP_LAND resolved as shift ('/' < OP_LAND).
-    Conflict between rule 40 and token OP_LOR resolved as shift ('/' < OP_LOR).
-    Conflict between rule 40 and token RS resolved as reduce (%left RS).
-    Conflict between rule 40 and token '+' resolved as reduce ('+' < '/').
-    Conflict between rule 40 and token '-' resolved as reduce ('-' < '/').
-    Conflict between rule 40 and token '*' resolved as reduce (%left '*').
-    Conflict between rule 40 and token '/' resolved as reduce (%left '/').
-    Conflict between rule 40 and token '%' resolved as reduce (%left '%').
-    Conflict between rule 40 and token '&' resolved as reduce (%left '&').
-    Conflict between rule 40 and token '<' resolved as shift ('/' < '<').
-    Conflict between rule 40 and token '>' resolved as shift ('/' < '>').
-
 
 state 160
 
@@ -3751,7 +2525,7 @@ state 160
    39                 | expression . '*' expression
    40                 | expression . '/' expression
    41                 | expression . '%' expression
-   41                 | expression '%' expression .  [LS, RS, '+', '-', '*', '/', '%', '&', ')', ';', ',']
+   41                 | expression '%' expression .
    42                 | expression . '&' expression
    43                 | expression . LS expression
    44                 | expression . RS expression
@@ -3775,23 +2549,6 @@ state 160
 
     $default  reduce using rule 41 (infix_expression)
 
-    Conflict between rule 41 and token LS resolved as reduce (%left LS).
-    Conflict between rule 41 and token OP_GE resolved as shift ('%' < OP_GE).
-    Conflict between rule 41 and token OP_LE resolved as shift ('%' < OP_LE).
-    Conflict between rule 41 and token OP_EQ resolved as shift ('%' < OP_EQ).
-    Conflict between rule 41 and token OP_NE resolved as shift ('%' < OP_NE).
-    Conflict between rule 41 and token OP_LAND resolved as shift ('%' < OP_LAND).
-    Conflict between rule 41 and token OP_LOR resolved as shift ('%' < OP_LOR).
-    Conflict between rule 41 and token RS resolved as reduce (%left RS).
-    Conflict between rule 41 and token '+' resolved as reduce ('+' < '%').
-    Conflict between rule 41 and token '-' resolved as reduce ('-' < '%').
-    Conflict between rule 41 and token '*' resolved as reduce (%left '*').
-    Conflict between rule 41 and token '/' resolved as reduce (%left '/').
-    Conflict between rule 41 and token '%' resolved as reduce (%left '%').
-    Conflict between rule 41 and token '&' resolved as reduce (%left '&').
-    Conflict between rule 41 and token '<' resolved as shift ('%' < '<').
-    Conflict between rule 41 and token '>' resolved as shift ('%' < '>').
-
 
 state 161
 
@@ -3801,7 +2558,7 @@ state 161
    40                 | expression . '/' expression
    41                 | expression . '%' expression
    42                 | expression . '&' expression
-   42                 | expression '&' expression .  [LS, RS, '+', '-', '*', '/', '%', '&', ')', ';', ',']
+   42                 | expression '&' expression .
    43                 | expression . LS expression
    44                 | expression . RS expression
    45 if_expression: expression . '>' expression
@@ -3824,23 +2581,6 @@ state 161
 
     $default  reduce using rule 42 (infix_expression)
 
-    Conflict between rule 42 and token LS resolved as reduce (%left LS).
-    Conflict between rule 42 and token OP_GE resolved as shift ('&' < OP_GE).
-    Conflict between rule 42 and token OP_LE resolved as shift ('&' < OP_LE).
-    Conflict between rule 42 and token OP_EQ resolved as shift ('&' < OP_EQ).
-    Conflict between rule 42 and token OP_NE resolved as shift ('&' < OP_NE).
-    Conflict between rule 42 and token OP_LAND resolved as shift ('&' < OP_LAND).
-    Conflict between rule 42 and token OP_LOR resolved as shift ('&' < OP_LOR).
-    Conflict between rule 42 and token RS resolved as reduce (%left RS).
-    Conflict between rule 42 and token '+' resolved as reduce ('+' < '&').
-    Conflict between rule 42 and token '-' resolved as reduce ('-' < '&').
-    Conflict between rule 42 and token '*' resolved as reduce (%left '*').
-    Conflict between rule 42 and token '/' resolved as reduce (%left '/').
-    Conflict between rule 42 and token '%' resolved as reduce (%left '%').
-    Conflict between rule 42 and token '&' resolved as reduce (%left '&').
-    Conflict between rule 42 and token '<' resolved as shift ('&' < '<').
-    Conflict between rule 42 and token '>' resolved as shift ('&' < '>').
-
 
 state 162
 
@@ -3854,7 +2594,7 @@ state 162
    44                 | expression . RS expression
    45 if_expression: expression . '>' expression
    46              | expression . '<' expression
-   46              | expression '<' expression .  [LS, OP_GE, OP_LE, OP_EQ, OP_NE, OP_LAND, OP_LOR, RS, '+', '-', '*', '/', '%', '&', ')', '<', '>', ';', ',']
+   46              | expression '<' expression .
    47              | expression . OP_EQ expression
    48              | expression . OP_LE expression
    49              | expression . OP_GE expression
@@ -3863,23 +2603,6 @@ state 162
    52              | expression . OP_LAND expression
 
     $default  reduce using rule 46 (if_expression)
-
-    Conflict between rule 46 and token LS resolved as reduce (LS < '<').
-    Conflict between rule 46 and token OP_GE resolved as reduce (%left OP_GE).
-    Conflict between rule 46 and token OP_LE resolved as reduce (%left OP_LE).
-    Conflict between rule 46 and token OP_EQ resolved as reduce (%left OP_EQ).
-    Conflict between rule 46 and token OP_NE resolved as reduce (%left OP_NE).
-    Conflict between rule 46 and token OP_LAND resolved as reduce (%left OP_LAND).
-    Conflict between rule 46 and token OP_LOR resolved as reduce (%left OP_LOR).
-    Conflict between rule 46 and token RS resolved as reduce (RS < '<').
-    Conflict between rule 46 and token '+' resolved as reduce ('+' < '<').
-    Conflict between rule 46 and token '-' resolved as reduce ('-' < '<').
-    Conflict between rule 46 and token '*' resolved as reduce ('*' < '<').
-    Conflict between rule 46 and token '/' resolved as reduce ('/' < '<').
-    Conflict between rule 46 and token '%' resolved as reduce ('%' < '<').
-    Conflict between rule 46 and token '&' resolved as reduce ('&' < '<').
-    Conflict between rule 46 and token '<' resolved as reduce (%left '<').
-    Conflict between rule 46 and token '>' resolved as reduce (%left '>').
 
 
 state 163
@@ -3893,7 +2616,7 @@ state 163
    43                 | expression . LS expression
    44                 | expression . RS expression
    45 if_expression: expression . '>' expression
-   45              | expression '>' expression .  [LS, OP_GE, OP_LE, OP_EQ, OP_NE, OP_LAND, OP_LOR, RS, '+', '-', '*', '/', '%', '&', ')', '<', '>', ';', ',']
+   45              | expression '>' expression .
    46              | expression . '<' expression
    47              | expression . OP_EQ expression
    48              | expression . OP_LE expression
@@ -3904,59 +2627,10 @@ state 163
 
     $default  reduce using rule 45 (if_expression)
 
-    Conflict between rule 45 and token LS resolved as reduce (LS < '>').
-    Conflict between rule 45 and token OP_GE resolved as reduce (%left OP_GE).
-    Conflict between rule 45 and token OP_LE resolved as reduce (%left OP_LE).
-    Conflict between rule 45 and token OP_EQ resolved as reduce (%left OP_EQ).
-    Conflict between rule 45 and token OP_NE resolved as reduce (%left OP_NE).
-    Conflict between rule 45 and token OP_LAND resolved as reduce (%left OP_LAND).
-    Conflict between rule 45 and token OP_LOR resolved as reduce (%left OP_LOR).
-    Conflict between rule 45 and token RS resolved as reduce (RS < '>').
-    Conflict between rule 45 and token '+' resolved as reduce ('+' < '>').
-    Conflict between rule 45 and token '-' resolved as reduce ('-' < '>').
-    Conflict between rule 45 and token '*' resolved as reduce ('*' < '>').
-    Conflict between rule 45 and token '/' resolved as reduce ('/' < '>').
-    Conflict between rule 45 and token '%' resolved as reduce ('%' < '>').
-    Conflict between rule 45 and token '&' resolved as reduce ('&' < '>').
-    Conflict between rule 45 and token '<' resolved as reduce (%left '<').
-    Conflict between rule 45 and token '>' resolved as reduce (%left '>').
-
 
 state 164
 
-   14 operation: . declaration ';'
-   15          | . assignment ';'
-   16          | . unary ';'
-   17          | . if
-   18          | . cycle
-   19          | . control ';'
-   20 declaration: . type var_list
-   21 assignment: . ID assign_operator expression
-   22 unary: . ID OP_INC
-   23      | . OP_INC ID
-   24      | . ID OP_DEC
-   25      | . OP_DEC ID
-   26 control: . BREAK
-   27        | . CONTINUE
-   28        | . RETURN
-   29        | . RETURN expression
-   62 cycle: . FOR '(' assignment ';' if_expression ';' for_incr ')' condition_code
-   63      | . WHILE '(' if_expression ')' condition_code
-   63      | WHILE '(' if_expression ')' . condition_code
-   64      | . DO condition_code WHILE '(' if_expression ')' ';'
-   65 if: . IF '(' expression ')' condition_code
-   66   | . IF '(' expression ')' condition_code ELSE condition_code
-   67   | . SWITCH '(' expression ')' '{' switch '}'
-   72 condition_code: . '{' operation_list '}'
-   73               | . operation
-   74               | . ';'
-   75               | . '{' '}'
-   94 type: . CHAR
-   95     | . INT
-   96     | . STRING
-   97     | . BOOLEAN
-   98     | . FLOAT
-   99     | . VOID
+   63 cycle: WHILE '(' if_expression ')' . condition_code
 
     BOOLEAN   shift, and go to state 21
     BREAK     shift, and go to state 45
@@ -4007,7 +2681,7 @@ state 165
    50              | expression . OP_NE expression
    51              | expression . OP_LOR expression
    52              | expression . OP_LAND expression
-   58 var: ID '=' expression .  [';', ',']
+   58 var: ID '=' expression .
 
     LS       shift, and go to state 118
     OP_GE    shift, and go to state 119
@@ -4038,7 +2712,7 @@ state 166
 
 state 167
 
-   34 expression: if_expression .  [LS, OP_GE, OP_LE, OP_EQ, OP_NE, OP_LAND, OP_LOR, RS, '+', '-', '*', '/', '%', '&', '<', '>']
+   34 expression: if_expression .
    64 cycle: DO condition_code WHILE '(' if_expression . ')' ';'
 
     ')'  shift, and go to state 174
@@ -4048,8 +2722,8 @@ state 167
 
 state 168
 
-   34 expression: if_expression .  [LS, OP_GE, OP_LE, OP_EQ, OP_NE, OP_LAND, OP_LOR, RS, '+', '-', '*', '/', '%', '&', '<', '>']
-   62 cycle: FOR '(' assignment ';' if_expression . ';' for_incr ')' condition_code
+   34 expression: if_expression .
+   62 cycle: FOR '(' assignment ';' if_expression . ';' increase_list ')' condition_code
 
     ';'  shift, and go to state 175
 
@@ -4058,23 +2732,17 @@ state 168
 
 state 169
 
-   65 if: IF '(' expression ')' condition_code .  [BOOLEAN, BREAK, CASE, CHAR, CONTINUE, DEFAULT, DO, FLOAT, FOR, IF, INT, OP_INC, OP_DEC, STRING, SWITCH, RETURN, VOID, WHILE, ID, '}']
+   65 if: IF '(' expression ')' condition_code .
    66   | IF '(' expression ')' condition_code . ELSE condition_code
 
     ELSE  shift, and go to state 176
 
     $default  reduce using rule 65 (if)
 
-    Conflict between rule 65 and token ELSE resolved as shift (IFPREC < ELSE).
-
 
 state 170
 
    67 if: SWITCH '(' expression ')' '{' . switch '}'
-   76 switch: . CASE value ':' operation_list switch
-   77       | . DEFAULT ':' operation_list switch
-   78       | . CASE value ':' operation_list
-   79       | . DEFAULT ':' operation_list
 
     CASE     shift, and go to state 177
     DEFAULT  shift, and go to state 178
@@ -4091,37 +2759,7 @@ state 171
 
 state 172
 
-   30 expression: . '(' expression ')'
-   31           | . value
-   32           | . function_call
-   33           | . infix_expression
-   34           | . if_expression
-   35 function_call: . ID '(' ')'
-   36              | . ID '(' parameter_list ')'
-   37 infix_expression: . expression '+' expression
-   38                 | . expression '-' expression
-   39                 | . expression '*' expression
-   40                 | . expression '/' expression
-   41                 | . expression '%' expression
-   42                 | . expression '&' expression
-   43                 | . expression LS expression
-   44                 | . expression RS expression
-   45 if_expression: . expression '>' expression
-   46              | . expression '<' expression
-   47              | . expression OP_EQ expression
-   48              | . expression OP_LE expression
-   49              | . expression OP_GE expression
-   50              | . expression OP_NE expression
-   51              | . expression OP_LOR expression
-   52              | . expression OP_LAND expression
    54 parameter_list: parameter_list ',' . expression
-   87 value: . ID
-   88      | . STRING_VAL
-   89      | . NUMBER_VAL
-   90      | . DOUBLE_VAL
-   91      | . CHAR_VAL
-   92      | . TRUE
-   93      | . FALSE
 
     FALSE       shift, and go to state 76
     TRUE        shift, and go to state 77
@@ -4155,62 +2793,21 @@ state 174
 
 state 175
 
-   21 assignment: . ID assign_operator expression
-   22 unary: . ID OP_INC
-   23      | . OP_INC ID
-   24      | . ID OP_DEC
-   25      | . OP_DEC ID
-   62 cycle: FOR '(' assignment ';' if_expression ';' . for_incr ')' condition_code
-   68 for_incr: . incr
-   69         | . for_incr ',' incr
-   70 incr: . assignment
-   71     | . unary
+   62 cycle: FOR '(' assignment ';' if_expression ';' . increase_list ')' condition_code
 
     OP_INC  shift, and go to state 50
     OP_DEC  shift, and go to state 51
     ID      shift, and go to state 55
 
-    assignment  go to state 182
-    unary       go to state 183
-    for_incr    go to state 184
-    incr        go to state 185
+    assignment     go to state 182
+    unary          go to state 183
+    increase_list  go to state 184
+    increase       go to state 185
 
 
 state 176
 
-   14 operation: . declaration ';'
-   15          | . assignment ';'
-   16          | . unary ';'
-   17          | . if
-   18          | . cycle
-   19          | . control ';'
-   20 declaration: . type var_list
-   21 assignment: . ID assign_operator expression
-   22 unary: . ID OP_INC
-   23      | . OP_INC ID
-   24      | . ID OP_DEC
-   25      | . OP_DEC ID
-   26 control: . BREAK
-   27        | . CONTINUE
-   28        | . RETURN
-   29        | . RETURN expression
-   62 cycle: . FOR '(' assignment ';' if_expression ';' for_incr ')' condition_code
-   63      | . WHILE '(' if_expression ')' condition_code
-   64      | . DO condition_code WHILE '(' if_expression ')' ';'
-   65 if: . IF '(' expression ')' condition_code
-   66   | . IF '(' expression ')' condition_code ELSE condition_code
-   66   | IF '(' expression ')' condition_code ELSE . condition_code
-   67   | . SWITCH '(' expression ')' '{' switch '}'
-   72 condition_code: . '{' operation_list '}'
-   73               | . operation
-   74               | . ';'
-   75               | . '{' '}'
-   94 type: . CHAR
-   95     | . INT
-   96     | . STRING
-   97     | . BOOLEAN
-   98     | . FLOAT
-   99     | . VOID
+   66 if: IF '(' expression ')' condition_code ELSE . condition_code
 
     BOOLEAN   shift, and go to state 21
     BREAK     shift, and go to state 45
@@ -4247,13 +2844,6 @@ state 177
 
    76 switch: CASE . value ':' operation_list switch
    78       | CASE . value ':' operation_list
-   87 value: . ID
-   88      | . STRING_VAL
-   89      | . NUMBER_VAL
-   90      | . DOUBLE_VAL
-   91      | . CHAR_VAL
-   92      | . TRUE
-   93      | . FALSE
 
     FALSE       shift, and go to state 76
     TRUE        shift, and go to state 77
@@ -4299,7 +2889,7 @@ state 180
    50              | expression . OP_NE expression
    51              | expression . OP_LOR expression
    52              | expression . OP_LAND expression
-   54 parameter_list: parameter_list ',' expression .  [')', ',']
+   54 parameter_list: parameter_list ',' expression .
 
     LS       shift, and go to state 118
     OP_GE    shift, and go to state 119
@@ -4330,22 +2920,22 @@ state 181
 
 state 182
 
-   70 incr: assignment .
+   70 increase: assignment .
 
-    $default  reduce using rule 70 (incr)
+    $default  reduce using rule 70 (increase)
 
 
 state 183
 
-   71 incr: unary .
+   71 increase: unary .
 
-    $default  reduce using rule 71 (incr)
+    $default  reduce using rule 71 (increase)
 
 
 state 184
 
-   62 cycle: FOR '(' assignment ';' if_expression ';' for_incr . ')' condition_code
-   69 for_incr: for_incr . ',' incr
+   62 cycle: FOR '(' assignment ';' if_expression ';' increase_list . ')' condition_code
+   69 increase_list: increase_list . ',' increase
 
     ')'  shift, and go to state 191
     ','  shift, and go to state 192
@@ -4353,9 +2943,9 @@ state 184
 
 state 185
 
-   68 for_incr: incr .
+   68 increase_list: increase .
 
-    $default  reduce using rule 68 (for_incr)
+    $default  reduce using rule 68 (increase_list)
 
 
 state 186
@@ -4382,38 +2972,8 @@ state 188
 
 state 189
 
-   12 operation_list: . operation
-   13               | . operation_list operation
-   14 operation: . declaration ';'
-   15          | . assignment ';'
-   16          | . unary ';'
-   17          | . if
-   18          | . cycle
-   19          | . control ';'
-   20 declaration: . type var_list
-   21 assignment: . ID assign_operator expression
-   22 unary: . ID OP_INC
-   23      | . OP_INC ID
-   24      | . ID OP_DEC
-   25      | . OP_DEC ID
-   26 control: . BREAK
-   27        | . CONTINUE
-   28        | . RETURN
-   29        | . RETURN expression
-   62 cycle: . FOR '(' assignment ';' if_expression ';' for_incr ')' condition_code
-   63      | . WHILE '(' if_expression ')' condition_code
-   64      | . DO condition_code WHILE '(' if_expression ')' ';'
-   65 if: . IF '(' expression ')' condition_code
-   66   | . IF '(' expression ')' condition_code ELSE condition_code
-   67   | . SWITCH '(' expression ')' '{' switch '}'
    77 switch: DEFAULT ':' . operation_list switch
    79       | DEFAULT ':' . operation_list
-   94 type: . CHAR
-   95     | . INT
-   96     | . STRING
-   97     | . BOOLEAN
-   98     | . FLOAT
-   99     | . VOID
 
     BOOLEAN   shift, and go to state 21
     BREAK     shift, and go to state 45
@@ -4453,39 +3013,7 @@ state 190
 
 state 191
 
-   14 operation: . declaration ';'
-   15          | . assignment ';'
-   16          | . unary ';'
-   17          | . if
-   18          | . cycle
-   19          | . control ';'
-   20 declaration: . type var_list
-   21 assignment: . ID assign_operator expression
-   22 unary: . ID OP_INC
-   23      | . OP_INC ID
-   24      | . ID OP_DEC
-   25      | . OP_DEC ID
-   26 control: . BREAK
-   27        | . CONTINUE
-   28        | . RETURN
-   29        | . RETURN expression
-   62 cycle: . FOR '(' assignment ';' if_expression ';' for_incr ')' condition_code
-   62      | FOR '(' assignment ';' if_expression ';' for_incr ')' . condition_code
-   63      | . WHILE '(' if_expression ')' condition_code
-   64      | . DO condition_code WHILE '(' if_expression ')' ';'
-   65 if: . IF '(' expression ')' condition_code
-   66   | . IF '(' expression ')' condition_code ELSE condition_code
-   67   | . SWITCH '(' expression ')' '{' switch '}'
-   72 condition_code: . '{' operation_list '}'
-   73               | . operation
-   74               | . ';'
-   75               | . '{' '}'
-   94 type: . CHAR
-   95     | . INT
-   96     | . STRING
-   97     | . BOOLEAN
-   98     | . FLOAT
-   99     | . VOID
+   62 cycle: FOR '(' assignment ';' if_expression ';' increase_list ')' . condition_code
 
     BOOLEAN   shift, and go to state 21
     BREAK     shift, and go to state 45
@@ -4520,14 +3048,7 @@ state 191
 
 state 192
 
-   21 assignment: . ID assign_operator expression
-   22 unary: . ID OP_INC
-   23      | . OP_INC ID
-   24      | . ID OP_DEC
-   25      | . OP_DEC ID
-   69 for_incr: for_incr ',' . incr
-   70 incr: . assignment
-   71     | . unary
+   69 increase_list: increase_list ',' . increase
 
     OP_INC  shift, and go to state 50
     OP_DEC  shift, and go to state 51
@@ -4535,43 +3056,13 @@ state 192
 
     assignment  go to state 182
     unary       go to state 183
-    incr        go to state 196
+    increase    go to state 196
 
 
 state 193
 
-   12 operation_list: . operation
-   13               | . operation_list operation
-   14 operation: . declaration ';'
-   15          | . assignment ';'
-   16          | . unary ';'
-   17          | . if
-   18          | . cycle
-   19          | . control ';'
-   20 declaration: . type var_list
-   21 assignment: . ID assign_operator expression
-   22 unary: . ID OP_INC
-   23      | . OP_INC ID
-   24      | . ID OP_DEC
-   25      | . OP_DEC ID
-   26 control: . BREAK
-   27        | . CONTINUE
-   28        | . RETURN
-   29        | . RETURN expression
-   62 cycle: . FOR '(' assignment ';' if_expression ';' for_incr ')' condition_code
-   63      | . WHILE '(' if_expression ')' condition_code
-   64      | . DO condition_code WHILE '(' if_expression ')' ';'
-   65 if: . IF '(' expression ')' condition_code
-   66   | . IF '(' expression ')' condition_code ELSE condition_code
-   67   | . SWITCH '(' expression ')' '{' switch '}'
    76 switch: CASE value ':' . operation_list switch
    78       | CASE value ':' . operation_list
-   94 type: . CHAR
-   95     | . INT
-   96     | . STRING
-   97     | . BOOLEAN
-   98     | . FLOAT
-   99     | . VOID
 
     BOOLEAN   shift, and go to state 21
     BREAK     shift, and go to state 45
@@ -4605,40 +3096,8 @@ state 193
 state 194
 
    13 operation_list: operation_list . operation
-   14 operation: . declaration ';'
-   15          | . assignment ';'
-   16          | . unary ';'
-   17          | . if
-   18          | . cycle
-   19          | . control ';'
-   20 declaration: . type var_list
-   21 assignment: . ID assign_operator expression
-   22 unary: . ID OP_INC
-   23      | . OP_INC ID
-   24      | . ID OP_DEC
-   25      | . OP_DEC ID
-   26 control: . BREAK
-   27        | . CONTINUE
-   28        | . RETURN
-   29        | . RETURN expression
-   62 cycle: . FOR '(' assignment ';' if_expression ';' for_incr ')' condition_code
-   63      | . WHILE '(' if_expression ')' condition_code
-   64      | . DO condition_code WHILE '(' if_expression ')' ';'
-   65 if: . IF '(' expression ')' condition_code
-   66   | . IF '(' expression ')' condition_code ELSE condition_code
-   67   | . SWITCH '(' expression ')' '{' switch '}'
-   76 switch: . CASE value ':' operation_list switch
-   77       | . DEFAULT ':' operation_list switch
-   77       | DEFAULT ':' operation_list . switch
-   78       | . CASE value ':' operation_list
-   79       | . DEFAULT ':' operation_list
-   79       | DEFAULT ':' operation_list .  ['}']
-   94 type: . CHAR
-   95     | . INT
-   96     | . STRING
-   97     | . BOOLEAN
-   98     | . FLOAT
-   99     | . VOID
+   77 switch: DEFAULT ':' operation_list . switch
+   79       | DEFAULT ':' operation_list .
 
     BOOLEAN   shift, and go to state 21
     BREAK     shift, and go to state 45
@@ -4675,55 +3134,23 @@ state 194
 
 state 195
 
-   62 cycle: FOR '(' assignment ';' if_expression ';' for_incr ')' condition_code .
+   62 cycle: FOR '(' assignment ';' if_expression ';' increase_list ')' condition_code .
 
     $default  reduce using rule 62 (cycle)
 
 
 state 196
 
-   69 for_incr: for_incr ',' incr .
+   69 increase_list: increase_list ',' increase .
 
-    $default  reduce using rule 69 (for_incr)
+    $default  reduce using rule 69 (increase_list)
 
 
 state 197
 
    13 operation_list: operation_list . operation
-   14 operation: . declaration ';'
-   15          | . assignment ';'
-   16          | . unary ';'
-   17          | . if
-   18          | . cycle
-   19          | . control ';'
-   20 declaration: . type var_list
-   21 assignment: . ID assign_operator expression
-   22 unary: . ID OP_INC
-   23      | . OP_INC ID
-   24      | . ID OP_DEC
-   25      | . OP_DEC ID
-   26 control: . BREAK
-   27        | . CONTINUE
-   28        | . RETURN
-   29        | . RETURN expression
-   62 cycle: . FOR '(' assignment ';' if_expression ';' for_incr ')' condition_code
-   63      | . WHILE '(' if_expression ')' condition_code
-   64      | . DO condition_code WHILE '(' if_expression ')' ';'
-   65 if: . IF '(' expression ')' condition_code
-   66   | . IF '(' expression ')' condition_code ELSE condition_code
-   67   | . SWITCH '(' expression ')' '{' switch '}'
-   76 switch: . CASE value ':' operation_list switch
-   76       | CASE value ':' operation_list . switch
-   77       | . DEFAULT ':' operation_list switch
-   78       | . CASE value ':' operation_list
-   78       | CASE value ':' operation_list .  ['}']
-   79       | . DEFAULT ':' operation_list
-   94 type: . CHAR
-   95     | . INT
-   96     | . STRING
-   97     | . BOOLEAN
-   98     | . FLOAT
-   99     | . VOID
+   76 switch: CASE value ':' operation_list . switch
+   78       | CASE value ':' operation_list .
 
     BOOLEAN   shift, and go to state 21
     BREAK     shift, and go to state 45

@@ -84,7 +84,7 @@ struct _operation{
 	union{
 		is_declaration *declaration;
 		is_assignment *assignment;
-		is_function *function;
+		is_function_call *function;
 		is_unary *unary;
 		is_cycle *cycle;
 		is_condition_statement *condition;

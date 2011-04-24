@@ -23,7 +23,7 @@ void show_code(is_code *code){
 
 	if(code)
 		show_operation_list(code->operation_list);
-
+	printf("\n");
 
 }
 
@@ -35,6 +35,7 @@ void show_function_list(is_function_list *function_list){
 			show_function(aux->function);
 
 	}
+	
 }
 
 void show_function(is_function *function){
@@ -99,6 +100,153 @@ void show_argument(is_argument *arg){
 
 }
 
+void show_assignment(is_assignment *assignment) {
+	printf("VAR %s ",assignment->id);
+	switch (assignment->type) {
+		case is_ASS_EQ:
+			printf(" = ");
+			show_expression(assignment->expression);
+			break;
+		case is_ASS_ADD:
+			printf(" += ");
+			show_expression(assignment->expression);
+			break;
+		case is_ASS_SUB:
+			printf(" -= ");
+			show_expression(assignment->expression);
+			break;
+		case is_ASS_MUL:
+			printf(" *= ");
+			show_expression(assignment->expression);
+			break;
+		case is_ASS_DIV:
+			printf(" /= ");
+			show_expression(assignment->expression);
+			break;
+		case is_ASS_AND:
+			printf(" &= ");
+			show_expression(assignment->expression);
+			break;
+		case is_ASS_PERC:
+			printf(" %%= ");
+			show_expression(assignment->expression);
+			break;
+		case is_ASS_LS:
+			printf(" >>= ");
+			show_expression(assignment->expression);
+			break;
+		case is_ASS_RS:
+			printf(" <<= ");
+			show_expression(assignment->expression);
+			break;
+	}
+}
+
+void show_unary_expression(is_unary *unary) {
+	switch (unary->type) {
+		case is_before_plus:
+			printf(" (VAR ++%s ) ",unary->id);
+			break;
+		case is_before_minus:
+			printf(" (VAR --%s ) ",unary->id);
+			break;
+		case is_after_plus:
+			printf(" (VAR %s++ ) ",unary->id);
+			break;
+		case is_after_minus:
+			printf(" (VAR %s-- ) ",unary->id);
+			break;
+	}
+}
+
+void show_control_statement(is_control *control) {
+	switch (control->type) {
+		case is_break:
+			printf(" BREAK ");
+			break;
+		case is_continue:
+			printf(" CONTINUE ");
+			break;
+		case is_return:
+			printf(" RETURN ");
+			break;
+		case is_return_exp:
+			printf(" RETURN ");
+			show_expression(control->expression);
+			break;
+	}
+}
+
+void show_cycle(is_cycle *cycle) {
+	switch (cycle->type) {
+		case is_for_cycle:
+			show_for_cycle(cycle->cyc.for_cycle);
+			break;
+		case is_while_cycle:
+			show_while_cycle(cycle->cyc.while_cycle);
+			break;
+		case is_do_while_cycle:
+			show_do_while_cycle(cycle->cyc.do_while);
+			break;
+	}
+}
+
+
+void show_for_cycle(is_for *for_cycle) {
+	printf(" FOR ( ");
+	show_assignment(for_cycle->assignment);
+	printf(" ; ");
+	show_if_expression(for_cycle->if_expression);
+	printf(" ; ");
+	show_increase_list(for_cycle->increase);
+	printf(" ) { ");
+	show_condition_code(for_cycle->code);
+}
+
+
+void show_while_cycle(is_while *while_cycle) {
+	printf(" WHILE ( ");
+	show_if_expression(while_cycle->if_expression);
+	printf(" ) { ");
+	show_condition_code(while_cycle->code);
+	printf(" } ");
+}
+
+
+void show_do_while_cycle(is_do_while *do_while) {
+	printf(" DO { ");
+	show_condition_code(do_while->code);
+	printf(" } WHILE ( ");
+	show_if_expression(do_while->if_expression);
+	printf(" ) ");
+}
+
+
+void show_increase_list(is_increase_list *increase) {
+	if (increase) {
+		is_increase_list *aux;
+		for (aux = increase; aux != NULL; aux = aux->next ) {
+			show_increase(aux->inc);
+			if (aux->next) {
+				printf(", ");
+			}
+		}
+	}
+}
+
+
+void show_increase(is_increase *inc) {
+	switch (inc->type) {
+		case is_assign_inc:
+			show_assignment(inc->inc.assign);
+			break;
+		case is_unary_inc:
+			show_unary_expression(inc->inc.unary);
+			break;
+
+	}
+}
+
 
 void show_operation_list(is_operation_list *list){
 
@@ -124,21 +272,27 @@ void show_operation(is_operation *operation){
 			break;
 		case is_assign:
 			printf("Assignment: ");
+			show_assignment(operation->oper.assignment);
 			break;
 		case is_funct:
 			printf("Function Call:");
+			/*show_function_call(operation->oper.function);*/
 			break;
 		case is_un:
-			printf("Unary:");
+			printf("Unary: ");
+			show_unary_expression(operation->oper.unary);
 			break;
 		case is_cyc:
 			printf("Cycle: ");
+			show_cycle(operation->oper.cycle);
 			break;
 		case is_cond:
 			printf("Choice:");
+			show_condition_statement(operation->oper.condition);
 			break;
 		case is_cont:
-			printf("Control:");
+			printf("Control: ");
+			show_control_statement(operation->oper.control);
 			break;
 
 	}
@@ -265,9 +419,9 @@ void show_value(is_value *val){
 
 void show_function_call(is_function_call *function){
 
-	printf(" %s ",function->id);
+	printf(" %s ( ",function->id);
 	show_parameter_list(function->parameter_list);
-	printf("\n");
+	printf(" ) \n");
 }
 
 void show_parameter_list(is_parameter_list *list){
@@ -282,6 +436,30 @@ void show_parameter_list(is_parameter_list *list){
 		printf("\n");
 	}
 
+}
+
+void show_condition_statement(is_condition_statement *condition) {
+	switch (condition->type) {
+		case is_if_statement:
+			printf("IF( ");
+			show_if_statement(condition->stat.if_statement);
+			break;
+		case is_if_else_statement:
+			printf("IF( ");
+			show_if_else_statement(condition->stat.if_else_statement);
+			break;
+		case is_switch_statement:
+			printf("SWITCH( ");
+			show_switch_statement(condition->stat.switch_statement);
+			break;
+	}
+}
+
+void show_if_statement(is_if *if_statement) {
+	show_expression(if_statement->expression);
+	printf(" ) { ");
+	show_condition_code(if_statement->code);
+	printf(" } ");
 }
 
 void show_if_expression(is_if_expression *exp){
@@ -322,6 +500,50 @@ void show_if_type(if_exp_type type){
 	
 }
 
+void show_condition_code(is_condition_code *code) {
+	if (code->operation != NULL) {
+		show_operation(code->operation);
+	} else if (code->operation_list != NULL) {
+		show_operation_list(code->operation_list);
+	}
+}
 
+void show_if_else_statement(is_if_else *if_else_statement) {
+	show_expression(if_else_statement->expression);
+	printf(" ) { ");
+	show_condition_code(if_else_statement->if_code);
+	printf(" } ELSE {");
+	show_condition_code(if_else_statement->else_code);
+	printf(" } ");
+}
 
+void show_switch_statement(is_switch *switch_statement) {
+	show_expression(switch_statement->expression);
+	printf(" ) { ");
+	show_switch_cases(switch_statement->cases);
+	printf(" } ");
+}
 
+void show_switch_case(is_switch_case *a_case) {
+	if (a_case->type == is_DEFAULT) {
+		printf("DEFAULT: ");
+		show_operation_list(a_case->operation_list);
+	} else if(a_case->type == is_NORMAL) {
+		printf("CASE ");
+		show_value(a_case->value);
+		printf(" : ");
+		show_operation_list(a_case->operation_list);
+	}
+}
+
+void show_switch_cases(is_switch_case *cases) {
+	if(cases) {
+		is_switch_case *aux;
+		for (aux = cases; aux != NULL; aux = aux->next) {
+			show_switch_case(aux);
+			if(aux->next)
+				printf(", ");
+			printf("\n");
+		}
+	}
+}
