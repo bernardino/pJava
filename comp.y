@@ -5,6 +5,7 @@
 #include "shows.h"
 
 is_program *myprogram;
+extern int line;
 %}
 %token ARGS ASS_MUL ASS_DIV ASS_ADD ASS_SUB ASS_EQ ASS_AND ASS_LS ASS_RS
 %token BOOLEAN BREAK BYTE
@@ -149,6 +150,7 @@ operation:
 	| if		{ $$ = insert_operation_if($1);}
 	| cycle		{ $$ = insert_operation_cycle($1);}
 	| control ';'	{ $$ = insert_operation_control($1);}
+	| function_call ';' { $$ = insert_operation_function($1);}
 	;
 
 declaration:
@@ -310,5 +312,6 @@ int yyerror (char *s)
 int main(){
 	yyparse();
 	show_program(myprogram);
+	printf("%d\n",line);
 	return 0;
 }

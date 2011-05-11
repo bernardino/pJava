@@ -1,3 +1,1 @@
-lex pJava.l
-yacc -d comp.y -v
-cc -o pJava y.tab.c lex.yy.c functions.c shows.c -ll -ly -lm
+lex pJava.l;yacc -d comp.y -v;cc -o pJava y.tab.c lex.yy.c functions.c shows.c -ll -ly -lm

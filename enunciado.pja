@@ -9,6 +9,7 @@ class gcd_rec {
 	public static int gcd(int a, int b) {
 		a++;
 		b=a+b;
+		cgd();
 		if (a == b || b == 0){
 			do
 				b+= a + 2;

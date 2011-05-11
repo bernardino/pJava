@@ -176,7 +176,7 @@
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE
-#line 33 "comp.y"
+#line 34 "comp.y"
 {
 is_program *prog;
 is_main *m;

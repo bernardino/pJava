@@ -359,8 +359,8 @@ static void yy_fatal_error (yyconst char msg[]  );
 	*yy_cp = '\0'; \
 	(yy_c_buf_p) = yy_cp;
 
-#define YY_NUM_RULES 60
-#define YY_END_OF_BUFFER 61
+#define YY_NUM_RULES 61
+#define YY_END_OF_BUFFER 62
 /* This struct is not used in this scanner,
    but its presence is necessary. */
 struct yy_trans_info
@@ -370,22 +370,22 @@ struct yy_trans_info
 	};
 static yyconst flex_int16_t yy_accept[215] =
     {   0,
-        0,    0,   61,   59,   57,   57,   59,   59,   59,   59,
-       57,   59,   59,   59,   59,   59,   53,   53,   59,   59,
-       59,   52,   52,   52,   52,   52,   52,   52,   52,   52,
-       52,   52,   52,   52,   52,   52,   52,   52,   52,   59,
+        0,    0,   62,   60,   58,   57,   60,   60,   60,   60,
+       58,   60,   60,   60,   60,   60,   53,   53,   60,   60,
+       60,   52,   52,   52,   52,   52,   52,   52,   52,   52,
+       52,   52,   52,   52,   52,   52,   52,   52,   52,   60,
        10,    0,   55,   19,   12,   20,    0,   17,   13,   53,
-       15,   14,   16,   54,    0,   58,   18,    0,   54,   54,
+       15,   14,   16,   54,    0,   59,   18,    0,   54,   54,
         0,   53,   53,    5,    8,    7,    9,    6,   52,   52,
        52,   52,   52,   52,   52,   52,   52,   52,   52,   21,
        52,   52,   52,   52,   47,   52,   52,   52,   52,   52,
        52,   52,   52,   52,   52,   52,   52,   52,   52,   52,
 
-       11,   56,   53,   54,   54,    0,    0,    0,   58,    0,
+       11,   56,   53,   54,   54,    0,    0,    0,   59,    0,
        54,   54,    0,    3,    4,   52,   52,   52,   52,   52,
        52,   52,   52,   52,   52,   52,   52,   52,   52,   39,
        32,   52,   52,   43,   52,   52,   52,   52,   52,   52,
-       52,   52,   52,   52,   52,   52,    0,   54,   58,   52,
+       52,   52,   52,   52,   52,   52,    0,   54,   59,   52,
        50,   52,   52,   29,   31,   38,   52,   52,   52,   52,
        27,   52,   52,   36,   49,   44,   52,   52,   52,   52,
        52,   52,   52,   48,    1,   34,   52,   52,   52,   26,
@@ -593,7 +593,9 @@ char *yytext;
 #line 2 "pJava.l"
 #include "structures.h"
 #include "y.tab.h"
-#line 597 "lex.yy.c"
+
+int line = 1;
+#line 599 "lex.yy.c"
 
 #define INITIAL 0
 
@@ -775,10 +777,10 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
     
-#line 43 "pJava.l"
+#line 45 "pJava.l"
 
 
-#line 782 "lex.yy.c"
+#line 784 "lex.yy.c"
 
 	if ( !(yy_init) )
 		{
@@ -863,307 +865,312 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 45 "pJava.l"
+#line 47 "pJava.l"
 {return TRUE;}
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 46 "pJava.l"
+#line 48 "pJava.l"
 {return FALSE;}
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 48 "pJava.l"
+#line 50 "pJava.l"
 {return ASS_LS;}
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 49 "pJava.l"
+#line 51 "pJava.l"
 {return ASS_RS;}
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 50 "pJava.l"
+#line 52 "pJava.l"
 {return LS;}
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 51 "pJava.l"
+#line 53 "pJava.l"
 {return RS;}
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 52 "pJava.l"
+#line 54 "pJava.l"
 {return OP_EQ;}
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 53 "pJava.l"
+#line 55 "pJava.l"
 {return OP_LE;}
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 54 "pJava.l"
+#line 56 "pJava.l"
 {return OP_GE;}
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 55 "pJava.l"
+#line 57 "pJava.l"
 {return OP_NE;}
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 56 "pJava.l"
+#line 58 "pJava.l"
 {return OP_LOR;}
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 57 "pJava.l"
+#line 59 "pJava.l"
 {return OP_LAND;}
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 58 "pJava.l"
+#line 60 "pJava.l"
 {return OP_INC;}
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 59 "pJava.l"
+#line 61 "pJava.l"
 {return OP_DEC;}
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 60 "pJava.l"
+#line 62 "pJava.l"
 {return ASS_ADD;}
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 61 "pJava.l"
+#line 63 "pJava.l"
 {return ASS_SUB;}
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 62 "pJava.l"
+#line 64 "pJava.l"
 {return ASS_MUL;}
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 63 "pJava.l"
+#line 65 "pJava.l"
 {return ASS_DIV;}
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 64 "pJava.l"
+#line 66 "pJava.l"
 {return ASS_PERC;}
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 65 "pJava.l"
+#line 67 "pJava.l"
 {return ASS_AND;}
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 67 "pJava.l"
+#line 69 "pJava.l"
 {return DO;}
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 68 "pJava.l"
+#line 70 "pJava.l"
 {return BOOLEAN;}
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 69 "pJava.l"
+#line 71 "pJava.l"
 {return DOUBLE;}
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 70 "pJava.l"
+#line 72 "pJava.l"
 {return DEFAULT;}
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 71 "pJava.l"
+#line 73 "pJava.l"
 {return PRIVATE;}
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 72 "pJava.l"
+#line 74 "pJava.l"
 {return BREAK;}
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 73 "pJava.l"
+#line 75 "pJava.l"
 {return ELSE;}
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 74 "pJava.l"
+#line 76 "pJava.l"
 {return PROTECTED;}
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 75 "pJava.l"
+#line 77 "pJava.l"
 {return BYTE;}
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 76 "pJava.l"
+#line 78 "pJava.l"
 {return PUBLIC;}
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 77 "pJava.l"
+#line 79 "pJava.l"
 {return CASE;}
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 78 "pJava.l"
+#line 80 "pJava.l"
 {return INT;}
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 79 "pJava.l"
+#line 81 "pJava.l"
 {return RETURN;}
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 80 "pJava.l"
+#line 82 "pJava.l"
 {return VOID;}
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 81 "pJava.l"
+#line 83 "pJava.l"
 {return FLOAT;}
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 82 "pJava.l"
+#line 84 "pJava.l"
 {return LONG;}
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 83 "pJava.l"
+#line 85 "pJava.l"
 {return SHORT;}
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 84 "pJava.l"
+#line 86 "pJava.l"
 {return CHAR;}
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 85 "pJava.l"
+#line 87 "pJava.l"
 {return FOR;}
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 86 "pJava.l"
+#line 88 "pJava.l"
 {return STATIC;}
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 87 "pJava.l"
+#line 89 "pJava.l"
 {return WHILE;}
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 88 "pJava.l"
+#line 90 "pJava.l"
 {return CLASS;}
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 89 "pJava.l"
+#line 91 "pJava.l"
 {return NEW;}
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 90 "pJava.l"
+#line 92 "pJava.l"
 {return JNULL;}
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 91 "pJava.l"
+#line 93 "pJava.l"
 {return SWITCH;}
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
-#line 92 "pJava.l"
+#line 94 "pJava.l"
 {return CONTINUE;}
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
-#line 93 "pJava.l"
+#line 95 "pJava.l"
 {return IF;}
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
-#line 94 "pJava.l"
+#line 96 "pJava.l"
 {return THIS;}
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
-#line 95 "pJava.l"
+#line 97 "pJava.l"
 {return MAIN;}
 	YY_BREAK
 case 50:
 YY_RULE_SETUP
-#line 96 "pJava.l"
+#line 98 "pJava.l"
 {return ARGS;}
 	YY_BREAK
 case 51:
 YY_RULE_SETUP
-#line 97 "pJava.l"
+#line 99 "pJava.l"
 {return STRING;}
 	YY_BREAK
 case 52:
 YY_RULE_SETUP
-#line 99 "pJava.l"
+#line 101 "pJava.l"
 { yylval.string = (char*)strdup(yytext); return ID;}
 	YY_BREAK
 case 53:
 YY_RULE_SETUP
-#line 100 "pJava.l"
+#line 102 "pJava.l"
 { yylval.val_i = atoi(yytext); return NUMBER_VAL;}
 	YY_BREAK
 case 54:
 YY_RULE_SETUP
-#line 101 "pJava.l"
+#line 103 "pJava.l"
 { yylval.doubleval = atof(yytext); return DOUBLE_VAL;}
 	YY_BREAK
 case 55:
 YY_RULE_SETUP
-#line 102 "pJava.l"
+#line 104 "pJava.l"
 { yylval.string = (char*)strdup(yytext+1); yylval.string[strlen(yytext)-2]='\0';return STRING_VAL;}
 	YY_BREAK
 case 56:
 YY_RULE_SETUP
-#line 103 "pJava.l"
+#line 105 "pJava.l"
 { yylval.chr = yytext[1]; return CHAR_VAL;}
 	YY_BREAK
 case 57:
 /* rule 57 can match eol */
 YY_RULE_SETUP
-#line 105 "pJava.l"
-{}
+#line 107 "pJava.l"
+{line++;}
 	YY_BREAK
 case 58:
-/* rule 58 can match eol */
 YY_RULE_SETUP
-#line 107 "pJava.l"
+#line 108 "pJava.l"
 {}
 	YY_BREAK
 case 59:
+/* rule 59 can match eol */
 YY_RULE_SETUP
-#line 109 "pJava.l"
-{ return yytext[0];}
+#line 110 "pJava.l"
+{}
 	YY_BREAK
 case 60:
 YY_RULE_SETUP
-#line 112 "pJava.l"
+#line 111 "pJava.l"
+{ return yytext[0];}
+	YY_BREAK
+case 61:
+YY_RULE_SETUP
+#line 114 "pJava.l"
 ECHO;
 	YY_BREAK
-#line 1167 "lex.yy.c"
+#line 1174 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -2160,7 +2167,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 112 "pJava.l"
+#line 114 "pJava.l"
 
 
 
