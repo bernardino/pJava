@@ -17,6 +17,7 @@ is_operation* insert_operation_unary(is_unary* unary);
 is_operation* insert_operation_if(is_condition_statement *condition);
 is_operation* insert_operation_cycle(is_cycle *cycle);
 is_operation* insert_operation_control(is_control* control);
+is_operation* insert_operation_function(is_function_call* call);
 
 
 /* insert functions */

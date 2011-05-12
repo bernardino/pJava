@@ -276,7 +276,7 @@ void show_operation(is_operation *operation){
 			break;
 		case is_funct:
 			printf("Function Call:");
-			/*show_function_call(operation->oper.function);*/
+			show_function_call(operation->oper.function);
 			break;
 		case is_un:
 			printf("Unary: ");

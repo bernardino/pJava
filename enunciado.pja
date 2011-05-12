@@ -11,7 +11,7 @@ class gcd_rec {
 		b=a+b;
 		if (a == b || b == 0){
 			do
-				b+= a + 2;
+				b+= a + gcd(a,b);
 			while(a<2);
 			return a;
 		}

@@ -1,10 +1,13 @@
 %{
 #include <stdio.h>
+#include "symbol_table.h"
 #include "structures.h"
 #include "functions.h"
 #include "shows.h"
 
+table_element *symtab = NULL;
 is_program *myprogram;
+
 %}
 %token ARGS ASS_MUL ASS_DIV ASS_ADD ASS_SUB ASS_EQ ASS_AND ASS_LS ASS_RS
 %token BOOLEAN BREAK BYTE
@@ -31,6 +34,7 @@ is_program *myprogram;
 %token <string>ID
 
 %union{
+
 is_program *prog;
 is_main *m;
 is_function_list *func_list;
@@ -143,16 +147,17 @@ operation_list:
 	;
 
 operation:
-	declaration ';'	{ $$ = insert_operation_dec($1);}
-	| assignment';'	{ $$ = insert_operation_assign($1);}
-	| unary	';'	{ $$ = insert_operation_unary($1); }
-	| if		{ $$ = insert_operation_if($1);}
-	| cycle		{ $$ = insert_operation_cycle($1);}
-	| control ';'	{ $$ = insert_operation_control($1);}
+	declaration ';'		{ $$ = insert_operation_dec($1);}
+	| assignment';'		{ $$ = insert_operation_assign($1);}
+	| unary	';'		{ $$ = insert_operation_unary($1); }
+	| if			{ $$ = insert_operation_if($1);}
+	| cycle			{ $$ = insert_operation_cycle($1);}
+	| control ';'		{ $$ = insert_operation_control($1);}
+	| function_call ';'	{ $$ = insert_operation_function($1);}
 	;
 
 declaration:
-	type var_list 	 	{ $$ = insert_declaration($1,$2);}
+	type var_list 	 	{ $$ = insert_declaration($1,$2); /*insert_element_symtab($1,$2);*/}
 	;
 assignment:
 	ID assign_operator expression			{ $$ = insert_assignment($1,$2,$3);}
@@ -284,6 +289,8 @@ value:
 	ID		{ $$ = insert_string(is_string, $1);}
 	| STRING_VAL	{ $$ = insert_string(is_string, $1);}
 	| NUMBER_VAL	{ $$ = insert_int(is_int, $1);}
+	| '+' NUMBER_VAL	{ $$ = insert_int(is_int, $2);}
+	| '-' NUMBER_VAL	{ $$ = insert_int(is_int, $2);}
 	| DOUBLE_VAL	{ $$ = insert_double(is_double, $1);}
 	| CHAR_VAL	{ $$ = insert_char(is_char, $1);}
 	| TRUE		{ $$ = insert_boolean(is_boolean, 1);}

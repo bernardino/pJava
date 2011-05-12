@@ -191,11 +191,11 @@ is_operation* insert_operation_control(is_control* control){
 
 }
 
-is_operation* insert_operation_function(is_function_call* function){
+is_operation* insert_operation_function(is_function_call* call){
 	
 	is_operation *operation = (is_operation*)malloc(sizeof(is_operation));
 	operation->type = is_funct;
-	operation->oper.function = function;
+	operation->oper.function = call;
 	
 	return operation;
 	
