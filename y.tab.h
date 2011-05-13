@@ -179,13 +179,15 @@ typedef union YYSTYPE
 {
 
 /* Line 1676 of yacc.c  */
-#line 36 "comp.y"
+#line 38 "comp.y"
 
 
 is_program *prog;
 is_main *m;
 is_function_list *func_list;
 is_function *func;
+is_global_list *glob;
+is_global_dec *dec;
 is_code *cod;
 is_parameter_list *param;
 is_argument_list *arg_list;
@@ -224,7 +226,7 @@ char *string;
 
 
 /* Line 1676 of yacc.c  */
-#line 228 "y.tab.h"
+#line 230 "y.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

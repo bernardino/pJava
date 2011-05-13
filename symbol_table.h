@@ -1,18 +1,35 @@
-#ifndef SYMBOL_TABLE_H
-#define SYMBOL_TABLE_H
+#ifndef _SYMBOL_TABLE_
+#define _SYMBOL_TABLE_
 
-typedef enum { is_character, is_integer, is_bool, is_doub, is_str} basic_type;
-typedef enum { is_global, is_local } scope_type;
-typedef struct _t1{
+#include "structures.h"
+
+
+//lista ligada de simbolos - um ambiente/registo de activacao
+typedef struct _t1{	
 	char name[32];
-	basic_type type;
-	scope_type scope;
-	char function_name[32];
+	unsignedVariableType type;
+	int offset;		//futura posicao na frame, caso seja uma variavel -1, se for uma procedure.
 	struct _t1 *next;
 } table_element;
 
-table_element *insert_element(char *str, basic_type t);
-void show_table();
-table_element *search_element(char *str);
 
+typedef enum {func, loop_for, loop_while, loop_do, if_else, global} environmentType;
+//lista de procedimentos definidos no programa
+typedef struct _t4{
+	char* name;
+	table_element *locals;
+	environmentType type;
+	
+	struct _t4* father;
+	struct _t4* local_environment;
+	
+	unsignedVariableType returnType;
+	struct _t4 *next;
+}environment_list;
+
+//Estrutura que guarda TODOS os simbolos de um programa: o ambiente "global" e a lista de ambientes
+typedef struct _t5{
+	table_element* global;
+	environment_list* procs;
+}prog_env;
 #endif

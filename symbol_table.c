@@ -1,20 +1,19 @@
 #include "symbol_table.h"
-#include<malloc.h>
-#include<string.h>
-#include<stdio.h>
+#include <malloc.h>
+#include <string.h>
+#include <stdio.h>
 
 extern table_element* symtab;
 
 
 /*Insere um novo identificador na cauda de uma lista ligada de simbolo*/
-table_element *insert_element(char *str, basic_type t, scope_type tp){
+table_element *insert_element(char *str, basic_type t){
 	table_element *newSymbol=(table_element*) malloc(sizeof(table_element));
 	table_element *aux;
 	table_element *previous;
 
 	strcpy(newSymbol->name, str);
 	newSymbol->type = t;
-	newSymbol->scope_type = tp;
 	newSymbol->next=NULL;	
 
 	/*Se table ja tem elementos */

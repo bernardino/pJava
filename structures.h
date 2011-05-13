@@ -10,10 +10,14 @@ typedef enum { is_before_plus, is_before_minus, is_after_plus, is_after_minus } 
 typedef enum { is_dec, is_assign, is_funct, is_un, is_cyc, is_cond, is_cont} operationType;
 typedef enum { is_OP_BIGGER, is_OP_LOWER, is_OP_EQ, is_OP_NE, is_OP_LE, is_OP_GE, is_OP_LOR, is_OP_LAND } if_exp_type;
 typedef enum { is_break, is_continue, is_return, is_return_exp } controlType;
+typedef enum { is_private, is_public, is_protected } scopeType;
+typedef enum { GLOBAL, LOCAL } globalType;
 
 
 typedef struct _program is_program;
 typedef struct _main is_main;
+typedef struct _global_list is_global_list;
+typedef struct _global_dec is_global_dec;
 typedef struct _function_list is_function_list;
 typedef struct _function is_function;
 typedef struct _function_call is_function_call;
@@ -52,7 +56,6 @@ typedef struct _infix_expression is_infix_expression;
 typedef struct _if_expression is_if_expression;
 typedef struct _control is_control;
 
-
 /* Variable */
 
 struct _value{
@@ -67,6 +70,7 @@ struct _value{
 };
 
 struct _variable{
+	int line;
 	char *id;
 	is_expression *expression;
 };
@@ -114,6 +118,7 @@ struct _assign{
 };
 
 struct _unary{
+	int line;
 	char *id;
 	unaryType type;
 };
@@ -121,6 +126,7 @@ struct _unary{
 typedef enum { is_for_cycle, is_while_cycle, is_do_while_cycle } cycleType;
 
 struct _is_cycle{
+	int line;
 	cycleType type;
 	union{
 		is_for *for_cycle;
@@ -179,11 +185,13 @@ struct _condition_statement{
 
 
 struct _is_if{
+	int line;
 	is_expression *expression;
 	is_condition_code *code;
 };
 
 struct _is_if_else{
+	int line;
 	is_expression *expression;
 	is_condition_code *if_code;
 	is_condition_code *else_code;
@@ -191,6 +199,7 @@ struct _is_if_else{
 };
 
 struct _is_switch{
+	int line;
 	is_expression *expression;
 	is_switch_case *cases;
 };
@@ -265,15 +274,14 @@ struct _code{
 };
 
 struct _function_call{
+	int line;
 	char *id;
 	is_parameter_list *parameter_list;
-	
 
 };
 
-typedef enum { is_private, is_public, is_protected } scopeType;
-
 struct _function{
+	int line;
 	char *id;
 	scopeType scope_type;
 	unsignedVariableType return_type;
@@ -294,10 +302,23 @@ struct _main{
 	
 };
 
+struct _global_list{
+	is_global_dec *dec;
+	is_global_list *next;
+
+};
+
+struct _global_dec{
+	int line;
+	scopeType tp;
+	is_declaration *declaration;
+};
+
 struct _program{
 	char *id;
 	is_main *main;
 	is_function_list *function_list;
+	is_global_list *variable_list;
 
 };
 

@@ -3,15 +3,46 @@
 #include "functions.h"
 
  
-is_program* insert_program( char *id, is_main *main, is_function_list *function_list){
+is_program* insert_program( char *id, is_main *main, is_function_list *function_list, is_global_list *variable_list){
 	
 	is_program *program = (is_program*)malloc(sizeof(is_program));
 	program->id = id;
 	program->main = main;
 	program->function_list = function_list;
+	program->variable_list = variable_list;
 
 	return program;	
 
+}
+
+is_global_list* insert_global_list(is_global_list *list, is_global_dec *dec){
+
+	is_global_list *global_list = (is_global_list*)malloc(sizeof(is_global_list));
+	global_list->dec= dec;
+	global_list->next = NULL;
+	
+	if(!list)
+		return global_list;
+	
+	is_global_list *aux = list;
+
+	while(aux->next!=NULL)
+		aux=aux->next;
+
+	aux->next = global_list;
+	return list;
+
+
+}
+
+is_global_dec* insert_global_declaration(scopeType tp, is_declaration *declaration, int line){
+
+	is_global_dec *dec = (is_global_dec*)malloc(sizeof(is_global_dec));
+
+	dec->tp = tp;
+	dec->declaration = declaration;
+
+	return dec;
 }
 
 is_main* insert_main( is_code *code){
@@ -48,7 +79,7 @@ is_function_list* insert_function_list(is_function_list *list, is_function *f){
 	return list;
 }
 
-is_function_call* insert_function_call(char *id, is_parameter_list *param){
+is_function_call* insert_function_call(char *id, is_parameter_list *param, int line){
 	
 	is_function_call *function_call = (is_function_call*)malloc(sizeof(is_function_call));
 	function_call->id = id;
@@ -58,7 +89,7 @@ is_function_call* insert_function_call(char *id, is_parameter_list *param){
 
 }
 
-is_function* insert_function(scopeType sT, unsignedVariableType uT, char *id, is_argument_list *list, is_code *code){
+is_function* insert_function(scopeType sT, unsignedVariableType uT, char *id, is_argument_list *list, is_code *code, int line){
 
 	is_function *func = (is_function*)malloc(sizeof(is_function));
 	func->scope_type = sT;
@@ -201,7 +232,7 @@ is_operation* insert_operation_function(is_function_call* call){
 	
 }
 
-is_declaration* insert_declaration(unsignedVariableType type, is_variable_list* var_list){
+is_declaration* insert_declaration(unsignedVariableType type, is_variable_list* var_list, int line){
 
 	is_declaration *declaration = (is_declaration*)malloc(sizeof(is_declaration));
 	declaration->type = type;
@@ -210,7 +241,7 @@ is_declaration* insert_declaration(unsignedVariableType type, is_variable_list* 
 	return declaration;
 }
 
-is_assignment *insert_assignment(char *id, assignmentType type, is_expression* exp){
+is_assignment *insert_assignment(char *id, assignmentType type, is_expression* exp, int line){
 
 	is_assignment *assign = (is_assignment*)malloc(sizeof(is_assignment));
 	assign->id = id;
@@ -220,7 +251,7 @@ is_assignment *insert_assignment(char *id, assignmentType type, is_expression* e
 	return assign;
 }
 
-is_unary* insert_unary(char *id, unaryType type){
+is_unary* insert_unary(char *id, unaryType type, int line){
 
 	is_unary *unary = (is_unary*)malloc(sizeof(is_unary));
 	unary->id = id;
@@ -300,7 +331,7 @@ is_if_expression* insert_if(is_expression *exp1, if_exp_type type, is_expression
 	return if_expression;
 }
 
-is_control* insert_control(controlType type, is_expression *exp){
+is_control* insert_control(controlType type, is_expression *exp, int line){
 
 	is_control *control = (is_control*)malloc(sizeof(is_control));
 	
@@ -323,7 +354,7 @@ is_switch_case* insert_switch_case(switchType type, is_value *val, is_operation_
 }
 
 /* insert conditions */
-is_condition_statement* insert_if_statement(is_expression *expression,is_condition_code *code){
+is_condition_statement* insert_if_statement(is_expression *expression,is_condition_code *code, int line){
 
 	is_if *statement = (is_if*)malloc(sizeof(is_if));
 	statement->expression = expression;
@@ -336,7 +367,7 @@ is_condition_statement* insert_if_statement(is_expression *expression,is_conditi
 	return stat;
 }
 
-is_condition_statement* insert_if_else_statement(is_expression *expression,is_condition_code *if_code, is_condition_code *else_code){
+is_condition_statement* insert_if_else_statement(is_expression *expression,is_condition_code *if_code, is_condition_code *else_code, int line){
 
 	is_if_else *statement = (is_if_else*)malloc(sizeof(is_if_else));
 
@@ -351,7 +382,7 @@ is_condition_statement* insert_if_else_statement(is_expression *expression,is_co
 	return stat;
 }
 
-is_condition_statement* insert_switch_statement(is_expression *expression, is_switch_case *switch_case){
+is_condition_statement* insert_switch_statement(is_expression *expression, is_switch_case *switch_case, int line){
 
 	is_switch *sw = (is_switch*)malloc(sizeof(is_switch));
 	sw->expression = expression;
@@ -377,7 +408,7 @@ is_condition_code* insert_condition_code(is_operation_list *operation_list, is_o
 }
 
 /* insert cycles */
-is_cycle* insert_for(is_assignment *assign, is_if_expression *if_expression, is_increase_list *inc, is_condition_code *code){
+is_cycle* insert_for(is_assignment *assign, is_if_expression *if_expression, is_increase_list *inc, is_condition_code *code, int line){
 
 	is_for *for_cyc = (is_for*)malloc(sizeof(is_for));
 
@@ -394,7 +425,7 @@ is_cycle* insert_for(is_assignment *assign, is_if_expression *if_expression, is_
 	return cycle;
 }
 
-is_cycle* insert_while(is_if_expression *if_expression, is_condition_code *code){
+is_cycle* insert_while(is_if_expression *if_expression, is_condition_code *code, int line){
 
 	is_while *while_cyc = (is_while*)malloc(sizeof(is_while));
 
@@ -409,7 +440,7 @@ is_cycle* insert_while(is_if_expression *if_expression, is_condition_code *code)
 	return cycle;
 }
 
-is_cycle* insert_do_while(is_condition_code *code, is_if_expression *if_expression){
+is_cycle* insert_do_while(is_condition_code *code, is_if_expression *if_expression, int line){
 
 	is_do_while *do_while = (is_do_while*)malloc(sizeof(is_do_while));
 

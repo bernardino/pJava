@@ -1,4 +1,5 @@
 class gcd_rec {
+	public static int var = 1;
 	public static void main(String[] args) {
 		int a = 0, b=-1;
 		a = 315;
@@ -9,6 +10,7 @@ class gcd_rec {
 	public static int gcd(int a, int b) {
 		a++;
 		b=a+b;
+		cgd();
 		if (a == b || b == 0){
 			do
 				b+= a + gcd(a,b);

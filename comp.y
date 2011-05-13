@@ -4,9 +4,11 @@
 #include "structures.h"
 #include "functions.h"
 #include "shows.h"
+#include "semantics.h"
 
-table_element *symtab = NULL;
+prog_env *ambient = NULL;
 is_program *myprogram;
+extern int line;
 
 %}
 %token ARGS ASS_MUL ASS_DIV ASS_ADD ASS_SUB ASS_EQ ASS_AND ASS_LS ASS_RS
@@ -39,6 +41,8 @@ is_program *prog;
 is_main *m;
 is_function_list *func_list;
 is_function *func;
+is_global_list *glob;
+is_global_dec *dec;
 is_code *cod;
 is_parameter_list *param;
 is_argument_list *arg_list;
@@ -80,6 +84,8 @@ char *string;
 %type<m>main
 %type<func_list>function_list
 %type<func>function
+%type<glob>global_list
+%type<dec>global_variable
 %type<arg_list>argument_list
 %type<arg>argument
 %type<st>scope
@@ -116,23 +122,36 @@ char *string;
 %%
 
 init: 	
-	CLASS ID '{' main '}'			{ $$ = insert_program($2,$4,NULL); myprogram = $$; }
-	| CLASS ID '{' main function_list '}'	{ $$ = insert_program($2,$4,$5); myprogram = $$; }
+	CLASS ID '{' main function_list '}'			{ $$ = insert_program($2,$4,$5,NULL); myprogram = $$; }
+	| CLASS ID '{' main '}'					{ $$ = insert_program($2,$4,NULL,NULL); myprogram = $$; }
+	| CLASS ID '{' global_list main '}'			{ $$ = insert_program($2,$5,NULL,$4); myprogram = $$; }
+	|  CLASS ID '{' global_list main function_list '}'	{ $$ = insert_program($2,$5,$6,$4); myprogram = $$; }
 	;
 
-main: 	PUBLIC STATIC VOID MAIN '(' STRING '[' ']' ARGS ')' code	{ $$ = insert_main($11);}
+main: 	scope STATIC VOID MAIN '(' STRING '[' ']' ARGS ')' code	{ $$ = insert_main($11);}
 	;
 
-function_list:	
+global_list:
+	global_variable			{ $$ = insert_global_list(NULL,$1);}
+	| global_list global_variable	{ $$ = insert_global_list($1,$2);}
+	;
+	
+global_variable:
+	scope STATIC declaration ';'	{ $$ = insert_global_declaration($1,$3,line);}
+	| declaration ';'		{ $$ = insert_global_declaration(is_public,$1,line);}
+	;
+
+function_list:
 	function			{ $$ = insert_function_list(NULL,$1);}
 	| function_list function 	{ $$ = insert_function_list($1,$2);}
 	;
 
 function:
-	scope STATIC type ID '(' argument_list ')' code	{ $$ = insert_function($1, $3, $4, $6, $8);}
+	scope STATIC type ID '(' argument_list ')' code	{ $$ = insert_function($1, $3, $4, $6, $8,line);}
 	;
 
-scope:	PRIVATE		{$$ = is_private;}
+scope:	
+	PRIVATE		{$$ = is_private;}
 	| PROTECTED	{$$ = is_protected;}
 	| PUBLIC	{$$ = is_public;}
 	;
@@ -157,24 +176,24 @@ operation:
 	;
 
 declaration:
-	type var_list 	 	{ $$ = insert_declaration($1,$2); /*insert_element_symtab($1,$2);*/}
+	type var_list 	 	{ $$ = insert_declaration($1,$2,line); /*insert_element($1,$2);*/}
 	;
 assignment:
-	ID assign_operator expression			{ $$ = insert_assignment($1,$2,$3);}
+	ID assign_operator expression			{ $$ = insert_assignment($1,$2,$3,line);}
 	/*| ID '[' expression ']' operator expression	{ $$ = insert_assignment( );}*/
 	;
 unary:
-	ID OP_INC	{ $$ = insert_unary($1, is_after_plus);}
-	| OP_INC ID	{ $$ = insert_unary($2, is_before_plus);}
-	| ID OP_DEC	{ $$ = insert_unary($1, is_after_minus);}
-	| OP_DEC ID	{ $$ = insert_unary($2, is_before_minus);}
+	ID OP_INC	{ $$ = insert_unary($1, is_after_plus,line);}
+	| OP_INC ID	{ $$ = insert_unary($2, is_before_plus,line);}
+	| ID OP_DEC	{ $$ = insert_unary($1, is_after_minus,line);}
+	| OP_DEC ID	{ $$ = insert_unary($2, is_before_minus,line);}
 	;
 
 control:
-	BREAK			{ $$ = insert_control(is_break,NULL);}
-	| CONTINUE		{ $$ = insert_control(is_continue,NULL);}
-	| RETURN		{ $$ = insert_control(is_return,NULL);}
-	| RETURN expression	{ $$ = insert_control(is_return_exp,$2);}
+	BREAK			{ $$ = insert_control(is_break,NULL,line);}
+	| CONTINUE		{ $$ = insert_control(is_continue,NULL,line);}
+	| RETURN		{ $$ = insert_control(is_return,NULL,line);}
+	| RETURN expression	{ $$ = insert_control(is_return_exp,$2,line);}
 	;
 
 
@@ -187,8 +206,8 @@ expression:
 	;
 
 function_call:
-	ID '(' ')'			{ $$ = insert_function_call($1,NULL);}
-	| ID '(' parameter_list ')'	{ $$ = insert_function_call($1,$3);}
+	ID '(' ')'			{ $$ = insert_function_call($1,NULL,line);}
+	| ID '(' parameter_list ')'	{ $$ = insert_function_call($1,$3,line);}
 	;
 
 infix_expression:
@@ -239,14 +258,14 @@ argument:
 	;
 	
 cycle:
-	FOR '(' assignment ';' if_expression ';' increase_list ')' condition_code	{ $$ = insert_for($3,$5,$7,$9);}
-	| WHILE '(' if_expression ')' condition_code					{ $$ = insert_while($3,$5);}
-	| DO condition_code WHILE '(' if_expression ')' ';'				{ $$ = insert_do_while($2,$5);}
+	FOR '(' assignment ';' if_expression ';' increase_list ')' condition_code	{ $$ = insert_for($3,$5,$7,$9,line);}
+	| WHILE '(' if_expression ')' condition_code					{ $$ = insert_while($3,$5,line);}
+	| DO condition_code WHILE '(' if_expression ')' ';'				{ $$ = insert_do_while($2,$5,line);}
 	;
 
-if:	IF '(' expression ')' condition_code %prec IFPREC			{ $$ = insert_if_statement($3, $5); }
-	| IF '(' expression ')' condition_code ELSE condition_code		{ $$ = insert_if_else_statement($3,$5,$7);}
-	| SWITCH '(' expression ')' '{' switch '}'				{ $$ = insert_switch_statement($3,$6);}
+if:	IF '(' expression ')' condition_code %prec IFPREC			{ $$ = insert_if_statement($3, $5,line); }
+	| IF '(' expression ')' condition_code ELSE condition_code		{ $$ = insert_if_else_statement($3,$5,$7,line);}
+	| SWITCH '(' expression ')' '{' switch '}'				{ $$ = insert_switch_statement($3,$6,line);}
 	;
 
 increase_list:
@@ -316,6 +335,8 @@ int yyerror (char *s)
 
 int main(){
 	yyparse();
+	ambient = semantic_analysis(myprogram);
 	show_program(myprogram);
+	printf("%d\n",line);
 	return 0;
 }

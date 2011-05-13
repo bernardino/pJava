@@ -1,6 +1,8 @@
 %{
 #include "structures.h"
 #include "y.tab.h"
+
+int line = 1;
 %}
 
 Separator	[\(\)\{\}\[\]\;\,\.]
@@ -19,7 +21,7 @@ Identifier 	{Letter}(({Letter}|{Digit})+)?
 Comment1        [\/][\*]({AnyButAstr}|[\*]{AnyButSlash})*[\*][\/]
 Comment2        [\/][\/].*
 Comment		({Comment1}|{Comment2})
-WhiteSpace	[' ''\n''\t']
+WhiteSpace	[' ''\t']
 
 IntSuffix	([l]|[L])
 Decimal		{NonZeroDigit}{Digit}*{IntSuffix}?
@@ -102,10 +104,10 @@ Char		\'.\'
 {String}		{ yylval.string = (char*)strdup(yytext+1); yylval.string[strlen(yytext)-2]='\0';return STRING_VAL;}
 {Char}			{ yylval.chr = yytext[1]; return CHAR_VAL;}
 
+\n			{line++;}
 {WhiteSpace}    {}
 
 {Comment}	{}
-
 .	{ return yytext[0];}
 
 
