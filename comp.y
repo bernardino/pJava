@@ -243,8 +243,8 @@ var_list:
 	;
 
 var:
-	ID			{ $$ = insert_variable(is_id, $1, NULL);}
-	| ID '=' expression	{ $$ = insert_variable(is_id, $1, $3);}
+	ID			{ $$ = insert_variable(is_id, $1, NULL,line);}
+	| ID '=' expression	{ $$ = insert_variable(is_id, $1, $3,line);}
 	/*| ID '[' value ']'	{ $$ = insert_variable(is_array, $1, $3);}*/
 	;
 
@@ -305,7 +305,7 @@ assign_operator:
 	;
 
 value:
-	ID		{ $$ = insert_string(is_string, $1);}
+	ID		{ $$ = insert_string(is_ident, $1);}
 	| STRING_VAL	{ $$ = insert_string(is_string, $1);}
 	| NUMBER_VAL	{ $$ = insert_int(is_int, $1);}
 	| '+' NUMBER_VAL	{ $$ = insert_int(is_int, $2);}
@@ -336,7 +336,7 @@ int yyerror (char *s)
 int main(){
 	yyparse();
 	ambient = semantic_analysis(myprogram);
-	show_program(myprogram);
-	printf("%d\n",line);
+	/*show_program(myprogram);*/
+	printf("%d\n",line); 
 	return 0;
 }

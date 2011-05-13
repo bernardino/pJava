@@ -2216,14 +2216,14 @@ yyreduce:
 
 /* Line 1455 of yacc.c  */
 #line 246 "comp.y"
-    { (yyval.var) = insert_variable(is_id, (yyvsp[(1) - (1)].string), NULL);}
+    { (yyval.var) = insert_variable(is_id, (yyvsp[(1) - (1)].string), NULL,line);}
     break;
 
   case 66:
 
 /* Line 1455 of yacc.c  */
 #line 247 "comp.y"
-    { (yyval.var) = insert_variable(is_id, (yyvsp[(1) - (3)].string), (yyvsp[(3) - (3)].exp));}
+    { (yyval.var) = insert_variable(is_id, (yyvsp[(1) - (3)].string), (yyvsp[(3) - (3)].exp),line);}
     break;
 
   case 67:
@@ -2426,7 +2426,7 @@ yyreduce:
 
 /* Line 1455 of yacc.c  */
 #line 308 "comp.y"
-    { (yyval.val) = insert_string(is_string, (yyvsp[(1) - (1)].string));}
+    { (yyval.val) = insert_string(is_ident, (yyvsp[(1) - (1)].string));}
     break;
 
   case 96:
@@ -2753,8 +2753,8 @@ int yyerror (char *s)
 int main(){
 	yyparse();
 	ambient = semantic_analysis(myprogram);
-	show_program(myprogram);
-	printf("%d\n",line);
+	/*show_program(myprogram);*/
+	printf("%d\n",line); 
 	return 0;
 }
 

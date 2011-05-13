@@ -1,7 +1,7 @@
 #ifndef _STRUCTURES_
 #define _STRUCTURES_
 
-typedef enum { is_char, is_int, is_boolean, is_double, is_string, is_void} unsignedVariableType;
+typedef enum { is_char, is_int, is_boolean, is_double, is_string, is_void, is_ident} unsignedVariableType;
 typedef enum { is_id, is_array} identiferType;
 typedef enum { is_plus, is_minus, is_mult, is_div, is_and, is_percent, is_lshift, is_rshift} infixType;
 typedef enum { is_ASS_EQ, is_ASS_ADD, is_ASS_SUB, is_ASS_MUL, is_ASS_DIV , is_ASS_AND, is_ASS_PERC, is_ASS_LS, is_ASS_RS} assignmentType;
@@ -250,6 +250,7 @@ struct _if_expression{
 struct _control{
 	is_expression *expression;
 	controlType type;
+        int line;
 };
 
 

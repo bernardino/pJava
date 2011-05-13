@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include "structures.h"
 #include "functions.h"
+#include <stdio.h>
 
  
 is_program* insert_program( char *id, is_main *main, is_function_list *function_list, is_global_list *variable_list){
@@ -41,6 +42,7 @@ is_global_dec* insert_global_declaration(scopeType tp, is_declaration *declarati
 
 	dec->tp = tp;
 	dec->declaration = declaration;
+        dec->line = line;
 
 	return dec;
 }
@@ -84,6 +86,7 @@ is_function_call* insert_function_call(char *id, is_parameter_list *param, int l
 	is_function_call *function_call = (is_function_call*)malloc(sizeof(is_function_call));
 	function_call->id = id;
 	function_call->parameter_list = param;
+        function_call->line = line;
 	
 	return function_call;
 
@@ -96,7 +99,8 @@ is_function* insert_function(scopeType sT, unsignedVariableType uT, char *id, is
 	func->return_type = uT;
 	func->id = id;
 	func->argument_list = list;
-	func->code = code;	
+	func->code = code;
+        func->line = line;
 
 	return func;
 
@@ -237,6 +241,7 @@ is_declaration* insert_declaration(unsignedVariableType type, is_variable_list* 
 	is_declaration *declaration = (is_declaration*)malloc(sizeof(is_declaration));
 	declaration->type = type;
 	declaration->variable_list = var_list;
+        declaration->line = line;
 
 	return declaration;
 }
@@ -247,6 +252,7 @@ is_assignment *insert_assignment(char *id, assignmentType type, is_expression* e
 	assign->id = id;
 	assign->type = type;
 	assign->expression = exp;
+        assign->line = line;
 
 	return assign;
 }
@@ -256,6 +262,7 @@ is_unary* insert_unary(char *id, unaryType type, int line){
 	is_unary *unary = (is_unary*)malloc(sizeof(is_unary));
 	unary->id = id;
 	unary->type = type;
+        unary->line = line;
 	
 	return unary;
 }
@@ -337,6 +344,7 @@ is_control* insert_control(controlType type, is_expression *exp, int line){
 	
 	control->type = type;
 	control->expression = exp;
+        control->line = line;
 
 	return control;
 }
@@ -359,6 +367,7 @@ is_condition_statement* insert_if_statement(is_expression *expression,is_conditi
 	is_if *statement = (is_if*)malloc(sizeof(is_if));
 	statement->expression = expression;
 	statement->code = code;
+        statement->line = line;
 
 	is_condition_statement  *stat = (is_condition_statement*)malloc(sizeof(is_condition_statement));
 	stat->type = is_if_statement;
@@ -374,6 +383,7 @@ is_condition_statement* insert_if_else_statement(is_expression *expression,is_co
 	statement->expression = expression;
 	statement->if_code = if_code;
 	statement->else_code = else_code;
+        statement->line = line;
 
 	is_condition_statement  *stat = (is_condition_statement*)malloc(sizeof(is_condition_statement));
 	stat->type = is_if_else_statement;
@@ -387,6 +397,7 @@ is_condition_statement* insert_switch_statement(is_expression *expression, is_sw
 	is_switch *sw = (is_switch*)malloc(sizeof(is_switch));
 	sw->expression = expression;
 	sw->cases = switch_case;
+        sw->line = line;
 
 	is_condition_statement  *stat = (is_condition_statement*)malloc(sizeof(is_condition_statement));
 	stat->type = is_switch_statement;
@@ -421,6 +432,7 @@ is_cycle* insert_for(is_assignment *assign, is_if_expression *if_expression, is_
 
 	cycle->type = is_for_cycle;
 	cycle->cyc.for_cycle = for_cyc;
+        cycle->line = line;
 
 	return cycle;
 }
@@ -436,7 +448,8 @@ is_cycle* insert_while(is_if_expression *if_expression, is_condition_code *code,
 
 	cycle->type = is_while_cycle;
 	cycle->cyc.while_cycle = while_cyc;
-
+        cycle->line = line;
+        
 	return cycle;
 }
 
@@ -451,7 +464,8 @@ is_cycle* insert_do_while(is_condition_code *code, is_if_expression *if_expressi
 
 	cycle->type = is_do_while_cycle;
 	cycle->cyc.do_while = do_while;
-
+        cycle->line = line;
+        
 	return cycle;
 }
 
@@ -515,13 +529,14 @@ is_variable_list* insert_variable_list(is_variable_list *list, is_variable* var)
 	
 }
 
-is_variable* insert_variable(identiferType type, char *id, is_expression* exp){
+is_variable* insert_variable(identiferType type, char *id, is_expression* exp, int line){
 	
 	/* Arrays are still not working */
 
 	is_variable *var = (is_variable*)malloc(sizeof(is_variable));
 	var->id = id;
 	var->expression = exp;
+        var->line = line;
 
 	return var;	
 

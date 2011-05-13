@@ -67,7 +67,7 @@ is_increase_list* insert_increase_list(is_increase_list *inc_list, is_increase *
 
 /* insert variables */
 is_variable_list* insert_variable_list(is_variable_list *list, is_variable *var);
-is_variable* insert_variable(identiferType type, char *id, is_expression *exp);
+is_variable* insert_variable(identiferType type, char *id, is_expression *exp,int line);
 
 /* insert parameters */
 is_parameter_list* insert_parameter_list(is_parameter_list *list, is_expression *exp);

@@ -1,16 +1,17 @@
 class gcd_rec {
 	public static int var = 1;
 	public static void main(String[] args) {
-		int a = 0, b=-1;
-		a = 315;
-		b = "a";
+		int a = 0, b = 1;
+		a = a + b;
+                b = 1;
 		b%=7;
+                gcd(a,b);
 		/*System.out.println(gcd(a,b));*/
 	}
-	public static int gcd(int a, int b) {
+	public static int gcd(int a,int b) {
 		a++;
 		b=a+b;
-		cgd();
+		/*cgd();
 		if (a == b || b == 0){
 			do
 				b+= a + gcd(a,b);
@@ -23,6 +24,6 @@ class gcd_rec {
 			return gcd(a % b, b);
 		else  
 			b = a;
-		return gcd(a, b % a);
+		return gcd(a, b % a);*/
 	}
 }
