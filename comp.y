@@ -21,9 +21,9 @@ extern int line;
 %token LONG LS
 %token MAIN
 %token NEW JNULL
-%token OP_INC OP_DEC OP_SHL OP_SHR OP_SHRR OP_GE OP_LE OP_EQ OP_NE OP_LAND OP_LOR OP_DIM
-%token PRIVATE PROTECTED PUBLIC
-%token SHORT STATIC STRING SWITCH
+%token OP_INC OP_DEC OP_SHL OP_SHR OP_SHRR OP_GE OP_LE OP_EQ OP_NE OP_LAND OP_LOR OP_DIM OUT
+%token PRINT PRINTLN PRIVATE PROTECTED PUBLIC
+%token SHORT STATIC STRING SWITCH SYSTEM
 %token RETURN RS
 %token TRUE THIS
 %token VOID
@@ -192,18 +192,20 @@ unary:
 	;
 
 control:
-	BREAK			{ $$ = insert_control(is_break,NULL,line);}
-	| CONTINUE		{ $$ = insert_control(is_continue,NULL,line);}
-	| RETURN		{ $$ = insert_control(is_return,NULL,line);}
-	| RETURN expression	{ $$ = insert_control(is_return_exp,$2,line);}
+	BREAK                                               { $$ = insert_control(is_break,NULL,line);}
+	| CONTINUE                                          { $$ = insert_control(is_continue,NULL,line);}
+	| RETURN                                            { $$ = insert_control(is_return,NULL,line);}
+	| RETURN expression                                 { $$ = insert_control(is_return_exp,$2,line);}
+        | SYSTEM '.' OUT '.' PRINTLN '(' expression ')'     { $$ = insert_control(is_println,$7,line);}
+        | SYSTEM '.' OUT '.' PRINT '(' expression ')'       { $$ = insert_control(is_print,$7,line);}
 	;
 
 
 expression:
-	'(' expression ')'	{ $$ = insert_expression($2);}
-	| value			{ $$ = insert_expression_value($1);}
-	| function_call		{ $$ = insert_expression_func($1);}
-	| infix_expression 	{ $$ = insert_expression_infix($1);}
+	'(' expression ')'	{ $$ = insert_expression($2,line);}
+	| value			{ $$ = insert_expression_value($1,line);}
+	| function_call		{ $$ = insert_expression_func($1,line);}
+	| infix_expression 	{ $$ = insert_expression_infix($1,line);}
 	| if_expression		{ $$ = insert_expression_if($1,line);}
 	;
 
@@ -260,12 +262,12 @@ argument:
 	;
 	
 cycle:
-	FOR '(' forInit ';' if_expression ';' increase_list ')' condition_code          { $$ = insert_for($3,$5,$7,$9,line);}
-        | FOR '(' ';' if_expression ';' increase_list ')' condition_code                 { $$ = insert_for(NULL,$4,$6,$8,line);}
-        | FOR '(' forInit ';' if_expression ';' ')' condition_code                      { $$ = insert_for($3,$5,NULL,$8,line);}
-        | FOR '(' ';' if_expression ';' ')' condition_code                              { $$ = insert_for(NULL,$4,NULL,$7,line);}
-	| WHILE '(' if_expression ')' condition_code					{ $$ = insert_while($3,$5,line);}
-	| DO condition_code WHILE '(' if_expression ')' ';'				{ $$ = insert_do_while($2,$5,line);}
+	FOR '(' forInit ';' expression ';' increase_list ')' condition_code          { $$ = insert_for($3,$5,$7,$9,line);}
+        | FOR '(' ';' expression ';' increase_list ')' condition_code                 { $$ = insert_for(NULL,$4,$6,$8,line);}
+        | FOR '(' forInit ';' expression ';' ')' condition_code                      { $$ = insert_for($3,$5,NULL,$8,line);}
+        | FOR '(' ';' expression ';' ')' condition_code                              { $$ = insert_for(NULL,$4,NULL,$7,line);}
+	| WHILE '(' expression ')' condition_code					{ $$ = insert_while($3,$5,line);}
+	| DO condition_code WHILE '(' expression ')' ';'				{ $$ = insert_do_while($2,$5,line);}
 	;
 
 if:	IF '(' expression ')' condition_code %prec IFPREC			{ $$ = insert_if_statement($3, $5,line); }
@@ -298,10 +300,10 @@ condition_code:
 	
 
 switch: 
-	CASE value ':' operation_list switch 	{ $$ = insert_switch_case(is_NORMAL,$2,$4,$5);}
-	| DEFAULT ':' operation_list switch	{ $$ = insert_switch_case(is_DEFAULT,NULL,$3,$4);}
-	| CASE value ':' operation_list 	{ $$ = insert_switch_case(is_NORMAL,$2,$4,NULL);}
-	| DEFAULT ':' operation_list		{ $$ = insert_switch_case(is_DEFAULT,NULL,$3,NULL);}
+	CASE value ':' operation_list switch 	{ $$ = insert_switch_case(is_NORMAL,$2,$4,$5,line);}
+	| DEFAULT ':' operation_list switch	{ $$ = insert_switch_case(is_DEFAULT,NULL,$3,$4,line);}
+	| CASE value ':' operation_list 	{ $$ = insert_switch_case(is_NORMAL,$2,$4,NULL,line);}
+	| DEFAULT ':' operation_list		{ $$ = insert_switch_case(is_DEFAULT,NULL,$3,NULL,line);}
 	;
 
 assign_operator:

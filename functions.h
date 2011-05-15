@@ -37,10 +37,10 @@ is_assignment *insert_assignment(char *id, assignmentType type, is_expression* e
 is_unary* insert_unary(char *id, unaryType type, int line);
 
 /* insert expressions */
-is_expression* insert_expression( is_expression *exp);
-is_expression* insert_expression_value( is_value *val);
-is_expression* insert_expression_func( is_function_call *call);
-is_expression* insert_expression_infix(is_infix_expression *infix);
+is_expression* insert_expression( is_expression *exp, int line);
+is_expression* insert_expression_value( is_value *val, int line);
+is_expression* insert_expression_func( is_function_call *call, int line);
+is_expression* insert_expression_infix(is_infix_expression *infix, int line);
 is_expression* insert_expression_if(is_if_expression *if_expression, int line);
 
 is_infix_expression* insert_infix( is_expression* exp1, infixType type, is_expression *exp2);
@@ -51,14 +51,14 @@ is_control* insert_control(controlType type, is_expression *exp, int line);
 is_condition_statement* insert_if_statement(is_expression *expression,is_condition_code *code, int line);
 is_condition_statement* insert_if_else_statement(is_expression *expression,is_condition_code *if_code, is_condition_code *else_code, int line);
 is_condition_statement* insert_switch_statement(is_expression *expression, is_switch_case *switch_case, int line);
-is_switch_case* insert_switch_case(switchType type, is_value *val, is_operation_list *operation_list, is_switch_case *next);
+is_switch_case* insert_switch_case(switchType type, is_value *val, is_operation_list *operation_list, is_switch_case *next, int line);
 
 is_condition_code* insert_condition_code(is_operation_list *operation_list, is_operation *operation);
 
 /* insert cycles */
-is_cycle* insert_for(is_for_init *init, is_if_expression *if_expression, is_increase_list *inc, is_condition_code *code, int line);
-is_cycle* insert_while(is_if_expression *if_expression, is_condition_code *code, int line);
-is_cycle* insert_do_while(is_condition_code *code, is_if_expression *if_expression, int line);
+is_cycle* insert_for(is_for_init *init, is_expression *expression, is_increase_list *inc, is_condition_code *code, int line);
+is_cycle* insert_while(is_expression *expression, is_condition_code *code, int line);
+is_cycle* insert_do_while(is_condition_code *code, is_expression *expression, int line);
 
 is_increase* insert_assign_inc( is_assignment *assign);
 is_increase* insert_unary_inc(is_unary *unary);

@@ -82,27 +82,31 @@
      OP_LAND = 298,
      OP_LOR = 299,
      OP_DIM = 300,
-     PRIVATE = 301,
-     PROTECTED = 302,
-     PUBLIC = 303,
-     SHORT = 304,
-     STATIC = 305,
-     STRING = 306,
-     SWITCH = 307,
-     RETURN = 308,
-     RS = 309,
-     TRUE = 310,
-     THIS = 311,
-     VOID = 312,
-     WHILE = 313,
-     NUMBER_VAL = 314,
-     DOUBLE_VAL = 315,
-     STRING_VAL = 316,
-     CHAR_VAL = 317,
-     ID = 318,
-     IFPREC = 319,
-     ASS_PERC = 320,
-     ASS_SUM = 321
+     OUT = 301,
+     PRINT = 302,
+     PRINTLN = 303,
+     PRIVATE = 304,
+     PROTECTED = 305,
+     PUBLIC = 306,
+     SHORT = 307,
+     STATIC = 308,
+     STRING = 309,
+     SWITCH = 310,
+     SYSTEM = 311,
+     RETURN = 312,
+     RS = 313,
+     TRUE = 314,
+     THIS = 315,
+     VOID = 316,
+     WHILE = 317,
+     NUMBER_VAL = 318,
+     DOUBLE_VAL = 319,
+     STRING_VAL = 320,
+     CHAR_VAL = 321,
+     ID = 322,
+     IFPREC = 323,
+     ASS_PERC = 324,
+     ASS_SUM = 325
    };
 #endif
 /* Tokens.  */
@@ -149,27 +153,31 @@
 #define OP_LAND 298
 #define OP_LOR 299
 #define OP_DIM 300
-#define PRIVATE 301
-#define PROTECTED 302
-#define PUBLIC 303
-#define SHORT 304
-#define STATIC 305
-#define STRING 306
-#define SWITCH 307
-#define RETURN 308
-#define RS 309
-#define TRUE 310
-#define THIS 311
-#define VOID 312
-#define WHILE 313
-#define NUMBER_VAL 314
-#define DOUBLE_VAL 315
-#define STRING_VAL 316
-#define CHAR_VAL 317
-#define ID 318
-#define IFPREC 319
-#define ASS_PERC 320
-#define ASS_SUM 321
+#define OUT 301
+#define PRINT 302
+#define PRINTLN 303
+#define PRIVATE 304
+#define PROTECTED 305
+#define PUBLIC 306
+#define SHORT 307
+#define STATIC 308
+#define STRING 309
+#define SWITCH 310
+#define SYSTEM 311
+#define RETURN 312
+#define RS 313
+#define TRUE 314
+#define THIS 315
+#define VOID 316
+#define WHILE 317
+#define NUMBER_VAL 318
+#define DOUBLE_VAL 319
+#define STRING_VAL 320
+#define CHAR_VAL 321
+#define ID 322
+#define IFPREC 323
+#define ASS_PERC 324
+#define ASS_SUM 325
 
 
 
@@ -227,7 +235,7 @@ char *string;
 
 
 /* Line 1676 of yacc.c  */
-#line 231 "y.tab.h"
+#line 239 "y.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

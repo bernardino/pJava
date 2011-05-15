@@ -96,6 +96,10 @@ Char		\'.\'
 "this"		{return THIS;}
 "main"		{return MAIN;}
 "args"		{return ARGS;}
+"System"        {return SYSTEM;}
+"out"           {return OUT;}
+"print"         {return PRINT;}
+"println"       {return PRINTLN;}
 "String"	{return STRING;}
 
 {Identifier}		{ yylval.string = (char*)strdup(yytext); return ID;}

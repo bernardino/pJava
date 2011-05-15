@@ -9,7 +9,7 @@ typedef enum { is_infix, is_val, is_funct_call, is_exp, is_if_exp } expressionTy
 typedef enum { is_before_plus, is_before_minus, is_after_plus, is_after_minus } unaryType;
 typedef enum { is_dec, is_assign, is_funct, is_un, is_cyc, is_cond, is_cont} operationType;
 typedef enum { is_OP_BIGGER, is_OP_LOWER, is_OP_EQ, is_OP_NE, is_OP_LE, is_OP_GE, is_OP_LOR, is_OP_LAND } if_exp_type;
-typedef enum { is_break, is_continue, is_return, is_return_exp } controlType;
+typedef enum { is_break, is_continue, is_return, is_return_exp, is_println, is_print } controlType;
 typedef enum { is_private, is_public, is_protected } scopeType;
 typedef enum { GLOBAL, LOCAL } globalType;
 
@@ -140,19 +140,19 @@ struct _is_cycle{
 
 struct _for{
 	is_for_init *init;
-	is_if_expression *if_expression;
+	is_expression *if_expression;
 	is_increase_list *increase;
 	is_condition_code *code;
 };
 
 struct _while{
-	is_if_expression *if_expression;
+	is_expression *if_expression;
 	is_condition_code *code;
 
 };
 
 struct _doWhile{
-	is_if_expression *if_expression;
+	is_expression *if_expression;
 	is_condition_code *code;
 };
 
@@ -222,6 +222,7 @@ typedef enum { is_DEFAULT, is_NORMAL } switchType;
 
 struct _switch_case{
 	switchType type;
+        int line;
 	is_value *value;
 	is_operation_list *operation_list;
 	is_switch_case *next;
@@ -238,6 +239,7 @@ struct _condition_code{
 struct _expression{
 	char *var;
 	expressionType type;
+        int line;
 	union{
 		is_value *value;
 		is_infix_expression *infix;
@@ -259,7 +261,6 @@ struct _if_expression{
 	is_expression  *exp1;
 	if_exp_type type;
 	is_expression  *exp2;
-        int line;
 };
 
 struct _control{

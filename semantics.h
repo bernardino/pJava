@@ -15,10 +15,11 @@ table_element* semantic_analysis_variable(prog_env *pe,environment_list *env, ta
 
 table_element* insertVariable(prog_env* pe,environment_list *env,table_element * variables,int line, char *name, table_element *el, globalType type);
 
-unsignedVariableType semantic_analysis_var_expression(prog_env *pe,environment_list *env, table_element *variables, unsignedVariableType type, is_expression *expression, int line);
-unsignedVariableType semantic_analysis_value(prog_env *pe,environment_list *env, table_element *variables,unsignedVariableType type, is_value *value,int line);
-void semantic_analysis_function_call(prog_env *pe,environment_list *env, table_element *variables, unsignedVariableType type, is_function_call *call, int exp);
-void semantic_analysis_parameters(prog_env *pe,table_element *variables, environment_list *env, is_parameter_list *list, int line);
+unsignedVariableType semantic_analysis_var_expression(prog_env *pe,environment_list *env, table_element *variables, unsignedVariableType type, is_expression *expression, int line, int analysis);
+unsignedVariableType semantic_analysis_value(prog_env *pe,environment_list *env, table_element *variables,unsignedVariableType type, is_value *value,int line, int analysis);
+void semantic_analysis_if_expression(prog_env *pe, environment_list *env,is_if_expression *exp,int line);
+unsignedVariableType semantic_analysis_function_call(prog_env *pe,environment_list *env, table_element *variables, unsignedVariableType type, is_function_call *call, int exp);
+void semantic_analysis_parameters(prog_env *pe,environment_list *father, table_element *variables, environment_list *env, is_parameter_list *list, int line);
 
 void semantic_analysis_main(prog_env* pe, is_main *main);
 void semantic_analysis_function_list(prog_env *pe, is_function_list *list);
@@ -33,7 +34,15 @@ void semantic_analysis_cycle(prog_env *pe, environment_list *env,table_element *
 void semantic_analysis_for(prog_env *pe, environment_list *env,table_element *variables, is_for *for_cycle);
 void semantic_analysis_increase_list(prog_env *pe, environment_list *env, is_increase_list *list);
 void semantic_analysis_increase(prog_env *pe, environment_list *env, is_increase *inc);
-void semantic_analysis_if_expression(prog_env *pe, environment_list *env,is_if_expression *exp,int line);
 
 void semantic_analysis_while(prog_env *pe, environment_list *env, table_element *variables, is_while *whil);
 void semantic_analysis_do_while(prog_env *pe, environment_list *env, table_element *variables, is_do_while *whil);
+
+void semantic_analysis_condition(prog_env *pe,environment_list *env, table_element *variables, is_condition_statement *cond);
+void semantic_analysis_if(prog_env *pe,environment_list *env, table_element *variables, is_if *stat);
+void semantic_analysis_if_else(prog_env *pe,environment_list *env, table_element *variables, is_if_else *stat);
+void semantic_analysis_switch(prog_env *pe,environment_list *env, table_element *variables, is_switch *sw);
+void semantic_analysis_case(prog_env *pe,environment_list *env, table_element *variables, is_switch_case *cases);
+void semantic_analysis_case_value(prog_env *pe,environment_list *env, table_element *variables, is_value *value,int line);
+
+void semantic_analysis_control(prog_env *pe,environment_list *env, table_element *variables, is_control *control);

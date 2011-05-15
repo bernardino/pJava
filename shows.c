@@ -199,7 +199,7 @@ void show_for_cycle(is_for *for_cycle) {
         else
             show_declaration(for_cycle->init->init.dec);
 	printf(" ; ");
-	show_if_expression(for_cycle->if_expression);
+	show_expression(for_cycle->if_expression);
 	printf(" ; ");
 	show_increase_list(for_cycle->increase);
 	printf(" ) { ");
@@ -209,7 +209,7 @@ void show_for_cycle(is_for *for_cycle) {
 
 void show_while_cycle(is_while *while_cycle) {
 	printf(" WHILE ( ");
-	show_if_expression(while_cycle->if_expression);
+	show_expression(while_cycle->if_expression);
 	printf(" ) { ");
 	show_condition_code(while_cycle->code);
 	printf(" } ");
@@ -220,7 +220,7 @@ void show_do_while_cycle(is_do_while *do_while) {
 	printf(" DO { ");
 	show_condition_code(do_while->code);
 	printf(" } WHILE ( ");
-	show_if_expression(do_while->if_expression);
+	show_expression(do_while->if_expression);
 	printf(" ) ");
 }
 

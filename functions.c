@@ -269,49 +269,53 @@ is_unary* insert_unary(char *id, unaryType type, int line){
 
 
 /* INSERT EXPRESSIONS */
-is_expression* insert_expression_value( is_value *val){
+is_expression* insert_expression_value( is_value *val,int line){
 	
     is_expression *express = (is_expression*)malloc(sizeof(is_expression));
     express->type = is_val;
     express->exp.value = val;
+    express->line = line;
 
     return express;
 }
 
-is_expression* insert_expression_func( is_function_call *call){
+is_expression* insert_expression_func( is_function_call *call,int line){
 	
     is_expression *express = (is_expression*)malloc(sizeof(is_expression));
     express->type = is_funct_call;
     express->exp.function = call;
-
+    express->line = line;
+    
     return express;
 }
 
-is_expression* insert_expression_infix(is_infix_expression* infix){
+is_expression* insert_expression_infix(is_infix_expression* infix,int line){
 
     is_expression *express = (is_expression*)malloc(sizeof(is_expression));
     express->type = is_infix;
     express->exp.infix = infix;
-
+    express->line = line;
+    
     return express;
 }
 
-is_expression* insert_expression( is_expression *exp){
+is_expression* insert_expression( is_expression *exp,int line){
 	
     is_expression *express = (is_expression*)malloc(sizeof(is_expression));
     express->type = is_exp;
     express->exp.expression = exp;
+    express->line = line;
 
     return express;
 	
 }
 
 is_expression* insert_expression_if(is_if_expression *if_expression, int line){
-	
-    if_expression->line = line;
+	;
     is_expression *express = (is_expression*)malloc(sizeof(is_expression));
     express->type = is_if_exp;
     express->exp.if_expression = if_expression;
+    express->line = line;
 
     return express;
 
@@ -350,10 +354,11 @@ is_control* insert_control(controlType type, is_expression *exp, int line){
 	return control;
 }
 
-is_switch_case* insert_switch_case(switchType type, is_value *val, is_operation_list *operation_list, is_switch_case *next){
+is_switch_case* insert_switch_case(switchType type, is_value *val, is_operation_list *operation_list, is_switch_case *next, int line){
 
 	is_switch_case *sw = (is_switch_case*)malloc(sizeof(is_switch_case));
 	
+        sw->line = line;
 	sw->type = type;
 	sw->value = val;
 	sw->operation_list = operation_list;
@@ -420,12 +425,12 @@ is_condition_code* insert_condition_code(is_operation_list *operation_list, is_o
 }
 
 /* insert cycles */
-is_cycle* insert_for(is_for_init *init, is_if_expression *if_expression, is_increase_list *inc, is_condition_code *code, int line){
+is_cycle* insert_for(is_for_init *init, is_expression *expression, is_increase_list *inc, is_condition_code *code, int line){
 
 	is_for *for_cyc = (is_for*)malloc(sizeof(is_for));
 
 	for_cyc->init = init;
-	for_cyc->if_expression = if_expression;
+	for_cyc->if_expression = expression;
 	for_cyc->increase = inc;
 	for_cyc->code = code;
 
@@ -461,11 +466,11 @@ is_for_init* insert_for_declaration( is_declaration *dec, int line){
     return init;
 }
 
-is_cycle* insert_while(is_if_expression *if_expression, is_condition_code *code, int line){
+is_cycle* insert_while(is_expression *expression, is_condition_code *code, int line){
 
 	is_while *while_cyc = (is_while*)malloc(sizeof(is_while));
 
-	while_cyc->if_expression = if_expression;
+	while_cyc->if_expression = expression;
 	while_cyc->code = code;
 
 	is_cycle *cycle = (is_cycle*)malloc(sizeof(is_cycle));
@@ -477,12 +482,12 @@ is_cycle* insert_while(is_if_expression *if_expression, is_condition_code *code,
 	return cycle;
 }
 
-is_cycle* insert_do_while(is_condition_code *code, is_if_expression *if_expression, int line){
+is_cycle* insert_do_while(is_condition_code *code, is_expression *expression, int line){
 
 	is_do_while *do_while = (is_do_while*)malloc(sizeof(is_do_while));
 
 	do_while->code = code;
-	do_while->if_expression = if_expression;
+	do_while->if_expression = expression;
 
 	is_cycle *cycle = (is_cycle*)malloc(sizeof(is_cycle));
 
