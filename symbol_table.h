@@ -10,6 +10,7 @@ typedef struct _t1{
 	unsignedVariableType type;
 	int offset;		//futura posicao na frame, caso seja uma variavel -1, se for uma procedure.
 	struct _t1 *next;
+        int initialized;
 } table_element;
 
 

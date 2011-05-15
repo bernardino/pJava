@@ -194,7 +194,10 @@ void show_cycle(is_cycle *cycle) {
 
 void show_for_cycle(is_for *for_cycle) {
 	printf(" FOR ( ");
-	show_assignment(for_cycle->assignment);
+        if(for_cycle->init->type == is_assign_for)
+            show_assignment(for_cycle->init->init.assign);
+        else
+            show_declaration(for_cycle->init->init.dec);
 	printf(" ; ");
 	show_if_expression(for_cycle->if_expression);
 	printf(" ; ");

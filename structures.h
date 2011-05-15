@@ -41,6 +41,8 @@ typedef struct _doWhile is_do_while;
 typedef struct _increase_list is_increase_list;
 typedef struct _increase is_increase;
 
+typedef struct _forInit is_for_init;
+
 typedef struct _condition_statement is_condition_statement;
 typedef struct _condition_code is_condition_code;
 typedef struct _is_if is_if;
@@ -137,7 +139,7 @@ struct _is_cycle{
 };
 
 struct _for{
-	is_assignment *assignment;
+	is_for_init *init;
 	is_if_expression *if_expression;
 	is_increase_list *increase;
 	is_condition_code *code;
@@ -170,6 +172,18 @@ struct _increase{
 
 	}inc;
 
+};
+
+typedef enum { is_assign_for, is_dec_for } forInitType;
+
+struct _forInit{
+    
+    forInitType type;
+    union{
+        is_assignment *assign;
+        is_declaration *dec;
+    }init;
+    
 };
 
 typedef enum { is_if_statement, is_if_else_statement, is_switch_statement } conditionType;
@@ -245,6 +259,7 @@ struct _if_expression{
 	is_expression  *exp1;
 	if_exp_type type;
 	is_expression  *exp2;
+        int line;
 };
 
 struct _control{

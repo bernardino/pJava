@@ -271,48 +271,49 @@ is_unary* insert_unary(char *id, unaryType type, int line){
 /* INSERT EXPRESSIONS */
 is_expression* insert_expression_value( is_value *val){
 	
-	is_expression *express = (is_expression*)malloc(sizeof(is_expression));
-	express->type = is_val;
-	express->exp.value = val;
+    is_expression *express = (is_expression*)malloc(sizeof(is_expression));
+    express->type = is_val;
+    express->exp.value = val;
 
-	return express;
+    return express;
 }
 
 is_expression* insert_expression_func( is_function_call *call){
 	
-	is_expression *express = (is_expression*)malloc(sizeof(is_expression));
-	express->type = is_funct_call;
-	express->exp.function = call;
+    is_expression *express = (is_expression*)malloc(sizeof(is_expression));
+    express->type = is_funct_call;
+    express->exp.function = call;
 
-	return express;
+    return express;
 }
 
 is_expression* insert_expression_infix(is_infix_expression* infix){
 
-	is_expression *express = (is_expression*)malloc(sizeof(is_expression));
-	express->type = is_infix;
-	express->exp.infix = infix;
+    is_expression *express = (is_expression*)malloc(sizeof(is_expression));
+    express->type = is_infix;
+    express->exp.infix = infix;
 
-	return express;
+    return express;
 }
 
 is_expression* insert_expression( is_expression *exp){
 	
-	is_expression *express = (is_expression*)malloc(sizeof(is_expression));
-	express->type = is_exp;
-	express->exp.expression = exp;
+    is_expression *express = (is_expression*)malloc(sizeof(is_expression));
+    express->type = is_exp;
+    express->exp.expression = exp;
 
-	return express;
+    return express;
 	
 }
 
-is_expression* insert_expression_if(is_if_expression *if_expression){
+is_expression* insert_expression_if(is_if_expression *if_expression, int line){
 	
-	is_expression *express = (is_expression*)malloc(sizeof(is_expression));
-	express->type = is_if_exp;
-	express->exp.if_expression = if_expression;
+    if_expression->line = line;
+    is_expression *express = (is_expression*)malloc(sizeof(is_expression));
+    express->type = is_if_exp;
+    express->exp.if_expression = if_expression;
 
-	return express;
+    return express;
 
 }
 
@@ -419,11 +420,11 @@ is_condition_code* insert_condition_code(is_operation_list *operation_list, is_o
 }
 
 /* insert cycles */
-is_cycle* insert_for(is_assignment *assign, is_if_expression *if_expression, is_increase_list *inc, is_condition_code *code, int line){
+is_cycle* insert_for(is_for_init *init, is_if_expression *if_expression, is_increase_list *inc, is_condition_code *code, int line){
 
 	is_for *for_cyc = (is_for*)malloc(sizeof(is_for));
 
-	for_cyc->assignment = assign;
+	for_cyc->init = init;
 	for_cyc->if_expression = if_expression;
 	for_cyc->increase = inc;
 	for_cyc->code = code;
@@ -435,6 +436,29 @@ is_cycle* insert_for(is_assignment *assign, is_if_expression *if_expression, is_
         cycle->line = line;
 
 	return cycle;
+}
+
+is_for_init* insert_for_assign( is_assignment *assign, int line){
+    
+    assign->line = line;
+    is_for_init *init = (is_for_init*)malloc(sizeof(is_for_init));
+    
+    init->type = is_assign_for;
+    init->init.assign = assign;
+    
+    return init;
+}
+
+is_for_init* insert_for_declaration( is_declaration *dec, int line){
+    
+    dec->line = line;
+    
+    is_for_init *init = (is_for_init*)malloc(sizeof(is_for_init));
+    
+    init->type = is_dec_for;
+    init->init.dec = dec;
+    
+    return init;
 }
 
 is_cycle* insert_while(is_if_expression *if_expression, is_condition_code *code, int line){

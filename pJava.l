@@ -32,7 +32,7 @@ Expo		([e]|[E])
 ExponentPart	{Expo}{SignedInt}?
 FlSuffix	([f]|[F]|[d][D])
 
-Float1		[\.]{Digit}+{ExponentPart}?{FlSuffix}?
+Float1		({Digit}+)?[\.]{Digit}+{ExponentPart}?{FlSuffix}?
 Float2		{Digit}+{ExponentPart}{FlSuffix}?
 Float3		{Digit}+{FlSuffix}
 Double		({Float1}|{Float2}|{Float3})

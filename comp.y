@@ -55,6 +55,7 @@ is_unary *un;
 is_cycle *cycle;
 is_increase_list *inc_list;
 is_increase *inc;
+is_for_init *ini;
 is_condition_statement *cond;
 is_variable *var;
 is_value *val;
@@ -104,6 +105,7 @@ char *string;
 %type<is_if>if_expression
 %type<cont>control
 %type<cycle>cycle
+%type<ini>forInit
 %type<inc_list>increase_list
 %type<inc>increase
 %type<cond>if
@@ -176,7 +178,7 @@ operation:
 	;
 
 declaration:
-	type var_list 	 	{ $$ = insert_declaration($1,$2,line); /*insert_element($1,$2);*/}
+	type var_list 	 	{ $$ = insert_declaration($1,$2,line); }
 	;
 assignment:
 	ID assign_operator expression			{ $$ = insert_assignment($1,$2,$3,line);}
@@ -202,7 +204,7 @@ expression:
 	| value			{ $$ = insert_expression_value($1);}
 	| function_call		{ $$ = insert_expression_func($1);}
 	| infix_expression 	{ $$ = insert_expression_infix($1);}
-	| if_expression		{ $$ = insert_expression_if($1);}
+	| if_expression		{ $$ = insert_expression_if($1,line);}
 	;
 
 function_call:
@@ -258,7 +260,10 @@ argument:
 	;
 	
 cycle:
-	FOR '(' assignment ';' if_expression ';' increase_list ')' condition_code	{ $$ = insert_for($3,$5,$7,$9,line);}
+	FOR '(' forInit ';' if_expression ';' increase_list ')' condition_code          { $$ = insert_for($3,$5,$7,$9,line);}
+        | FOR '(' ';' if_expression ';' increase_list ')' condition_code                 { $$ = insert_for(NULL,$4,$6,$8,line);}
+        | FOR '(' forInit ';' if_expression ';' ')' condition_code                      { $$ = insert_for($3,$5,NULL,$8,line);}
+        | FOR '(' ';' if_expression ';' ')' condition_code                              { $$ = insert_for(NULL,$4,NULL,$7,line);}
 	| WHILE '(' if_expression ')' condition_code					{ $$ = insert_while($3,$5,line);}
 	| DO condition_code WHILE '(' if_expression ')' ';'				{ $$ = insert_do_while($2,$5,line);}
 	;
@@ -267,6 +272,11 @@ if:	IF '(' expression ')' condition_code %prec IFPREC			{ $$ = insert_if_stateme
 	| IF '(' expression ')' condition_code ELSE condition_code		{ $$ = insert_if_else_statement($3,$5,$7,line);}
 	| SWITCH '(' expression ')' '{' switch '}'				{ $$ = insert_switch_statement($3,$6,line);}
 	;
+
+forInit:
+        assignment      { $$ = insert_for_assign($1,line);}
+        | declaration   { $$ = insert_for_declaration($1,line);}
+        ;
 
 increase_list:
 	increase			{ $$ = insert_increase_list(NULL,$1);}
@@ -321,7 +331,7 @@ type:
 	| INT		{$$ = is_int;}
 	| STRING 	{$$ = is_string;}
 	| BOOLEAN	{$$ = is_boolean;}
-	| FLOAT		{$$ = is_double;}
+	| DOUBLE	{$$ = is_double;}
 	| VOID		{$$ = is_void;}
 	;
 

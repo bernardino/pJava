@@ -200,6 +200,7 @@ is_unary *un;
 is_cycle *cycle;
 is_increase_list *inc_list;
 is_increase *inc;
+is_for_init *ini;
 is_condition_statement *cond;
 is_variable *var;
 is_value *val;
@@ -226,7 +227,7 @@ char *string;
 
 
 /* Line 1676 of yacc.c  */
-#line 230 "y.tab.h"
+#line 231 "y.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
