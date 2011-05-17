@@ -3,6 +3,8 @@
 #include "y.tab.h"
 
 int line = 1;
+
+void commentlines();
 %}
 
 Separator	[\(\)\{\}\[\]\;\,\.]
@@ -111,7 +113,7 @@ Char		\'.\'
 \n			{line++;}
 {WhiteSpace}    {}
 
-{Comment}	{}
+{Comment}	{commentlines();}
 .	{ return yytext[0];}
 
 
@@ -120,4 +122,14 @@ Char		\'.\'
 int yywrap()
 {
 return 1;
+}
+
+void commentlines()
+{
+	int i;
+	
+	for(i=0; yytext[i]!='\0';i++){
+		if(yytext[i]=='\n')
+			line++;
+	}
 }
