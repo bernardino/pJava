@@ -9,6 +9,7 @@
 prog_env *ambient = NULL;
 is_program *myprogram;
 extern int line;
+int errors;
 
 %}
 %token ARGS ASS_MUL ASS_DIV ASS_ADD ASS_SUB ASS_EQ ASS_AND ASS_LS ASS_RS
@@ -347,8 +348,14 @@ int yyerror (char *s)
 
 int main(){
 	yyparse();
-	ambient = semantic_analysis(myprogram);
+	ambient = semantic_analysis(myprogram,&errors);
 	/*show_program(myprogram);*/
-	printf("%d\n",line); 
+        if(errors == 1)
+            printf("You have %d error, noob!\n",errors);
+        else if(errors > 1)
+            printf("You have %d errors, noob!\n",errors);
+        else
+            printf("Compilation finished without errors, congratulations Master!\n");
+	printf("Program has %d lines\n",line); 
 	return 0;
 }

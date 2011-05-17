@@ -5,7 +5,7 @@
 #include "structures.h"
 #include "symbol_table.h"
 
-int errors = 0,global_offset = 0,local_offset = 0;
+int errors = 0,global_offset = 0,local_offset = 0, return_found;
 
 environment_list* create_environment(is_function *function){
 
@@ -55,30 +55,30 @@ environment_list* lookupEnvironment(environment_list* list, char *str){
 table_element* searchVar(environment_list *env,table_element *global, table_element *local, char *name){
     
     table_element *aux = lookupElement(local,name);    
-    if(!aux){
-        aux = lookupElement(global,name);
-        if(!aux){
-            if(env->father != NULL){
-                return lookupElement(env->father->locals,name);
-            }
-            else{
-                return NULL;
-            }
-                
-        }
-            
+    if(!aux && env){
+        environment_list *auxiliar = env->father;
+        while(auxiliar != NULL){
+            aux = lookupElement(auxiliar->locals,name);
+            if(!aux)
+                auxiliar = auxiliar->father;
+            else
+                return aux;
+        }                
+        return lookupElement(global,name);
     }
+
     return aux;
 }
 
 
-prog_env* semantic_analysis(is_program *prog){
+prog_env* semantic_analysis(is_program *prog, int *erros){
 	prog_env* pe = (prog_env*)malloc(sizeof(prog_env));
 
 	semantic_analysis_global_variables(pe,prog->variable_list);
         semantic_analysis_function_list(pe,prog->function_list);
 	semantic_analysis_main(pe,prog->main);
 
+        *erros = errors;
 	
 	return pe;
 }
@@ -155,7 +155,8 @@ table_element* semantic_analysis_variable(prog_env *pe,environment_list *env, ta
 table_element* insertVariable(prog_env* pe, environment_list *env,table_element * variables,int line, char *name, table_element *el, globalType type){
     
 
-    table_element *aux = lookupElement(variables,name);
+    /*table_element *aux = lookupElement(variables,name);*/
+    table_element *aux = searchVar(env,pe->global,variables,name);
 
     if(aux != NULL){
         if(type == GLOBAL)
@@ -321,8 +322,11 @@ void semantic_analysis_parameters(prog_env *pe,environment_list *father, table_e
 void semantic_analysis_main(prog_env* pe, is_main *main){
 
 	is_function *function = (is_function*)malloc(sizeof(is_function));
-	
-	function->id = "MAIN";
+        
+        char *c = (char*)malloc(sizeof(char));
+        strcpy(c,"Main\0");
+        
+	function->id = c;
 	function->scope_type = is_public;
 	function->return_type = is_void;
 	function->argument_list = NULL;
@@ -352,7 +356,7 @@ void semantic_analysis_function(prog_env *pe, is_function *function){
                 
                 if(env->argument_list != NULL)
                         semantic_analysis_argument_list(pe,env);
-                
+                if(function->code->operation_list != NULL)
                         semantic_analysis_operation_list(pe,env,function->code->operation_list);
 	}
 }
@@ -379,9 +383,15 @@ void semantic_analysis_operation_list(prog_env *pe,environment_list *env,is_oper
 
 	if(aux){
             int i= 0;
-		for(; aux!=NULL; aux=aux->next){
-			semantic_analysis_operation(pe,env,aux->operation);
-		}
+            for(; aux!=NULL; aux=aux->next){
+                return_found = 0;
+                semantic_analysis_operation(pe,env,aux->operation);
+                
+            }
+            if(env->returnType != is_void && !return_found && env->father == NULL){
+                printf("The method %s must return a value\n", env->name);
+                return_found = 0;
+            }
 	}
 
 
@@ -412,6 +422,7 @@ void semantic_analysis_operation(prog_env *pe,environment_list *env,is_operation
             break;
         case is_cont:
             semantic_analysis_control(pe,env,env->locals,operation->oper.control);
+            return_found = 1;
             break;
     }
 
@@ -446,7 +457,7 @@ void semantic_analysis_function_list(prog_env *pe, is_function_list *list){
     is_function_list *aux = list;
 	if(aux){
 		for(;aux!=NULL;aux=aux->next){
-			semantic_analysis_function(pe,aux->function);
+                    semantic_analysis_function(pe,aux->function);
 		}
 	}
       

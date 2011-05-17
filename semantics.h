@@ -6,7 +6,7 @@ table_element* lookupElement(table_element* table, char *str);
 environment_list* lookupEnvironment(environment_list* list, char *str);
 table_element* searchVar(environment_list *env,table_element *global, table_element *local, char *name);
 
-prog_env* semantic_analysis(is_program *prog);
+prog_env* semantic_analysis(is_program *prog, int *erros);
 void semantic_analysis_global_variables(prog_env *pe, is_global_list *list);
 void semantic_analysis_global_variable(prog_env *pe, is_global_dec *dec);
 table_element* semantic_analysis_declaration(prog_env* pe, environment_list *env,table_element *variables, globalType type, is_declaration *declaration);

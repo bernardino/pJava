@@ -80,11 +80,12 @@
 prog_env *ambient = NULL;
 is_program *myprogram;
 extern int line;
+int errors;
 
 
 
 /* Line 189 of yacc.c  */
-#line 88 "y.tab.c"
+#line 89 "y.tab.c"
 
 /* Enabling traces.  */
 #ifndef YYDEBUG
@@ -259,7 +260,7 @@ typedef union YYSTYPE
 {
 
 /* Line 214 of yacc.c  */
-#line 38 "comp.y"
+#line 39 "comp.y"
 
 
 is_program *prog;
@@ -307,7 +308,7 @@ char *string;
 
 
 /* Line 214 of yacc.c  */
-#line 311 "y.tab.c"
+#line 312 "y.tab.c"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
@@ -319,7 +320,7 @@ char *string;
 
 
 /* Line 264 of yacc.c  */
-#line 323 "y.tab.c"
+#line 324 "y.tab.c"
 
 #ifdef short
 # undef short
@@ -660,18 +661,18 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-       0,   127,   127,   128,   129,   130,   133,   137,   138,   142,
-     143,   147,   148,   152,   156,   157,   158,   161,   162,   166,
-     167,   171,   172,   173,   174,   175,   176,   177,   181,   184,
-     185,   189,   190,   191,   192,   196,   197,   198,   199,   200,
-     201,   206,   207,   208,   209,   210,   214,   215,   219,   220,
-     221,   222,   223,   224,   225,   226,   230,   231,   232,   233,
-     234,   235,   236,   237,   241,   242,   246,   247,   251,   252,
-     257,   258,   262,   266,   267,   268,   269,   270,   271,   274,
-     275,   276,   280,   281,   285,   286,   290,   291,   296,   297,
-     298,   299,   304,   305,   306,   310,   311,   312,   313,   314,
-     315,   316,   320,   321,   322,   323,   324,   325,   326,   327,
-     328,   332,   333,   334,   335,   336,   337
+       0,   128,   128,   129,   130,   131,   134,   138,   139,   143,
+     144,   148,   149,   153,   157,   158,   159,   162,   163,   167,
+     168,   172,   173,   174,   175,   176,   177,   178,   182,   185,
+     186,   190,   191,   192,   193,   197,   198,   199,   200,   201,
+     202,   207,   208,   209,   210,   211,   215,   216,   220,   221,
+     222,   223,   224,   225,   226,   227,   231,   232,   233,   234,
+     235,   236,   237,   238,   242,   243,   247,   248,   252,   253,
+     258,   259,   263,   267,   268,   269,   270,   271,   272,   275,
+     276,   277,   281,   282,   286,   287,   291,   292,   297,   298,
+     299,   300,   305,   306,   307,   311,   312,   313,   314,   315,
+     316,   317,   321,   322,   323,   324,   325,   326,   327,   328,
+     329,   333,   334,   335,   336,   337,   338
 };
 #endif
 
@@ -1853,812 +1854,812 @@ yyreduce:
         case 2:
 
 /* Line 1455 of yacc.c  */
-#line 127 "comp.y"
+#line 128 "comp.y"
     { (yyval.prog) = insert_program((yyvsp[(2) - (6)].string),(yyvsp[(4) - (6)].m),(yyvsp[(5) - (6)].func_list),NULL); myprogram = (yyval.prog); }
     break;
 
   case 3:
 
 /* Line 1455 of yacc.c  */
-#line 128 "comp.y"
+#line 129 "comp.y"
     { (yyval.prog) = insert_program((yyvsp[(2) - (5)].string),(yyvsp[(4) - (5)].m),NULL,NULL); myprogram = (yyval.prog); }
     break;
 
   case 4:
 
 /* Line 1455 of yacc.c  */
-#line 129 "comp.y"
+#line 130 "comp.y"
     { (yyval.prog) = insert_program((yyvsp[(2) - (6)].string),(yyvsp[(5) - (6)].m),NULL,(yyvsp[(4) - (6)].glob)); myprogram = (yyval.prog); }
     break;
 
   case 5:
 
 /* Line 1455 of yacc.c  */
-#line 130 "comp.y"
+#line 131 "comp.y"
     { (yyval.prog) = insert_program((yyvsp[(2) - (7)].string),(yyvsp[(5) - (7)].m),(yyvsp[(6) - (7)].func_list),(yyvsp[(4) - (7)].glob)); myprogram = (yyval.prog); }
     break;
 
   case 6:
 
 /* Line 1455 of yacc.c  */
-#line 133 "comp.y"
+#line 134 "comp.y"
     { (yyval.m) = insert_main((yyvsp[(11) - (11)].cod));}
     break;
 
   case 7:
 
 /* Line 1455 of yacc.c  */
-#line 137 "comp.y"
+#line 138 "comp.y"
     { (yyval.glob) = insert_global_list(NULL,(yyvsp[(1) - (1)].dec));}
     break;
 
   case 8:
 
 /* Line 1455 of yacc.c  */
-#line 138 "comp.y"
+#line 139 "comp.y"
     { (yyval.glob) = insert_global_list((yyvsp[(1) - (2)].glob),(yyvsp[(2) - (2)].dec));}
     break;
 
   case 9:
 
 /* Line 1455 of yacc.c  */
-#line 142 "comp.y"
+#line 143 "comp.y"
     { (yyval.dec) = insert_global_declaration((yyvsp[(1) - (4)].st),(yyvsp[(3) - (4)].declar),line);}
     break;
 
   case 10:
 
 /* Line 1455 of yacc.c  */
-#line 143 "comp.y"
+#line 144 "comp.y"
     { (yyval.dec) = insert_global_declaration(is_public,(yyvsp[(1) - (2)].declar),line);}
     break;
 
   case 11:
 
 /* Line 1455 of yacc.c  */
-#line 147 "comp.y"
+#line 148 "comp.y"
     { (yyval.func_list) = insert_function_list(NULL,(yyvsp[(1) - (1)].func));}
     break;
 
   case 12:
 
 /* Line 1455 of yacc.c  */
-#line 148 "comp.y"
+#line 149 "comp.y"
     { (yyval.func_list) = insert_function_list((yyvsp[(1) - (2)].func_list),(yyvsp[(2) - (2)].func));}
     break;
 
   case 13:
 
 /* Line 1455 of yacc.c  */
-#line 152 "comp.y"
+#line 153 "comp.y"
     { (yyval.func) = insert_function((yyvsp[(1) - (8)].st), (yyvsp[(3) - (8)].uvt), (yyvsp[(4) - (8)].string), (yyvsp[(6) - (8)].arg_list), (yyvsp[(8) - (8)].cod),line);}
     break;
 
   case 14:
 
 /* Line 1455 of yacc.c  */
-#line 156 "comp.y"
+#line 157 "comp.y"
     {(yyval.st) = is_private;}
     break;
 
   case 15:
 
 /* Line 1455 of yacc.c  */
-#line 157 "comp.y"
+#line 158 "comp.y"
     {(yyval.st) = is_protected;}
     break;
 
   case 16:
 
 /* Line 1455 of yacc.c  */
-#line 158 "comp.y"
+#line 159 "comp.y"
     {(yyval.st) = is_public;}
     break;
 
   case 17:
 
 /* Line 1455 of yacc.c  */
-#line 161 "comp.y"
+#line 162 "comp.y"
     { (yyval.cod) = insert_code(NULL);}
     break;
 
   case 18:
 
 /* Line 1455 of yacc.c  */
-#line 162 "comp.y"
+#line 163 "comp.y"
     { (yyval.cod) = insert_code((yyvsp[(2) - (3)].oper_list));}
     break;
 
   case 19:
 
 /* Line 1455 of yacc.c  */
-#line 166 "comp.y"
+#line 167 "comp.y"
     {(yyval.oper_list) = insert_operation_list(NULL,(yyvsp[(1) - (1)].oper));}
     break;
 
   case 20:
 
 /* Line 1455 of yacc.c  */
-#line 167 "comp.y"
+#line 168 "comp.y"
     {(yyval.oper_list) = insert_operation_list((yyvsp[(1) - (2)].oper_list),(yyvsp[(2) - (2)].oper));}
     break;
 
   case 21:
 
 /* Line 1455 of yacc.c  */
-#line 171 "comp.y"
+#line 172 "comp.y"
     { (yyval.oper) = insert_operation_dec((yyvsp[(1) - (2)].declar));}
     break;
 
   case 22:
 
 /* Line 1455 of yacc.c  */
-#line 172 "comp.y"
+#line 173 "comp.y"
     { (yyval.oper) = insert_operation_assign((yyvsp[(1) - (2)].assign));}
     break;
 
   case 23:
 
 /* Line 1455 of yacc.c  */
-#line 173 "comp.y"
+#line 174 "comp.y"
     { (yyval.oper) = insert_operation_unary((yyvsp[(1) - (2)].un)); }
     break;
 
   case 24:
 
 /* Line 1455 of yacc.c  */
-#line 174 "comp.y"
+#line 175 "comp.y"
     { (yyval.oper) = insert_operation_if((yyvsp[(1) - (1)].cond));}
     break;
 
   case 25:
 
 /* Line 1455 of yacc.c  */
-#line 175 "comp.y"
+#line 176 "comp.y"
     { (yyval.oper) = insert_operation_cycle((yyvsp[(1) - (1)].cycle));}
     break;
 
   case 26:
 
 /* Line 1455 of yacc.c  */
-#line 176 "comp.y"
+#line 177 "comp.y"
     { (yyval.oper) = insert_operation_control((yyvsp[(1) - (2)].cont));}
     break;
 
   case 27:
 
 /* Line 1455 of yacc.c  */
-#line 177 "comp.y"
+#line 178 "comp.y"
     { (yyval.oper) = insert_operation_function((yyvsp[(1) - (2)].call));}
     break;
 
   case 28:
 
 /* Line 1455 of yacc.c  */
-#line 181 "comp.y"
+#line 182 "comp.y"
     { (yyval.declar) = insert_declaration((yyvsp[(1) - (2)].uvt),(yyvsp[(2) - (2)].var_l),line); }
     break;
 
   case 29:
 
 /* Line 1455 of yacc.c  */
-#line 184 "comp.y"
+#line 185 "comp.y"
     { (yyval.assign) = insert_assignment((yyvsp[(1) - (3)].string),(yyvsp[(2) - (3)].at),(yyvsp[(3) - (3)].exp),line);}
     break;
 
   case 30:
 
 /* Line 1455 of yacc.c  */
-#line 185 "comp.y"
+#line 186 "comp.y"
     { (yyval.assign) = insert_assignment((yyvsp[(1) - (3)].string),(yyvsp[(2) - (3)].at),(yyvsp[(3) - (3)].assign)->expression,line);}
     break;
 
   case 31:
 
 /* Line 1455 of yacc.c  */
-#line 189 "comp.y"
+#line 190 "comp.y"
     { (yyval.un) = insert_unary((yyvsp[(1) - (2)].string), is_after_plus,line);}
     break;
 
   case 32:
 
 /* Line 1455 of yacc.c  */
-#line 190 "comp.y"
+#line 191 "comp.y"
     { (yyval.un) = insert_unary((yyvsp[(2) - (2)].string), is_before_plus,line);}
     break;
 
   case 33:
 
 /* Line 1455 of yacc.c  */
-#line 191 "comp.y"
+#line 192 "comp.y"
     { (yyval.un) = insert_unary((yyvsp[(1) - (2)].string), is_after_minus,line);}
     break;
 
   case 34:
 
 /* Line 1455 of yacc.c  */
-#line 192 "comp.y"
+#line 193 "comp.y"
     { (yyval.un) = insert_unary((yyvsp[(2) - (2)].string), is_before_minus,line);}
     break;
 
   case 35:
 
 /* Line 1455 of yacc.c  */
-#line 196 "comp.y"
+#line 197 "comp.y"
     { (yyval.cont) = insert_control(is_break,NULL,line);}
     break;
 
   case 36:
 
 /* Line 1455 of yacc.c  */
-#line 197 "comp.y"
+#line 198 "comp.y"
     { (yyval.cont) = insert_control(is_continue,NULL,line);}
     break;
 
   case 37:
 
 /* Line 1455 of yacc.c  */
-#line 198 "comp.y"
+#line 199 "comp.y"
     { (yyval.cont) = insert_control(is_return,NULL,line);}
     break;
 
   case 38:
 
 /* Line 1455 of yacc.c  */
-#line 199 "comp.y"
+#line 200 "comp.y"
     { (yyval.cont) = insert_control(is_return_exp,(yyvsp[(2) - (2)].exp),line);}
     break;
 
   case 39:
 
 /* Line 1455 of yacc.c  */
-#line 200 "comp.y"
+#line 201 "comp.y"
     { (yyval.cont) = insert_control(is_println,(yyvsp[(7) - (8)].exp),line);}
     break;
 
   case 40:
 
 /* Line 1455 of yacc.c  */
-#line 201 "comp.y"
+#line 202 "comp.y"
     { (yyval.cont) = insert_control(is_print,(yyvsp[(7) - (8)].exp),line);}
     break;
 
   case 41:
 
 /* Line 1455 of yacc.c  */
-#line 206 "comp.y"
+#line 207 "comp.y"
     { (yyval.exp) = insert_expression((yyvsp[(2) - (3)].exp),line);}
     break;
 
   case 42:
 
 /* Line 1455 of yacc.c  */
-#line 207 "comp.y"
+#line 208 "comp.y"
     { (yyval.exp) = insert_expression_value((yyvsp[(1) - (1)].val),line);}
     break;
 
   case 43:
 
 /* Line 1455 of yacc.c  */
-#line 208 "comp.y"
+#line 209 "comp.y"
     { (yyval.exp) = insert_expression_func((yyvsp[(1) - (1)].call),line);}
     break;
 
   case 44:
 
 /* Line 1455 of yacc.c  */
-#line 209 "comp.y"
+#line 210 "comp.y"
     { (yyval.exp) = insert_expression_infix((yyvsp[(1) - (1)].infix),line);}
     break;
 
   case 45:
 
 /* Line 1455 of yacc.c  */
-#line 210 "comp.y"
+#line 211 "comp.y"
     { (yyval.exp) = insert_expression_if((yyvsp[(1) - (1)].is_if),line);}
     break;
 
   case 46:
 
 /* Line 1455 of yacc.c  */
-#line 214 "comp.y"
+#line 215 "comp.y"
     { (yyval.call) = insert_function_call((yyvsp[(1) - (3)].string),NULL,line);}
     break;
 
   case 47:
 
 /* Line 1455 of yacc.c  */
-#line 215 "comp.y"
+#line 216 "comp.y"
     { (yyval.call) = insert_function_call((yyvsp[(1) - (4)].string),(yyvsp[(3) - (4)].param),line);}
     break;
 
   case 48:
 
 /* Line 1455 of yacc.c  */
-#line 219 "comp.y"
+#line 220 "comp.y"
     { (yyval.infix) = insert_infix((yyvsp[(1) - (3)].exp), is_plus, (yyvsp[(3) - (3)].exp));}
     break;
 
   case 49:
 
 /* Line 1455 of yacc.c  */
-#line 220 "comp.y"
+#line 221 "comp.y"
     { (yyval.infix) = insert_infix((yyvsp[(1) - (3)].exp), is_minus, (yyvsp[(3) - (3)].exp));}
     break;
 
   case 50:
 
 /* Line 1455 of yacc.c  */
-#line 221 "comp.y"
+#line 222 "comp.y"
     { (yyval.infix) = insert_infix((yyvsp[(1) - (3)].exp), is_mult, (yyvsp[(3) - (3)].exp));}
     break;
 
   case 51:
 
 /* Line 1455 of yacc.c  */
-#line 222 "comp.y"
+#line 223 "comp.y"
     { (yyval.infix) = insert_infix((yyvsp[(1) - (3)].exp), is_div, (yyvsp[(3) - (3)].exp));}
     break;
 
   case 52:
 
 /* Line 1455 of yacc.c  */
-#line 223 "comp.y"
+#line 224 "comp.y"
     { (yyval.infix) = insert_infix((yyvsp[(1) - (3)].exp), is_percent, (yyvsp[(3) - (3)].exp));}
     break;
 
   case 53:
 
 /* Line 1455 of yacc.c  */
-#line 224 "comp.y"
+#line 225 "comp.y"
     { (yyval.infix) = insert_infix((yyvsp[(1) - (3)].exp), is_and, (yyvsp[(3) - (3)].exp));}
     break;
 
   case 54:
 
 /* Line 1455 of yacc.c  */
-#line 225 "comp.y"
+#line 226 "comp.y"
     { (yyval.infix) = insert_infix((yyvsp[(1) - (3)].exp), is_lshift, (yyvsp[(3) - (3)].exp));}
     break;
 
   case 55:
 
 /* Line 1455 of yacc.c  */
-#line 226 "comp.y"
+#line 227 "comp.y"
     { (yyval.infix) = insert_infix((yyvsp[(1) - (3)].exp), is_rshift, (yyvsp[(3) - (3)].exp));}
     break;
 
   case 56:
 
 /* Line 1455 of yacc.c  */
-#line 230 "comp.y"
+#line 231 "comp.y"
     { (yyval.is_if) = insert_if((yyvsp[(1) - (3)].exp), is_OP_BIGGER, (yyvsp[(3) - (3)].exp));}
     break;
 
   case 57:
 
 /* Line 1455 of yacc.c  */
-#line 231 "comp.y"
+#line 232 "comp.y"
     { (yyval.is_if) = insert_if((yyvsp[(1) - (3)].exp), is_OP_LOWER, (yyvsp[(3) - (3)].exp));}
     break;
 
   case 58:
 
 /* Line 1455 of yacc.c  */
-#line 232 "comp.y"
+#line 233 "comp.y"
     { (yyval.is_if) = insert_if((yyvsp[(1) - (3)].exp), is_OP_EQ, (yyvsp[(3) - (3)].exp));}
     break;
 
   case 59:
 
 /* Line 1455 of yacc.c  */
-#line 233 "comp.y"
+#line 234 "comp.y"
     { (yyval.is_if) = insert_if((yyvsp[(1) - (3)].exp), is_OP_LE, (yyvsp[(3) - (3)].exp));}
     break;
 
   case 60:
 
 /* Line 1455 of yacc.c  */
-#line 234 "comp.y"
+#line 235 "comp.y"
     { (yyval.is_if) = insert_if((yyvsp[(1) - (3)].exp), is_OP_GE, (yyvsp[(3) - (3)].exp));}
     break;
 
   case 61:
 
 /* Line 1455 of yacc.c  */
-#line 235 "comp.y"
+#line 236 "comp.y"
     { (yyval.is_if) = insert_if((yyvsp[(1) - (3)].exp), is_OP_NE, (yyvsp[(3) - (3)].exp));}
     break;
 
   case 62:
 
 /* Line 1455 of yacc.c  */
-#line 236 "comp.y"
+#line 237 "comp.y"
     { (yyval.is_if) = insert_if((yyvsp[(1) - (3)].exp), is_OP_LOR, (yyvsp[(3) - (3)].exp));}
     break;
 
   case 63:
 
 /* Line 1455 of yacc.c  */
-#line 237 "comp.y"
+#line 238 "comp.y"
     { (yyval.is_if) = insert_if((yyvsp[(1) - (3)].exp), is_OP_LAND, (yyvsp[(3) - (3)].exp));}
     break;
 
   case 64:
 
 /* Line 1455 of yacc.c  */
-#line 241 "comp.y"
+#line 242 "comp.y"
     { (yyval.param) = insert_parameter_list(NULL, (yyvsp[(1) - (1)].exp));}
     break;
 
   case 65:
 
 /* Line 1455 of yacc.c  */
-#line 242 "comp.y"
+#line 243 "comp.y"
     { (yyval.param) = insert_parameter_list((yyvsp[(1) - (3)].param), (yyvsp[(3) - (3)].exp));}
     break;
 
   case 66:
 
 /* Line 1455 of yacc.c  */
-#line 246 "comp.y"
+#line 247 "comp.y"
     { (yyval.var_l) = insert_variable_list(NULL, (yyvsp[(1) - (1)].var));}
     break;
 
   case 67:
 
 /* Line 1455 of yacc.c  */
-#line 247 "comp.y"
+#line 248 "comp.y"
     { (yyval.var_l) = insert_variable_list((yyvsp[(1) - (3)].var_l), (yyvsp[(3) - (3)].var));}
     break;
 
   case 68:
 
 /* Line 1455 of yacc.c  */
-#line 251 "comp.y"
+#line 252 "comp.y"
     { (yyval.var) = insert_variable(is_id, (yyvsp[(1) - (1)].string), NULL,line);}
     break;
 
   case 69:
 
 /* Line 1455 of yacc.c  */
-#line 252 "comp.y"
+#line 253 "comp.y"
     { (yyval.var) = insert_variable(is_id, (yyvsp[(1) - (3)].string), (yyvsp[(3) - (3)].exp),line);}
     break;
 
   case 70:
 
 /* Line 1455 of yacc.c  */
-#line 257 "comp.y"
+#line 258 "comp.y"
     { (yyval.arg_list) = insert_argument_list(NULL, (yyvsp[(1) - (1)].arg));}
     break;
 
   case 71:
 
 /* Line 1455 of yacc.c  */
-#line 258 "comp.y"
+#line 259 "comp.y"
     { (yyval.arg_list) = insert_argument_list((yyvsp[(1) - (3)].arg_list),(yyvsp[(3) - (3)].arg));}
     break;
 
   case 72:
 
 /* Line 1455 of yacc.c  */
-#line 262 "comp.y"
+#line 263 "comp.y"
     { (yyval.arg) = insert_argument((yyvsp[(1) - (2)].uvt), (yyvsp[(2) - (2)].string));}
     break;
 
   case 73:
 
 /* Line 1455 of yacc.c  */
-#line 266 "comp.y"
+#line 267 "comp.y"
     { (yyval.cycle) = insert_for((yyvsp[(3) - (9)].ini),(yyvsp[(5) - (9)].exp),(yyvsp[(7) - (9)].inc_list),(yyvsp[(9) - (9)].cond_code),line);}
     break;
 
   case 74:
 
 /* Line 1455 of yacc.c  */
-#line 267 "comp.y"
+#line 268 "comp.y"
     { (yyval.cycle) = insert_for(NULL,(yyvsp[(4) - (8)].exp),(yyvsp[(6) - (8)].inc_list),(yyvsp[(8) - (8)].cond_code),line);}
     break;
 
   case 75:
 
 /* Line 1455 of yacc.c  */
-#line 268 "comp.y"
+#line 269 "comp.y"
     { (yyval.cycle) = insert_for((yyvsp[(3) - (8)].ini),(yyvsp[(5) - (8)].exp),NULL,(yyvsp[(8) - (8)].cond_code),line);}
     break;
 
   case 76:
 
 /* Line 1455 of yacc.c  */
-#line 269 "comp.y"
+#line 270 "comp.y"
     { (yyval.cycle) = insert_for(NULL,(yyvsp[(4) - (7)].exp),NULL,(yyvsp[(7) - (7)].cond_code),line);}
     break;
 
   case 77:
 
 /* Line 1455 of yacc.c  */
-#line 270 "comp.y"
+#line 271 "comp.y"
     { (yyval.cycle) = insert_while((yyvsp[(3) - (5)].exp),(yyvsp[(5) - (5)].cond_code),line);}
     break;
 
   case 78:
 
 /* Line 1455 of yacc.c  */
-#line 271 "comp.y"
+#line 272 "comp.y"
     { (yyval.cycle) = insert_do_while((yyvsp[(2) - (7)].cond_code),(yyvsp[(5) - (7)].exp),line);}
     break;
 
   case 79:
 
 /* Line 1455 of yacc.c  */
-#line 274 "comp.y"
+#line 275 "comp.y"
     { (yyval.cond) = insert_if_statement((yyvsp[(3) - (5)].exp), (yyvsp[(5) - (5)].cond_code),line); }
     break;
 
   case 80:
 
 /* Line 1455 of yacc.c  */
-#line 275 "comp.y"
+#line 276 "comp.y"
     { (yyval.cond) = insert_if_else_statement((yyvsp[(3) - (7)].exp),(yyvsp[(5) - (7)].cond_code),(yyvsp[(7) - (7)].cond_code),line);}
     break;
 
   case 81:
 
 /* Line 1455 of yacc.c  */
-#line 276 "comp.y"
+#line 277 "comp.y"
     { (yyval.cond) = insert_switch_statement((yyvsp[(3) - (7)].exp),(yyvsp[(6) - (7)].sw),line);}
     break;
 
   case 82:
 
 /* Line 1455 of yacc.c  */
-#line 280 "comp.y"
+#line 281 "comp.y"
     { (yyval.ini) = insert_for_assign((yyvsp[(1) - (1)].assign),line);}
     break;
 
   case 83:
 
 /* Line 1455 of yacc.c  */
-#line 281 "comp.y"
+#line 282 "comp.y"
     { (yyval.ini) = insert_for_declaration((yyvsp[(1) - (1)].declar),line);}
     break;
 
   case 84:
 
 /* Line 1455 of yacc.c  */
-#line 285 "comp.y"
+#line 286 "comp.y"
     { (yyval.inc_list) = insert_increase_list(NULL,(yyvsp[(1) - (1)].inc));}
     break;
 
   case 85:
 
 /* Line 1455 of yacc.c  */
-#line 286 "comp.y"
+#line 287 "comp.y"
     { (yyval.inc_list) = insert_increase_list((yyvsp[(1) - (3)].inc_list),(yyvsp[(3) - (3)].inc));}
     break;
 
   case 86:
 
 /* Line 1455 of yacc.c  */
-#line 290 "comp.y"
+#line 291 "comp.y"
     { (yyval.inc) = insert_assign_inc((yyvsp[(1) - (1)].assign));}
     break;
 
   case 87:
 
 /* Line 1455 of yacc.c  */
-#line 291 "comp.y"
+#line 292 "comp.y"
     { (yyval.inc) = insert_unary_inc((yyvsp[(1) - (1)].un));}
     break;
 
   case 88:
 
 /* Line 1455 of yacc.c  */
-#line 296 "comp.y"
+#line 297 "comp.y"
     { (yyval.cond_code) = insert_condition_code((yyvsp[(2) - (3)].oper_list), NULL);}
     break;
 
   case 89:
 
 /* Line 1455 of yacc.c  */
-#line 297 "comp.y"
+#line 298 "comp.y"
     { (yyval.cond_code) = insert_condition_code(NULL,(yyvsp[(1) - (1)].oper));}
     break;
 
   case 90:
 
 /* Line 1455 of yacc.c  */
-#line 298 "comp.y"
+#line 299 "comp.y"
     { (yyval.cond_code) = insert_condition_code(NULL,NULL);}
     break;
 
   case 91:
 
 /* Line 1455 of yacc.c  */
-#line 299 "comp.y"
+#line 300 "comp.y"
     { (yyval.cond_code) = insert_condition_code(NULL, NULL);}
     break;
 
   case 92:
 
 /* Line 1455 of yacc.c  */
-#line 304 "comp.y"
+#line 305 "comp.y"
     { (yyval.sw) = insert_switch_case(is_NORMAL,(yyvsp[(2) - (5)].val),(yyvsp[(4) - (5)].oper_list),(yyvsp[(5) - (5)].sw),line);}
     break;
 
   case 93:
 
 /* Line 1455 of yacc.c  */
-#line 305 "comp.y"
+#line 306 "comp.y"
     { (yyval.sw) = insert_switch_case(is_NORMAL,(yyvsp[(2) - (4)].val),(yyvsp[(4) - (4)].oper_list),NULL,line);}
     break;
 
   case 94:
 
 /* Line 1455 of yacc.c  */
-#line 306 "comp.y"
+#line 307 "comp.y"
     { (yyval.sw) = insert_switch_case(is_DEFAULT,NULL,(yyvsp[(3) - (3)].oper_list),NULL,line);}
     break;
 
   case 95:
 
 /* Line 1455 of yacc.c  */
-#line 310 "comp.y"
+#line 311 "comp.y"
     { (yyval.at) = is_ASS_EQ;}
     break;
 
   case 96:
 
 /* Line 1455 of yacc.c  */
-#line 311 "comp.y"
+#line 312 "comp.y"
     { (yyval.at) = is_ASS_ADD;}
     break;
 
   case 97:
 
 /* Line 1455 of yacc.c  */
-#line 312 "comp.y"
+#line 313 "comp.y"
     { (yyval.at) = is_ASS_SUB;}
     break;
 
   case 98:
 
 /* Line 1455 of yacc.c  */
-#line 313 "comp.y"
+#line 314 "comp.y"
     { (yyval.at) = is_ASS_MUL;}
     break;
 
   case 99:
 
 /* Line 1455 of yacc.c  */
-#line 314 "comp.y"
+#line 315 "comp.y"
     { (yyval.at) = is_ASS_DIV;}
     break;
 
   case 100:
 
 /* Line 1455 of yacc.c  */
-#line 315 "comp.y"
+#line 316 "comp.y"
     { (yyval.at) = is_ASS_PERC;}
     break;
 
   case 101:
 
 /* Line 1455 of yacc.c  */
-#line 316 "comp.y"
+#line 317 "comp.y"
     { (yyval.at) = is_ASS_AND;}
     break;
 
   case 102:
 
 /* Line 1455 of yacc.c  */
-#line 320 "comp.y"
+#line 321 "comp.y"
     { (yyval.val) = insert_string(is_ident, (yyvsp[(1) - (1)].string));}
     break;
 
   case 103:
 
 /* Line 1455 of yacc.c  */
-#line 321 "comp.y"
+#line 322 "comp.y"
     { (yyval.val) = insert_string(is_string, (yyvsp[(1) - (1)].string));}
     break;
 
   case 104:
 
 /* Line 1455 of yacc.c  */
-#line 322 "comp.y"
+#line 323 "comp.y"
     { (yyval.val) = insert_int(is_int, (yyvsp[(1) - (1)].val_i));}
     break;
 
   case 105:
 
 /* Line 1455 of yacc.c  */
-#line 323 "comp.y"
+#line 324 "comp.y"
     { (yyval.val) = insert_int(is_int, (yyvsp[(2) - (2)].val_i));}
     break;
 
   case 106:
 
 /* Line 1455 of yacc.c  */
-#line 324 "comp.y"
+#line 325 "comp.y"
     { (yyval.val) = insert_int(is_int, (yyvsp[(2) - (2)].val_i));}
     break;
 
   case 107:
 
 /* Line 1455 of yacc.c  */
-#line 325 "comp.y"
+#line 326 "comp.y"
     { (yyval.val) = insert_double(is_double, (yyvsp[(1) - (1)].doubleval));}
     break;
 
   case 108:
 
 /* Line 1455 of yacc.c  */
-#line 326 "comp.y"
+#line 327 "comp.y"
     { (yyval.val) = insert_char(is_char, (yyvsp[(1) - (1)].chr));}
     break;
 
   case 109:
 
 /* Line 1455 of yacc.c  */
-#line 327 "comp.y"
+#line 328 "comp.y"
     { (yyval.val) = insert_boolean(is_boolean, 1);}
     break;
 
   case 110:
 
 /* Line 1455 of yacc.c  */
-#line 328 "comp.y"
+#line 329 "comp.y"
     { (yyval.val) = insert_boolean(is_boolean, 0);}
     break;
 
   case 111:
 
 /* Line 1455 of yacc.c  */
-#line 332 "comp.y"
+#line 333 "comp.y"
     {(yyval.uvt) = is_char;}
     break;
 
   case 112:
 
 /* Line 1455 of yacc.c  */
-#line 333 "comp.y"
+#line 334 "comp.y"
     {(yyval.uvt) = is_int;}
     break;
 
   case 113:
 
 /* Line 1455 of yacc.c  */
-#line 334 "comp.y"
+#line 335 "comp.y"
     {(yyval.uvt) = is_string;}
     break;
 
   case 114:
 
 /* Line 1455 of yacc.c  */
-#line 335 "comp.y"
+#line 336 "comp.y"
     {(yyval.uvt) = is_boolean;}
     break;
 
   case 115:
 
 /* Line 1455 of yacc.c  */
-#line 336 "comp.y"
+#line 337 "comp.y"
     {(yyval.uvt) = is_double;}
     break;
 
   case 116:
 
 /* Line 1455 of yacc.c  */
-#line 337 "comp.y"
+#line 338 "comp.y"
     {(yyval.uvt) = is_void;}
     break;
 
 
 
 /* Line 1455 of yacc.c  */
-#line 2662 "y.tab.c"
+#line 2663 "y.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -2870,7 +2871,7 @@ yyreturn:
 
 
 /* Line 1675 of yacc.c  */
-#line 341 "comp.y"
+#line 342 "comp.y"
 
 
 int yyerror (char *s)
@@ -2880,9 +2881,15 @@ int yyerror (char *s)
 
 int main(){
 	yyparse();
-	ambient = semantic_analysis(myprogram);
+	ambient = semantic_analysis(myprogram,&errors);
 	/*show_program(myprogram);*/
-	printf("%d\n",line); 
+        if(errors == 1)
+            printf("You have %d error, noob!\n",errors);
+        else if(errors > 1)
+            printf("You have %d errors, noob!\n",errors);
+        else
+            printf("Compilation finished without errors, congratulations Master!\n");
+	printf("Program has %d lines\n",line); 
 	return 0;
 }
 

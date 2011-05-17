@@ -187,7 +187,7 @@ typedef union YYSTYPE
 {
 
 /* Line 1676 of yacc.c  */
-#line 38 "comp.y"
+#line 39 "comp.y"
 
 
 is_program *prog;

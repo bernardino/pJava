@@ -17,10 +17,12 @@ class gcd_rec {
                 double temp = 1.9;
                 temp++;
                 int c = 1;
-                if(c){
-                    a++;
+                for(int i = 0; i< 10; i++){
+                    for(int d = 0; d < 10 ;d++){
+                        a++;
+                    }
                 }
-                boolean f = true;
+                int i = 10f;
 		a++;
 		b=a+b;
                 String temp1 = "ola";
