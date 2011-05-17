@@ -182,6 +182,7 @@ declaration:
 	;
 assignment:
 	ID assign_operator expression			{ $$ = insert_assignment($1,$2,$3,line);}
+        | ID assign_operator assignment                 { $$ = insert_assignment($1,$2,$3->expression,line);}
 	/*| ID '[' expression ']' operator expression	{ $$ = insert_assignment( );}*/
 	;
 unary:
@@ -301,7 +302,6 @@ condition_code:
 
 switch: 
 	CASE value ':' operation_list switch 	{ $$ = insert_switch_case(is_NORMAL,$2,$4,$5,line);}
-	| DEFAULT ':' operation_list switch	{ $$ = insert_switch_case(is_DEFAULT,NULL,$3,$4,line);}
 	| CASE value ':' operation_list 	{ $$ = insert_switch_case(is_NORMAL,$2,$4,NULL,line);}
 	| DEFAULT ':' operation_list		{ $$ = insert_switch_case(is_DEFAULT,NULL,$3,NULL,line);}
 	;

@@ -16,7 +16,11 @@ class gcd_rec {
 	public static int gcd(int a,int b) {
                 double temp = 1.9;
                 temp++;
-                a = 2;
+                int c = 1;
+                if(c){
+                    a++;
+                }
+                boolean f = true;
 		a++;
 		b=a+b;
                 String temp1 = "ola";
