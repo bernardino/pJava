@@ -22,7 +22,7 @@ class gcd_rec {
                         a++;
                     }
                 }
-                int i = 10f;
+                int i = 10;
 		a++;
 		b=a+b;
                 String temp1 = "ola";
