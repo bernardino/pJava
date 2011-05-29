@@ -350,12 +350,13 @@ int main(){
 	yyparse();
 	ambient = semantic_analysis(myprogram,&errors);
 	/*show_program(myprogram);*/
-        if(errors == 1)
-            printf("You have %d error, noob!\n",errors);
-        else if(errors > 1)
-            printf("You have %d errors, noob!\n",errors);
-        else
-            printf("Compilation finished without errors, congratulations Master!\n");
+        if(errors > 0){
+            printf("You have %d errors!\n",errors);
+        }
+        else{
+            printf("Compilation finished without errors!\n");
+            translate_program(myprogram);
+        }
 	printf("Program has %d lines\n",line); 
 	return 0;
 }

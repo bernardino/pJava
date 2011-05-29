@@ -5,7 +5,7 @@
 #include "structures.h"
 #include "symbol_table.h"
 
-int errors = 0,global_offset = 0,local_offset = 0, return_found;
+int errors = 0,global_offset = 0,local_offset = 0, return_found, global_variable = 0;
 
 environment_list* create_environment(is_function *function){
 
@@ -64,7 +64,10 @@ table_element* searchVar(environment_list *env,table_element *global, table_elem
             else
                 return aux;
         }                
-        return lookupElement(global,name);
+        aux = lookupElement(global,name);
+        if(aux){
+            global_variable = 1;
+        }
     }
 
     return aux;
@@ -159,21 +162,30 @@ table_element* insertVariable(prog_env* pe, environment_list *env,table_element 
     table_element *aux = searchVar(env,pe->global,variables,name);
 
     if(aux != NULL){
-        if(type == GLOBAL)
+        if(type == GLOBAL){
             printf("%d - global variable with name %s already declared!\n",line,name);
-        else
-            printf("%d - local variable with name %s already declared!\n",line,name);
-        
-            errors++;	
-    }
-    else{
-        if(variables == NULL){
-            variables = el;
+            errors++;
+            free(el);
+            return variables;
         }
         else{
-            for(aux=variables; aux->next!= NULL;aux = aux->next);
-            aux->next = el;	
+            if(global_variable == 1){
+                global_variable = 0;
+            }
+            else{
+                printf("%d - local variable with name %s already declared!\n",line,name);
+                errors++;
+                free(el);
+                return variables;
+            }
         }
+    }
+    if(variables == NULL){
+        variables = el;
+    }
+    else{
+        for(aux=variables; aux->next!= NULL;aux = aux->next);
+        aux->next = el;	
     }
 
     return variables;
