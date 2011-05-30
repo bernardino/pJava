@@ -41,12 +41,12 @@ table_element* lookupElement(table_element* table, char *str){
 }
 
 environment_list* lookupEnvironment(environment_list* list, char *str){
-
-	environment_list *aux;
-
-	for(aux=list; aux; aux=aux->next)
-		if(strcmp(aux->name, str)==0)
+	environment_list *aux = list;
+	for(; aux != NULL; aux=aux->next){
+		if(strcmp(aux->name, str)==0){
 			return aux;
+                }
+        }
 
 	return NULL;
 }

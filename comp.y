@@ -5,6 +5,7 @@
 #include "functions.h"
 #include "shows.h"
 #include "semantics.h"
+#include "translate.h"
 
 prog_env *ambient = NULL;
 is_program *myprogram;
@@ -355,7 +356,7 @@ int main(){
         }
         else{
             printf("Compilation finished without errors!\n");
-            translate_program(myprogram);
+            translate_program(myprogram, ambient);
         }
 	printf("Program has %d lines\n",line); 
 	return 0;

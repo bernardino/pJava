@@ -5,7 +5,7 @@ class gcd_rec {
 		a = a + 6;
                 b = 1;
 		b%=7;
-                boolean f = true;
+                String str = "ola";
                 if(a == b){
                     a++;
                 }
