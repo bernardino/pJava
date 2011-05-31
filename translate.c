@@ -8,6 +8,8 @@
 
 
 FILE *dest;
+int temp = 0;
+int returncounter=0;
 
 void translate_program(is_program *program, prog_env *pe) {
 
@@ -20,7 +22,7 @@ void translate_program(is_program *program, prog_env *pe) {
     }
 
     translate_header();
-    translate_global_list(pe->global);
+    translate_global_list(pe, pe->procs, program->variable_list);
     translate_main(pe, program->main);
     translate_function_list(pe, program->function_list);
     translate_footer();
@@ -40,32 +42,44 @@ void translate_header() {
 
 }
 
-void translate_footer(){
-	translate_redirector();
-	fprintf(dest, "}\n\n");
+void translate_footer() {
+    translate_redirector();
+    fprintf(dest, "}\n\n");
 }
 
-void translate_redirector(){
-	int i;
-	fprintf(dest, "/*Redirector*/\n");
-	fprintf(dest, "goto exit;\n");
-	fprintf(dest, "redirector:\n");
+void translate_redirector() {
+    int i;
+    fprintf(dest, "/*Redirector*/\n");
+    fprintf(dest, "goto exit;\n");
+    fprintf(dest, "redirector:\n");
 
-	/*for(i=0; i<returncounter; i++)				//Para cada endereco de retorno, sua label associada
-		{
-		fprintf(dest, "if(_ra==%d) goto return%d;\n", i, i);
-		}*/
-	fprintf(dest, "exit:\n;\n");
+    for(i=0; i<returncounter; i++)				//Para cada endereco de retorno, sua label associada
+            {
+            fprintf(dest, "if(_ra==%d) goto return%d;\n", i, i);
+            }
+    fprintf(dest, "exit:\n;\n");
 }
 
-void translate_global_list(table_element *variables) {
-    
+void translate_global_list(prog_env *pe, environment_list *env, is_global_list *list) {
+
     fprintf(dest, "/*Global variables */\n");
 
-    table_element *table = variables;
+    is_global_list *aux = list;
+    is_variable *var;
+    table_element *el;
 
-    for (; table != NULL; table = table->next) {
-        translate_global_var(table);
+
+    for (; aux != NULL; aux = aux->next) {
+        var = aux->dec->declaration->variable_list->variable;
+        el = lookupElement(pe->global, var->id);
+        if (var->expression) {
+            translate_expression(pe, env, var->expression);
+            translate_global_var(el);
+            fprintf(dest, " = temp%d;\n", temp - 1);
+        } else {
+            translate_global_var(el);
+            fprintf(dest, ";\n");
+        }
     }
 
 }
@@ -75,19 +89,19 @@ void translate_global_var(table_element *var) {
     switch (var->type) {
 
         case is_char:
-            fprintf(dest, "char g%d;\n", var->offset);
+            fprintf(dest, "char g%d", var->offset);
             break;
         case is_int:
-            fprintf(dest, "int g%d;\n", var->offset);
+            fprintf(dest, "int g%d", var->offset);
             break;
         case is_boolean:
-            fprintf(dest, "int g%d;\n", var->offset);
+            fprintf(dest, "int g%d", var->offset);
             break;
         case is_double:
-            fprintf(dest, "double g%d;\n", var->offset);
+            fprintf(dest, "double g%d", var->offset);
             break;
         case is_string:
-            fprintf(dest, "char *g%d;\n", var->offset);
+            fprintf(dest, "char *g%d", var->offset);
             break;
         default:
             break;
@@ -110,7 +124,7 @@ void translate_function(prog_env *pe, is_function *function) {
 
     fprintf(dest, "\n/*FUNCTION BLOCK %s */\n", function->id);
     fprintf(dest, "/*Prologue*/\n");
-    fprintf(dest, "goto %sskip;\n", function->id); //Instrucao para nao executar este codigo quando o main for corrido da primeira vez, apenas para o nosso codigo C restringido 
+    fprintf(dest, "goto %sskip;\n\n", function->id); //Instrucao para nao executar este codigo quando o main for corrido da primeira vez, apenas para o nosso codigo C restringido 
     fprintf(dest, "%s:\n", function->id); //Label do procedimento	
     fprintf(dest, "fp=sp;\n"); //Guarda do endereco da frame anterior (sp), no frame pointer (fp)
     fprintf(dest, "sp=(frame*)malloc(sizeof(frame));\n"); //Criacao de uma nova frame, identificada com com o Stack Pointer (sp)
@@ -129,7 +143,7 @@ void translate_function(prog_env *pe, is_function *function) {
     fprintf(dest, "sp=sp->parent;\n"); //"pop" da pilha de frames
     fprintf(dest, "fp=sp->parent;\n"); //actualizacao do registo FP de acordo
     fprintf(dest, "goto redirector;\n"); //Instrucao especifica para a nossa implementacao em C "restringido"
-    fprintf(dest, "%sskip:\n", function->id); //label para acesso a  instruccao seguinte ao codigo do procedimento (para evitar ser executado inadvertidamente)
+    fprintf(dest, "\n%sskip:\n", function->id); //label para acesso a  instruccao seguinte ao codigo do procedimento (para evitar ser executado inadvertidamente)
 
 }
 
@@ -195,19 +209,19 @@ void translate_operation(prog_env *pe, environment_list *env, is_operation *oper
             translate_declaration(pe, env, operation->oper.declaration);
             break;
         case is_assign:
-            translate_assignment(pe,env,operation->oper.assignment);
+            translate_assignment(pe, env, operation->oper.assignment);
             break;
         case is_funct:
-            /*translate_function_call(pe,env,env->locals,is_void,operation->oper.function,0);*/
+            translate_function_call(pe, env, operation->oper.function);
             break;
         case is_un:
-            /*translate_unary(pe,env,env->locals,operation->oper.unary);*/
+            translate_unary(pe, env, operation->oper.unary);
             break;
         case is_cyc:
             /*translate_cycle(pe,env,env->locals,operation->oper.cycle);*/
             break;
         case is_cond:
-            /*translate_condition(pe,env,env->locals,operation->oper.condition);*/
+            translate_condition(pe,env,operation->oper.condition);
             break;
         case is_cont:
             /*translate_control(pe,env,env->locals,operation->oper.control);*/
@@ -231,7 +245,290 @@ void translate_variable_list(prog_env *pe, environment_list *env, is_variable_li
 
 }
 
-void translate_assignment(prog_env *pe, environment_list *env, is_assignment *assign){
+void translate_unary(prog_env *pe, environment_list *env, is_unary *unary) {
+
+    table_element *el = NULL;
+    environment_list *aux = env;
+
+    el = lookupLocalVar(env, unary->id);
+    switch (unary->type) {
+        case is_before_plus:
+            fprintf(dest, "++");
+            break;
+        case is_before_minus:
+            fprintf(dest, "--");
+            break;
+    }
+
+    if (el) {
+        /* LOCAL VARIABLE*/
+        translate_local_variable(el);
+    } else {
+        /* GLOBAL VARIABLE*/
+        el = lookupElement(pe->global, unary->id);
+        fprintf(dest, "g%d", el->offset);
+    }
+
+    switch (unary->type) {
+        case is_after_plus:
+            fprintf(dest, "++");
+            break;
+        case is_after_minus:
+            fprintf(dest, "--");
+            break;
+    }
+
+    fprintf(dest, ";\n");
+
+}
+
+table_element* lookupLocalVar(environment_list *env, char *id) {
+    table_element *el = NULL;
+    environment_list *aux = env;
+    while (el == NULL && aux != NULL) {
+        el = lookupElement(aux->locals, id);
+        if (!el) {
+            aux = aux->father;
+        }
+    }
+
+    return el;
+
+}
+
+void translate_assignment(prog_env *pe, environment_list *env, is_assignment *assign) {
+
+    table_element *el = NULL;
+    environment_list *aux = env;
+
+    el = lookupLocalVar(env, assign->id);
+
+    if (el) {
+        /* LOCAL VARIABLE */
+        translate_expression(pe, aux, assign->expression);
+        translate_local_variable(el);
+
+
+    } else {
+        /*GLOBAL VARIABLE*/
+        el = lookupElement(pe->global, assign->id);
+        translate_expression(pe, aux, assign->expression);
+        fprintf(dest, "g%d", el->offset);
+    }
+
+    translate_assignment_operator(assign->type);
+
+    fprintf(dest, "temp%d;\n", temp - 1);
+
+}
+
+void translate_local_variable(table_element *el) {
+    switch (el->type) {
+        case is_char:
+            fprintf(dest, "(*((char*)sp->locals[%d]))", el->offset);
+            break;
+        case is_int:
+            fprintf(dest, "(*((int*)sp->locals[%d]))", el->offset);
+            break;
+        case is_boolean:
+            fprintf(dest, "(*((int*)sp->locals[%d]))", el->offset);
+            break;
+        case is_double:
+            fprintf(dest, "(*((double*)sp->locals[%d]))", el->offset);
+            break;
+        case is_string:
+            fprintf(dest, "(*((char**)sp->locals[%d]))", el->offset);
+            break;
+        default:
+            break;
+
+    }
+}
+
+void translate_assignment_operator(assignmentType type) {
+
+    switch (type) {
+        case is_ASS_EQ:
+            fprintf(dest, " = ");
+            break;
+        case is_ASS_ADD:
+            fprintf(dest, " += ");
+            break;
+        case is_ASS_SUB:
+            fprintf(dest, " -= ");
+            break;
+        case is_ASS_MUL:
+            fprintf(dest, " *= ");
+            break;
+        case is_ASS_DIV:
+            fprintf(dest, " /= ");
+            break;
+        case is_ASS_AND:
+            fprintf(dest, " &= ");
+            break;
+        case is_ASS_PERC:
+            fprintf(dest, " %%= ");
+            break;
+        case is_ASS_LS:
+            fprintf(dest, " <<= ");
+            break;
+        case is_ASS_RS:
+            fprintf(dest, " >>= ");
+            break;
+    }
+}
+
+void translate_value(is_value *value) {
+
+    switch (value->type) {
+        case is_char:
+            fprintf(dest, "char temp%d = %c;\n", temp++, value->valueType._char);
+            break;
+        case is_int:
+            fprintf(dest, "int temp%d = %d;\n", temp++, value->valueType._int);
+            break;
+        case is_boolean:
+            fprintf(dest, "int temp%d = %d;\n", temp++, value->valueType._boolean);
+            break;
+        case is_double:
+            fprintf(dest, "double temp%d = %lf;\n", temp++, value->valueType._double);
+            break;
+        case is_string:
+            fprintf(dest, "char temp%d = %s;\n", temp++, value->valueType._string);
+            break;
+        default:
+            break;
+    }
+
+}
+
+int translate_expression(prog_env *pe, environment_list *env, is_expression *exp) {
+
+    int ret;
+    switch (exp->type) {
+        case is_val:
+            translate_value(exp->exp.value);
+            return temp - 1;
+            break;
+        case is_infix:
+            translate_infix_expression(pe, env, exp->exp.infix);
+            return temp - 1;
+            break;
+        case is_funct_call:
+            translate_function_call(pe, env, exp->exp.function);
+            break;
+        case is_exp:
+            return translate_expression(pe, env, exp->exp.expression);
+            break;
+        case is_if_exp:
+            translate_if_expression(pe, env, exp->exp.if_expression);
+            break;
+    }
+
+}
+
+void translate_infix_expression(prog_env *pe, environment_list *env, is_infix_expression *exp) {
+
+    int p1 = translate_expression(pe, env, exp->exp1);
+    translate_expression(pe, env, exp->exp2);
+
+    fprintf(dest, "temp%d = ", temp);
+    fprintf(dest, "temp%d", p1);
+
+    switch (exp->oper) {
+        case is_plus:
+            fprintf(dest, " + ");
+            break;
+        case is_minus:
+            fprintf(dest, " - ");
+            break;
+        case is_mult:
+            fprintf(dest, " * ");
+            break;
+        case is_div:
+            fprintf(dest, " / ");
+            break;
+        case is_and:
+            fprintf(dest, " & ");
+            break;
+        case is_percent:
+            fprintf(dest, " %% ");
+            break;
+        case is_lshift:
+            fprintf(dest, " << ");
+            break;
+        case is_rshift:
+            fprintf(dest, " >> ");
+            break;
+    }
+
+    fprintf(dest, "temp%d;\n", temp - 1);
+
+    temp++;
+
+}
+
+void translate_function_call(prog_env *pe, environment_list *env, is_function_call *call) {
+    
+    	fprintf(dest, "_ra=%d;\n",returncounter);		//guarda de endereco de retorno
+	fprintf(dest, "goto %s;\n",call->id );			//Salto para codigo do procedimento
+	fprintf(dest, "return%d:\n", returncounter);		//label de retorno
+	returncounter++;	
+
+
+
+}
+
+void translate_if_expression(prog_env *pe, environment_list *env, is_if_expression *exp) {
+    translate_expression(pe, env, exp->exp1);
+
+    switch (exp->type) {
+        case is_OP_BIGGER:
+            fprintf(dest, " > ");
+            break;
+        case is_OP_LOWER:
+            fprintf(dest, " < ");
+            break;
+        case is_OP_EQ:
+            fprintf(dest, " == ");
+            break;
+        case is_OP_NE:
+            fprintf(dest, " != ");
+            break;
+        case is_OP_LE:
+            fprintf(dest, " <= ");
+            break;
+        case is_OP_GE:
+            fprintf(dest, " >= ");
+            break;
+        case is_OP_LOR:
+            fprintf(dest, " || ");
+            break;
+        case is_OP_LAND:
+            fprintf(dest, " && ");
+            break;
+    }
+    translate_expression(pe, env, exp->exp2);
+
+}
+
+translate_condition(prog_env *pe, environment_list *env, is_condition_statement *condition ){
+    
+    switch(condition->type){
+        case is_if_statement:
+            translate_if(pe,env,condition->stat.if_statement);
+            break;
+        case is_if_else_statement:
+            /*translate_if_else(pe,env,condition->stat.if_else_statement);*/
+            break;
+        case is_switch_statement:
+            /*translate_switch(pe,env,condition->stat.switch_statement);*/
+            break;
+    }
+    
+}
+
+void translate_if(prog_env *pe, environment_list *env, is_if_statement *st){
     
     
     
@@ -241,7 +538,10 @@ void translate_main(prog_env *pe, is_main *main) {
 
     environment_list *env = lookupEnvironment(pe->procs, "Main");
 
+    fprintf(dest, "\n/*BLOCO MAIN */\n");
+    fprintf(dest, "sp=(frame*)malloc(sizeof(frame));\n\n");
 
+    fprintf(dest, "/*Operation list*/\n");
     translate_operation_list(pe, env, main->code->operation_list);
 
 

@@ -185,7 +185,6 @@ declaration:
 assignment:
 	ID assign_operator expression			{ $$ = insert_assignment($1,$2,$3,line);}
         | ID assign_operator assignment                 { $$ = insert_assignment($1,$2,$3->expression,line);}
-	/*| ID '[' expression ']' operator expression	{ $$ = insert_assignment( );}*/
 	;
 unary:
 	ID OP_INC	{ $$ = insert_unary($1, is_after_plus,line);}
@@ -252,7 +251,6 @@ var_list:
 var:
 	ID			{ $$ = insert_variable(is_id, $1, NULL,line);}
 	| ID '=' expression	{ $$ = insert_variable(is_id, $1, $3,line);}
-	/*| ID '[' value ']'	{ $$ = insert_variable(is_array, $1, $3);}*/
 	;
 
 argument_list:
@@ -316,6 +314,8 @@ assign_operator:
 	| ASS_DIV	{ $$ = is_ASS_DIV;}
 	| ASS_PERC	{ $$ = is_ASS_PERC;}
 	| ASS_AND	{ $$ = is_ASS_AND;}
+        | ASS_LS        { $$ = is_ASS_LS;}
+        | ASS_RS        { $$ = is_ASS_RS;}
 	;
 
 value:

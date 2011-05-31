@@ -218,7 +218,7 @@ unsignedVariableType semantic_analysis_var_expression(prog_env *pe,environment_l
             return semantic_analysis_function_call(pe,env,variables,type,expression->exp.function,1);
             break;
         case is_exp:
-            return semantic_analysis_var_expression(pe,env,variables,type,expression,line,analysis);
+            return semantic_analysis_var_expression(pe,env,variables,type,expression->exp.expression,line,analysis);
             break;
         case is_if_exp:
             semantic_analysis_if_expression(pe,env,expression->exp.if_expression,line);
@@ -453,11 +453,16 @@ void semantic_analysis_assignment(prog_env *pe,environment_list *env, table_elem
     }
     else{
          tipo = aux->type;
+         if(assignment->type != is_ASS_EQ && aux->initialized == 0){
+             printf("%d - The variable with name %s may not have been initialized\n",assignment->line, assignment->id );
+             errors++;
+         }
          aux->initialized = 1;
     }
     
     if(aux->type == is_boolean && assignment->type != is_ASS_EQ){
         printf("%d - This operator is undefined for the boolean type\n",assignment->line);
+        errors++;
     }
     semantic_analysis_var_expression(pe,env,variables,tipo,assignment->expression,assignment->line,1);
     
