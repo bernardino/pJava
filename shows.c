@@ -459,7 +459,7 @@ void show_condition_statement(is_condition_statement *condition) {
 }
 
 void show_if_statement(is_if *if_statement) {
-	show_expression(if_statement->expression);
+	show_if_expression(if_statement->expression);
 	printf(" ) { ");
 	show_condition_code(if_statement->code);
 	printf(" } ");
@@ -512,7 +512,7 @@ void show_condition_code(is_condition_code *code) {
 }
 
 void show_if_else_statement(is_if_else *if_else_statement) {
-	show_expression(if_else_statement->expression);
+	show_if_expression(if_else_statement->expression);
 	printf(" ) { ");
 	show_condition_code(if_else_statement->if_code);
 	printf(" } ELSE {");

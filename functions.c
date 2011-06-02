@@ -332,13 +332,27 @@ is_infix_expression* insert_infix( is_expression* exp1, infixType type, is_expre
 	return infix;
 }
 
-is_if_expression* insert_if(is_expression *exp1, if_exp_type type, is_expression *exp2){
+is_if_expression* insert_if_value(is_value *value, if_exp_type type, int line){
+    
+    is_if_expression *if_expression = (is_if_expression*)malloc(sizeof(is_if_expression));
+    
+    if_expression->val = value;
+    if_expression->type = type;
+    if_expression->line = line;
+    
+    return if_expression;
+    
+    
+}
+
+is_if_expression* insert_if(is_expression *exp1, if_exp_type type, is_expression *exp2, int line){
 
 	is_if_expression *if_expression = (is_if_expression*)malloc(sizeof(is_if_expression));
 
 	if_expression->exp1 = exp1;
 	if_expression->type = type;
 	if_expression->exp2 = exp2;
+        if_expression->line = line;
 
 	return if_expression;
 }
@@ -368,7 +382,7 @@ is_switch_case* insert_switch_case(switchType type, is_value *val, is_operation_
 }
 
 /* insert conditions */
-is_condition_statement* insert_if_statement(is_expression *expression,is_condition_code *code, int line){
+is_condition_statement* insert_if_statement(is_if_expression *expression,is_condition_code *code, int line){
 
 	is_if *statement = (is_if*)malloc(sizeof(is_if));
 	statement->expression = expression;
@@ -382,11 +396,11 @@ is_condition_statement* insert_if_statement(is_expression *expression,is_conditi
 	return stat;
 }
 
-is_condition_statement* insert_if_else_statement(is_expression *expression,is_condition_code *if_code, is_condition_code *else_code, int line){
+is_condition_statement* insert_if_else_statement(is_if_expression *exp,is_condition_code *if_code, is_condition_code *else_code, int line){
 
 	is_if_else *statement = (is_if_else*)malloc(sizeof(is_if_else));
 
-	statement->expression = expression;
+	statement->expression = exp;
 	statement->if_code = if_code;
 	statement->else_code = else_code;
         statement->line = line;

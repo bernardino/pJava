@@ -208,7 +208,7 @@ expression:
 	| value			{ $$ = insert_expression_value($1,line);}
 	| function_call		{ $$ = insert_expression_func($1,line);}
 	| infix_expression 	{ $$ = insert_expression_infix($1,line);}
-	| if_expression		{ $$ = insert_expression_if($1,line);}
+	/*| if_expression		{ $$ = insert_expression_if($1,line);}*/
 	;
 
 function_call:
@@ -228,14 +228,15 @@ infix_expression:
 	;
 
 if_expression:
-	expression '>' expression 	{ $$ = insert_if($1, is_OP_BIGGER, $3);}
-	| expression '<' expression 	{ $$ = insert_if($1, is_OP_LOWER, $3);}
-	| expression OP_EQ expression	{ $$ = insert_if($1, is_OP_EQ, $3);}
-	| expression OP_LE expression	{ $$ = insert_if($1, is_OP_LE, $3);}
-	| expression OP_GE expression	{ $$ = insert_if($1, is_OP_GE, $3);}
-	| expression OP_NE expression 	{ $$ = insert_if($1, is_OP_NE, $3);}
-	| expression OP_LOR expression	{ $$ = insert_if($1, is_OP_LOR, $3);}
-	| expression OP_LAND expression { $$ = insert_if($1, is_OP_LAND, $3);}
+            value                       { $$ = insert_if_value($1, is_iden,line);}
+        | expression '>' expression 	{ $$ = insert_if($1, is_OP_BIGGER, $3,line);}
+	| expression '<' expression 	{ $$ = insert_if($1, is_OP_LOWER, $3,line);}
+	| expression OP_EQ expression	{ $$ = insert_if($1, is_OP_EQ, $3,line);}
+	| expression OP_LE expression	{ $$ = insert_if($1, is_OP_LE, $3,line);}
+	| expression OP_GE expression	{ $$ = insert_if($1, is_OP_GE, $3,line);}
+	| expression OP_NE expression 	{ $$ = insert_if($1, is_OP_NE, $3,line);}
+	| expression OP_LOR expression	{ $$ = insert_if($1, is_OP_LOR, $3,line);}
+	| expression OP_LAND expression { $$ = insert_if($1, is_OP_LAND, $3,line);}
 	;
 
 parameter_list:	
@@ -271,8 +272,8 @@ cycle:
 	| DO condition_code WHILE '(' expression ')' ';'				{ $$ = insert_do_while($2,$5,line);}
 	;
 
-if:	IF '(' expression ')' condition_code %prec IFPREC			{ $$ = insert_if_statement($3, $5,line); }
-	| IF '(' expression ')' condition_code ELSE condition_code		{ $$ = insert_if_else_statement($3,$5,$7,line);}
+if:	IF '(' if_expression ')' condition_code %prec IFPREC			{ $$ = insert_if_statement($3, $5,line); }
+	| IF '(' if_expression ')' condition_code ELSE condition_code		{ $$ = insert_if_else_statement($3,$5,$7,line);}
 	| SWITCH '(' expression ')' '{' switch '}'				{ $$ = insert_switch_statement($3,$6,line);}
 	;
 
@@ -350,7 +351,7 @@ int yyerror (char *s)
 int main(){
 	yyparse();
 	ambient = semantic_analysis(myprogram,&errors);
-	/*show_program(myprogram);*/
+	//show_program(myprogram);
         if(errors > 0){
             printf("You have %d errors!\n",errors);
         }

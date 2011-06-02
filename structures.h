@@ -8,7 +8,7 @@ typedef enum { is_ASS_EQ, is_ASS_ADD, is_ASS_SUB, is_ASS_MUL, is_ASS_DIV , is_AS
 typedef enum { is_infix, is_val, is_funct_call, is_exp, is_if_exp } expressionType;
 typedef enum { is_before_plus, is_before_minus, is_after_plus, is_after_minus } unaryType;
 typedef enum { is_dec, is_assign, is_funct, is_un, is_cyc, is_cond, is_cont} operationType;
-typedef enum { is_OP_BIGGER, is_OP_LOWER, is_OP_EQ, is_OP_NE, is_OP_LE, is_OP_GE, is_OP_LOR, is_OP_LAND } if_exp_type;
+typedef enum { is_OP_BIGGER, is_OP_LOWER, is_OP_EQ, is_OP_NE, is_OP_LE, is_OP_GE, is_OP_LOR, is_OP_LAND, is_iden } if_exp_type;
 typedef enum { is_break, is_continue, is_return, is_return_exp, is_println, is_print } controlType;
 typedef enum { is_private, is_public, is_protected } scopeType;
 typedef enum { GLOBAL, LOCAL } globalType;
@@ -200,13 +200,13 @@ struct _condition_statement{
 
 struct _is_if{
 	int line;
-	is_expression *expression;
+	is_if_expression *expression;
 	is_condition_code *code;
 };
 
 struct _is_if_else{
 	int line;
-	is_expression *expression;
+	is_if_expression *expression;
 	is_condition_code *if_code;
 	is_condition_code *else_code;
 
@@ -261,6 +261,8 @@ struct _if_expression{
 	is_expression  *exp1;
 	if_exp_type type;
 	is_expression  *exp2;
+        is_value *val;
+        int line;
 };
 
 struct _control{

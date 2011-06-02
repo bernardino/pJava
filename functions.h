@@ -44,12 +44,13 @@ is_expression* insert_expression_infix(is_infix_expression *infix, int line);
 is_expression* insert_expression_if(is_if_expression *if_expression, int line);
 
 is_infix_expression* insert_infix( is_expression* exp1, infixType type, is_expression *exp2);
-is_if_expression* insert_if(is_expression *exp1, if_exp_type type, is_expression *exp2);
+is_if_expression* insert_if(is_expression *exp1, if_exp_type type, is_expression *exp2, int line);
+is_if_expression* insert_if_value(is_value *value, if_exp_type type, int line);
 is_control* insert_control(controlType type, is_expression *exp, int line);
 
 /* insert conditions */
-is_condition_statement* insert_if_statement(is_expression *expression,is_condition_code *code, int line);
-is_condition_statement* insert_if_else_statement(is_expression *expression,is_condition_code *if_code, is_condition_code *else_code, int line);
+is_condition_statement* insert_if_statement(is_if_expression *expression,is_condition_code *code, int line);
+is_condition_statement* insert_if_else_statement(is_if_expression *expression,is_condition_code *if_code, is_condition_code *else_code, int line);
 is_condition_statement* insert_switch_statement(is_expression *expression, is_switch_case *switch_case, int line);
 is_switch_case* insert_switch_case(switchType type, is_value *val, is_operation_list *operation_list, is_switch_case *next, int line);
 

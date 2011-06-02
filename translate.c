@@ -283,6 +283,7 @@ void translate_unary(prog_env *pe, environment_list *env, is_unary *unary) {
 }
 
 table_element* lookupLocalVar(environment_list *env, char *id) {
+    
     table_element *el = NULL;
     environment_list *aux = env;
     while (el == NULL && aux != NULL) {
@@ -291,7 +292,6 @@ table_element* lookupLocalVar(environment_list *env, char *id) {
             aux = aux->father;
         }
     }
-
     return el;
 
 }
@@ -378,7 +378,7 @@ void translate_assignment_operator(assignmentType type) {
     }
 }
 
-void translate_value(is_value *value) {
+void translate_value(prog_env *pe, environment_list *env,is_value *value) {
 
     switch (value->type) {
         case is_char:
@@ -396,18 +396,48 @@ void translate_value(is_value *value) {
         case is_string:
             fprintf(dest, "char temp%d = %s;\n", temp++, value->valueType._string);
             break;
+        case is_ident:
+            ;
+            table_element *element = lookupLocalVar(env, value->valueType._string);
+            if(element != NULL){
+                convertType(element->type);
+                fprintf(dest," temp%d = ", temp++);
+                translate_local_variable(element);
+                fprintf(dest, ";\n");
+            }
+            break;
         default:
             break;
     }
 
 }
 
+void convertType(unsignedVariableType type){
+    switch(type){
+       case is_char:
+            fprintf(dest, "char");
+            break;
+        case is_int:
+            fprintf(dest, "int");
+            break;
+        case is_boolean:
+            fprintf(dest, "int");
+            break;
+        case is_double:
+            fprintf(dest, "double");
+            break;
+        case is_string:
+            fprintf(dest, "char*" );
+            break;
+    }   
+    
+}
+
 int translate_expression(prog_env *pe, environment_list *env, is_expression *exp) {
 
-    int ret;
     switch (exp->type) {
         case is_val:
-            translate_value(exp->exp.value);
+            translate_value(pe,env,exp->exp.value);
             return temp - 1;
             break;
         case is_infix:
@@ -480,7 +510,15 @@ void translate_function_call(prog_env *pe, environment_list *env, is_function_ca
 }
 
 void translate_if_expression(prog_env *pe, environment_list *env, is_if_expression *exp) {
-    translate_expression(pe, env, exp->exp1);
+    
+    
+    /* TO DO: IFS WITH ONLY ONE VARIABLE NOT WORKING YET*/
+    int ret = translate_expression(pe, env, exp->exp1);
+    
+    
+    int ret1 = translate_expression(pe, env, exp->exp2);
+    
+    fprintf(dest, "if(temp%d",ret);
 
     switch (exp->type) {
         case is_OP_BIGGER:
@@ -508,7 +546,8 @@ void translate_if_expression(prog_env *pe, environment_list *env, is_if_expressi
             fprintf(dest, " && ");
             break;
     }
-    translate_expression(pe, env, exp->exp2);
+    
+    fprintf(dest,"temp%d) goto\n",ret1);
 
 }
 
@@ -528,7 +567,9 @@ translate_condition(prog_env *pe, environment_list *env, is_condition_statement 
     
 }
 
-void translate_if(prog_env *pe, environment_list *env, is_if_statement *st){
+void translate_if(prog_env *pe, environment_list *env, is_if *st){
+    
+    translate_if_expression(pe, env, st->expression);
     
     
     

@@ -674,7 +674,9 @@ void semantic_analysis_if(prog_env *pe,environment_list *env, table_element *var
         aux->local_environment = cond;
     }
     
-    semantic_analysis_var_expression(pe,cond,cond->locals,is_void,stat->expression,stat->expression->line,0);
+    /*semantic_analysis_var_expression(pe,cond,cond->locals,is_void,stat->expression,stat->expression->line,0);*/
+    
+    semantic_analysis_if_expression(pe,env,stat->expression,stat->expression->line);
     
     if(stat->code->operation_list != NULL){
         semantic_analysis_operation_list(pe,cond,stat->code->operation_list);
@@ -701,7 +703,9 @@ void semantic_analysis_if_else(prog_env *pe,environment_list *env, table_element
         aux->local_environment = cond;
     }
     
-    semantic_analysis_var_expression(pe,cond,cond->locals,is_void,stat->expression,stat->expression->line,0);
+    /*semantic_analysis_var_expression(pe,cond,cond->locals,is_void,stat->expression,stat->expression->line,0);*/
+    
+    semantic_analysis_if_expression(pe,env,stat->expression,stat->expression->line);
     
     if(stat->if_code->operation_list != NULL){
         semantic_analysis_operation_list(pe,cond,stat->if_code->operation_list);

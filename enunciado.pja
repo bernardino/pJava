@@ -1,9 +1,11 @@
 class gcd_rec {
 	public static int var;
 	public static void main(String[] args) {
-		var = 10;
+		var = -10;
 		int a = 1;
-                gcd(a,1);
+                if( a == 1){
+                    a = 2;
+                }
 		/*int a = 0, b = 1;
 		a = a + 6;
                 b = 1;

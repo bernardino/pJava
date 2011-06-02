@@ -17,12 +17,9 @@ sp=(frame*)malloc(sizeof(frame));
 int temp0 = 10;
 g0 = temp0;
 sp->locals[4]=(int *)malloc(sizeof(int));
-_ra=0;
-goto gcd;
-return0:
-_ra=1;
-goto gcd;
-return1:
+int temp1 = (*((int*)sp->locals[4]));
+int temp2 = 1;
+if(temp1 == temp2) goto
 
 /*FUNCTION BLOCK gcd */
 /*Prologue*/
@@ -53,8 +50,6 @@ gcdskip:
 /*Redirector*/
 goto exit;
 redirector:
-if(_ra==0) goto return0;
-if(_ra==1) goto return1;
 exit:
 ;
 }
