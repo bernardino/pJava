@@ -3,8 +3,9 @@ class gcd_rec {
 	public static void main(String[] args) {
 		var = -10;
 		int a = 1;
+                a = var;
                 if( a == 1){
-                    a = 2;
+                    var = 2;
                 }
 		/*int a = 0, b = 1;
 		a = a + 6;
@@ -22,6 +23,9 @@ class gcd_rec {
                 double temp = 1.9;
                 temp++;
                 int c = 1;
+                if(c == 2){
+                    temp = 1.0;
+                }
                 /*for(int i = 0; i< 10; i++){
                     for(int d = 0; d < 10 ;d++){
                         a++;

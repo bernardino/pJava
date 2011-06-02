@@ -9,7 +9,8 @@
 
 FILE *dest;
 int temp = 0;
-int returncounter=0;
+int returncounter = 0;
+int ifcounter = 0;
 
 void translate_program(is_program *program, prog_env *pe) {
 
@@ -23,8 +24,8 @@ void translate_program(is_program *program, prog_env *pe) {
 
     translate_header();
     translate_global_list(pe, pe->procs, program->variable_list);
-    translate_main(pe, program->main);
     translate_function_list(pe, program->function_list);
+    translate_main(pe, program->main);
     translate_footer();
 }
 
@@ -405,6 +406,11 @@ void translate_value(prog_env *pe, environment_list *env,is_value *value) {
                 translate_local_variable(element);
                 fprintf(dest, ";\n");
             }
+            else{
+                element = lookupElement(pe->global,value->valueType._string);
+                convertType(element->type);
+                fprintf(dest," temp%d = g%d;\n",temp++,element->offset);
+            }
             break;
         default:
             break;
@@ -450,8 +456,10 @@ int translate_expression(prog_env *pe, environment_list *env, is_expression *exp
         case is_exp:
             return translate_expression(pe, env, exp->exp.expression);
             break;
-        case is_if_exp:
+        /*case is_if_exp:
             translate_if_expression(pe, env, exp->exp.if_expression);
+            break;*/
+        default:
             break;
     }
 
@@ -509,53 +517,81 @@ void translate_function_call(prog_env *pe, environment_list *env, is_function_ca
 
 }
 
-void translate_if_expression(prog_env *pe, environment_list *env, is_if_expression *exp) {
+void translate_if_expression(prog_env *pe, environment_list *env, is_if *st) {
     
+    is_if_expression *exp = st->expression;
     
-    /* TO DO: IFS WITH ONLY ONE VARIABLE NOT WORKING YET*/
-    int ret = translate_expression(pe, env, exp->exp1);
-    
-    
-    int ret1 = translate_expression(pe, env, exp->exp2);
-    
-    fprintf(dest, "if(temp%d",ret);
+    if(exp->type != is_ident){
+        int ret = translate_expression(pe, env, exp->exp1);
 
-    switch (exp->type) {
-        case is_OP_BIGGER:
-            fprintf(dest, " > ");
-            break;
-        case is_OP_LOWER:
-            fprintf(dest, " < ");
-            break;
-        case is_OP_EQ:
-            fprintf(dest, " == ");
-            break;
-        case is_OP_NE:
-            fprintf(dest, " != ");
-            break;
-        case is_OP_LE:
-            fprintf(dest, " <= ");
-            break;
-        case is_OP_GE:
-            fprintf(dest, " >= ");
-            break;
-        case is_OP_LOR:
-            fprintf(dest, " || ");
-            break;
-        case is_OP_LAND:
-            fprintf(dest, " && ");
-            break;
+
+        int ret1 = translate_expression(pe, env, exp->exp2);
+
+        fprintf(dest, "if(temp%d",ret);
+        invertOperator(exp->type);
+
+        fprintf(dest,"temp%d) goto ELSE%d;\n",ret1,ifcounter);
+        int temp = ifcounter++;
+        
+        if(st->code->operation_list != NULL)
+                translate_operation_list(pe,env,st->code->operation_list);
+        else
+            translate_operation(pe,env,st->code->operation);
+        
+        fprintf(dest, "ELSE%d:\n",temp);
+        
+        
     }
-    
-    fprintf(dest,"temp%d) goto\n",ret1);
+    else{
+        
+    }
 
+}
+
+void invertOperator(if_exp_type type){
+    
+    switch (type) {
+            case is_OP_BIGGER:
+                /* > ----- <=*/
+                fprintf(dest, " <= ");
+                break;
+            case is_OP_LOWER:
+                /* < ----- >=*/
+                fprintf(dest, " >= ");
+                break;
+            case is_OP_EQ:
+                /* == ----- !=*/
+                fprintf(dest, " != ");
+                break;
+            case is_OP_NE:
+                /* != ----- ==*/
+                fprintf(dest, " == ");
+                break;
+            case is_OP_LE:
+                /* <= ----- >*/
+                fprintf(dest, " > ");
+                break;
+            case is_OP_GE:
+                /* >= ----- <*/
+                fprintf(dest, " >= ");
+                break;
+            case is_OP_LOR:
+                /* || ----- &&*/
+                fprintf(dest, " && ");
+                break;
+            case is_OP_LAND:
+                /* && ----- ||*/
+                fprintf(dest, " || ");
+                break;
+        }
+    
 }
 
 translate_condition(prog_env *pe, environment_list *env, is_condition_statement *condition ){
     
     switch(condition->type){
         case is_if_statement:
-            translate_if(pe,env,condition->stat.if_statement);
+            translate_if(pe,env->local_environment,condition->stat.if_statement);
             break;
         case is_if_else_statement:
             /*translate_if_else(pe,env,condition->stat.if_else_statement);*/
@@ -569,10 +605,21 @@ translate_condition(prog_env *pe, environment_list *env, is_condition_statement 
 
 void translate_if(prog_env *pe, environment_list *env, is_if *st){
     
-    translate_if_expression(pe, env, st->expression);
+    environment_list *aux = lookupByID(env);
+    
+    translate_if_expression(pe, aux, st);
     
     
     
+}
+
+environment_list* lookupByID(environment_list *env){
+    environment_list *aux = env;
+    
+    while(aux->child_id != ifcounter){
+        aux = aux->next;
+    }
+    return aux;
 }
 
 void translate_main(prog_env *pe, is_main *main) {

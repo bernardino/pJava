@@ -29,8 +29,10 @@ int translate_expression(prog_env *pe, environment_list *env, is_expression *exp
 void translate_value(prog_env *pe, environment_list *env,is_value *value);
 void translate_infix_expression(prog_env *pe, environment_list *env,is_infix_expression *exp);
 void translate_function_call(prog_env *pe, environment_list *env, is_function_call *call);
-void translate_if_expression(prog_env *pe, environment_list *env, is_if_expression *exp);
+void translate_if_expression(prog_env *pe, environment_list *env, is_if *st);
 void translate_if(prog_env *pe, environment_list *env, is_if *st);
+void invertOperator(if_exp_type type);
+environment_list* lookupByID(environment_list *env);
 
 void translate_unary(prog_env *pe, environment_list *env, is_unary *unary);
 void translate_local_variable(table_element *el);

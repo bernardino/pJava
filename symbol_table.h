@@ -23,6 +23,7 @@ typedef struct _t4{
 	
 	struct _t4* father;
 	struct _t4* local_environment;
+        int child_id;
 	
 	unsignedVariableType returnType;
         is_argument_list *argument_list;

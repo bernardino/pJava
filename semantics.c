@@ -6,6 +6,7 @@
 #include "symbol_table.h"
 
 int errors = 0,global_offset = 0,local_offset = 0, return_found, global_variable = 0;
+int counterif = 0;
 
 environment_list* create_environment(is_function *function){
 
@@ -528,7 +529,7 @@ void semantic_analysis_for(prog_env *pe, environment_list *env,table_element *va
     environment_list *cycle = (environment_list*)malloc(sizeof(environment_list));
     
     cycle->father = env;
-    
+    cycle->child_id = counterif++;
     environment_list *aux = env->local_environment;
     
     if(aux== NULL){
@@ -536,7 +537,7 @@ void semantic_analysis_for(prog_env *pe, environment_list *env,table_element *va
     }
     else{
         for(;aux->next != NULL; aux = aux->next);
-        aux->local_environment = cycle;
+        aux->next = cycle;
     }
     
     if(for_cycle->init->type == is_assign_for)
@@ -590,6 +591,7 @@ void semantic_analysis_while(prog_env *pe, environment_list *env, table_element 
     environment_list *cycle = (environment_list*)malloc(sizeof(environment_list));
     
     cycle->father = env;
+    cycle->child_id = counterif++;
     
     environment_list *aux = env->local_environment;
     
@@ -598,7 +600,7 @@ void semantic_analysis_while(prog_env *pe, environment_list *env, table_element 
     }
     else{
         for(;aux->next != NULL; aux = aux->next);
-        aux->local_environment = cycle;
+        aux->next = cycle;
     }
     
     semantic_analysis_var_expression(pe,cycle,cycle->locals,is_void,whil->if_expression,whil->if_expression->line,1);
@@ -618,7 +620,7 @@ void semantic_analysis_do_while(prog_env *pe, environment_list *env, table_eleme
     environment_list *cycle = (environment_list*)malloc(sizeof(environment_list));
     
     cycle->father = env;
-    
+    cycle->child_id = counterif++;
     environment_list *aux = env->local_environment;
     
     if(aux== NULL){
@@ -626,7 +628,7 @@ void semantic_analysis_do_while(prog_env *pe, environment_list *env, table_eleme
     }
     else{
         for(;aux->next != NULL; aux = aux->next);
-        aux->local_environment = cycle;
+        aux->next = cycle;
     }
     
     semantic_analysis_var_expression(pe,cycle,cycle->locals,is_void,whil->if_expression,whil->if_expression->line,1);
@@ -664,14 +666,15 @@ void semantic_analysis_if(prog_env *pe,environment_list *env, table_element *var
     
     cond->father = env;
     cond->returnType = env->returnType;
+    cond->child_id = counterif++;
     environment_list *aux = env->local_environment;
     
-    if(aux== NULL){
+    if(aux == NULL){
         env->local_environment = cond;
     }
     else{
         for(;aux->next != NULL; aux = aux->next);
-        aux->local_environment = cond;
+        aux->next = cond;
     }
     
     /*semantic_analysis_var_expression(pe,cond,cond->locals,is_void,stat->expression,stat->expression->line,0);*/
@@ -693,6 +696,7 @@ void semantic_analysis_if_else(prog_env *pe,environment_list *env, table_element
     
     cond->father = env;
     cond->returnType = env->returnType;
+    cond->child_id = counterif++;
     environment_list *aux = env->local_environment;
     
     if(aux== NULL){
@@ -700,7 +704,7 @@ void semantic_analysis_if_else(prog_env *pe,environment_list *env, table_element
     }
     else{
         for(;aux->next != NULL; aux = aux->next);
-        aux->local_environment = cond;
+        aux->next = cond;
     }
     
     /*semantic_analysis_var_expression(pe,cond,cond->locals,is_void,stat->expression,stat->expression->line,0);*/
@@ -729,6 +733,7 @@ void semantic_analysis_switch(prog_env *pe,environment_list *env, table_element 
     
     cond->father = env;
     cond->returnType = env->returnType;
+    cond->child_id = counterif++;
     environment_list *aux = env->local_environment;
     
     if(aux== NULL){
@@ -736,7 +741,7 @@ void semantic_analysis_switch(prog_env *pe,environment_list *env, table_element 
     }
     else{
         for(;aux->next != NULL; aux = aux->next);
-        aux->local_environment = cond;
+        aux->next = cond;
     }
     
     semantic_analysis_var_expression(pe,cond,cond->locals,is_void,sw->expression,sw->expression->line,0);
