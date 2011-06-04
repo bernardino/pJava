@@ -324,7 +324,7 @@ value:
 	| STRING_VAL	{ $$ = insert_string(is_string, $1);}
 	| NUMBER_VAL	{ $$ = insert_int(is_int, $1);}
 	| '+' NUMBER_VAL	{ $$ = insert_int(is_int, $2);}
-	| '-' NUMBER_VAL	{ $$ = insert_int(is_int, $2);}
+	| '-' NUMBER_VAL	{ $$ = insert_int(is_int, -$2);}
 	| DOUBLE_VAL	{ $$ = insert_double(is_double, $1);}
 	| CHAR_VAL	{ $$ = insert_char(is_char, $1);}
 	| TRUE		{ $$ = insert_boolean(is_boolean, 1);}

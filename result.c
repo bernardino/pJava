@@ -47,17 +47,9 @@ gcdskip:
 sp=(frame*)malloc(sizeof(frame));
 
 /*Operation list*/
-int temp3 = 10;
+int temp3 = -10;
 g0 = temp3;
 sp->locals[4]=(int *)malloc(sizeof(int));
-int temp4 = g0;
-(*((int*)sp->locals[4])) = temp4;
-int temp5 = (*((int*)sp->locals[4]));
-int temp6 = 1;
-if(temp5 != temp6) goto ELSE1;
-int temp7 = 2;
-g0 = temp7;
-ELSE1:
 /*Redirector*/
 goto exit;
 redirector:

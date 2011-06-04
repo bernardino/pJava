@@ -2,13 +2,13 @@ class gcd_rec {
 	public static int var;
 	public static void main(String[] args) {
 		var = -10;
-		int a = 1;
-                a = var;
-                if( a == 1){
+		int a = -5;
+      /*a = var;
+     if( a == 1){
                     var = 2;
                 }
-		/*int a = 0, b = 1;
-		a = a + 6;
+		int a = 0, b = 1;
+				a = a + 6;
                 b = 1;
 		b%=7;
                 String str = "ola";
