@@ -326,6 +326,8 @@ value:
 	| '+' NUMBER_VAL	{ $$ = insert_int(is_int, $2);}
 	| '-' NUMBER_VAL	{ $$ = insert_int(is_int, -$2);}
 	| DOUBLE_VAL	{ $$ = insert_double(is_double, $1);}
+	| '+' DOUBLE_VAL	{ $$ = insert_double(is_double, $2);}
+	| '-' DOUBLE_VAL	{ $$ = insert_double(is_double, -$2);}
 	| CHAR_VAL	{ $$ = insert_char(is_char, $1);}
 	| TRUE		{ $$ = insert_boolean(is_boolean, 1);}
 	| FALSE		{ $$ = insert_boolean(is_boolean, 0);}

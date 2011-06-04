@@ -2341,7 +2341,7 @@ yyreduce:
 
   case 108:
 #line 327 "comp.y"
-    { (yyval.val) = insert_int(is_int, -(yyvsp[(2) - (2)].val_i));}
+    { (yyval.val) = insert_int(is_int, (yyvsp[(2) - (2)].val_i));}
     break;
 
   case 109:
