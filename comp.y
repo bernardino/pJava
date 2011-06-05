@@ -264,12 +264,12 @@ argument:
 	;
 	
 cycle:
-	FOR '(' forInit ';' expression ';' increase_list ')' condition_code          { $$ = insert_for($3,$5,$7,$9,line);}
-        | FOR '(' ';' expression ';' increase_list ')' condition_code                 { $$ = insert_for(NULL,$4,$6,$8,line);}
-        | FOR '(' forInit ';' expression ';' ')' condition_code                      { $$ = insert_for($3,$5,NULL,$8,line);}
-        | FOR '(' ';' expression ';' ')' condition_code                              { $$ = insert_for(NULL,$4,NULL,$7,line);}
-	| WHILE '(' expression ')' condition_code					{ $$ = insert_while($3,$5,line);}
-	| DO condition_code WHILE '(' expression ')' ';'				{ $$ = insert_do_while($2,$5,line);}
+	FOR '(' forInit ';' if_expression ';' increase_list ')' condition_code          { $$ = insert_for($3,$5,$7,$9,line);}
+        | FOR '(' ';' if_expression ';' increase_list ')' condition_code                 { $$ = insert_for(NULL,$4,$6,$8,line);}
+        | FOR '(' forInit ';' if_expression ';' ')' condition_code                      { $$ = insert_for($3,$5,NULL,$8,line);}
+        | FOR '(' ';' if_expression ';' ')' condition_code                              { $$ = insert_for(NULL,$4,NULL,$7,line);}
+	| WHILE '(' if_expression ')' condition_code					{ $$ = insert_while($3,$5,line);}
+	| DO condition_code WHILE '(' if_expression ')' ';'				{ $$ = insert_do_while($2,$5,line);}
 	;
 
 if:	IF '(' if_expression ')' condition_code %prec IFPREC			{ $$ = insert_if_statement($3, $5,line); }
@@ -324,8 +324,10 @@ value:
 	| STRING_VAL	{ $$ = insert_string(is_string, $1);}
 	| NUMBER_VAL	{ $$ = insert_int(is_int, $1);}
 	| '+' NUMBER_VAL	{ $$ = insert_int(is_int, $2);}
-	| '-' NUMBER_VAL	{ $$ = insert_int(is_int, $2);}
+	| '-' NUMBER_VAL	{ $$ = insert_int(is_int, -$2);}
 	| DOUBLE_VAL	{ $$ = insert_double(is_double, $1);}
+	| '+' DOUBLE_VAL	{ $$ = insert_double(is_double, $2);}
+	| '-' DOUBLE_VAL	{ $$ = insert_double(is_double, -$2);}
 	| CHAR_VAL	{ $$ = insert_char(is_char, $1);}
 	| TRUE		{ $$ = insert_boolean(is_boolean, 1);}
 	| FALSE		{ $$ = insert_boolean(is_boolean, 0);}

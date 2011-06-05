@@ -440,7 +440,7 @@ is_condition_code* insert_condition_code(is_operation_list *operation_list, is_o
 }
 
 /* insert cycles */
-is_cycle* insert_for(is_for_init *init, is_expression *expression, is_increase_list *inc, is_condition_code *code, int line){
+is_cycle* insert_for(is_for_init *init, is_if_expression *expression, is_increase_list *inc, is_condition_code *code, int line){
 
 	is_for *for_cyc = (is_for*)malloc(sizeof(is_for));
 
@@ -481,7 +481,7 @@ is_for_init* insert_for_declaration( is_declaration *dec, int line){
     return init;
 }
 
-is_cycle* insert_while(is_expression *expression, is_condition_code *code, int line){
+is_cycle* insert_while(is_if_expression *expression, is_condition_code *code, int line){
 
 	is_while *while_cyc = (is_while*)malloc(sizeof(is_while));
 
@@ -497,7 +497,7 @@ is_cycle* insert_while(is_expression *expression, is_condition_code *code, int l
 	return cycle;
 }
 
-is_cycle* insert_do_while(is_condition_code *code, is_expression *expression, int line){
+is_cycle* insert_do_while(is_condition_code *code, is_if_expression *expression, int line){
 
 	is_do_while *do_while = (is_do_while*)malloc(sizeof(is_do_while));
 

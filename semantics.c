@@ -460,6 +460,7 @@ void semantic_analysis_assignment(prog_env *pe,environment_list *env, table_elem
         printf("%d - %s cannot be resolved\n",assignment->line,assignment->id);
         errors++;
         tipo = is_void;
+        return;
     }
     else{
          tipo = aux->type;
@@ -553,8 +554,8 @@ void semantic_analysis_for(prog_env *pe, environment_list *env,table_element *va
         semantic_analysis_assignment(pe,cycle,env->locals, for_cycle->init->init.assign);
     else
         cycle->locals = semantic_analysis_declaration(pe,cycle,cycle->locals,LOCAL,for_cycle->init->init.dec);
-    
-    semantic_analysis_var_expression(pe,cycle,cycle->locals,is_void,for_cycle->if_expression,for_cycle->if_expression->line,1);
+    /*semantic_analysis_var_expression(pe,cycle,cycle->locals,is_void,for_cycle->if_expression,for_cycle->if_expression->line,1);**/
+    semantic_analysis_if_expression(pe,cycle,for_cycle->if_expression,for_cycle->if_expression->line);
     
     semantic_analysis_increase_list(pe,cycle,for_cycle->increase);
     
@@ -612,7 +613,8 @@ void semantic_analysis_while(prog_env *pe, environment_list *env, table_element 
         aux->next = cycle;
     }
     
-    semantic_analysis_var_expression(pe,cycle,cycle->locals,is_void,whil->if_expression,whil->if_expression->line,1);
+    /*semantic_analysis_var_expression(pe,cycle,cycle->locals,is_void,whil->if_expression,whil->if_expression->line,1);**/
+    semantic_analysis_if_expression(pe,cycle,whil->if_expression,whil->if_expression->line);
     
     if(whil->code->operation_list != NULL){
         semantic_analysis_operation_list(pe,cycle,whil->code->operation_list);
@@ -640,7 +642,9 @@ void semantic_analysis_do_while(prog_env *pe, environment_list *env, table_eleme
         aux->next = cycle;
     }
     
-    semantic_analysis_var_expression(pe,cycle,cycle->locals,is_void,whil->if_expression,whil->if_expression->line,1);
+    /*semantic_analysis_var_expression(pe,cycle,cycle->locals,is_void,whil->if_expression,whil->if_expression->line,1);**/
+    semantic_analysis_if_expression(pe,cycle,whil->if_expression,whil->if_expression->line);
+    
     
     if(whil->code->operation_list != NULL){
         semantic_analysis_operation_list(pe,cycle,whil->code->operation_list);
@@ -767,8 +771,8 @@ void semantic_analysis_switch(prog_env *pe,environment_list *env, table_element 
 
 void semantic_analysis_case(prog_env *pe,environment_list *env, table_element *variables, is_switch_case *cases){
     
-    
-    semantic_analysis_case_value(pe,env,variables,cases->value,cases->line);
+    if(cases->type == is_NORMAL)
+        semantic_analysis_case_value(pe,env,variables,cases->value,cases->line);
     
     if(cases->operation_list != NULL)
         semantic_analysis_operation_list(pe,env,cases->operation_list);

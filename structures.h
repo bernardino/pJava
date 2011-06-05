@@ -140,19 +140,19 @@ struct _is_cycle{
 
 struct _for{
 	is_for_init *init;
-	is_expression *if_expression;
+	is_if_expression *if_expression;
 	is_increase_list *increase;
 	is_condition_code *code;
 };
 
 struct _while{
-	is_expression *if_expression;
+	is_if_expression *if_expression;
 	is_condition_code *code;
 
 };
 
 struct _doWhile{
-	is_expression *if_expression;
+	is_if_expression *if_expression;
 	is_condition_code *code;
 };
 

@@ -57,9 +57,9 @@ is_switch_case* insert_switch_case(switchType type, is_value *val, is_operation_
 is_condition_code* insert_condition_code(is_operation_list *operation_list, is_operation *operation);
 
 /* insert cycles */
-is_cycle* insert_for(is_for_init *init, is_expression *expression, is_increase_list *inc, is_condition_code *code, int line);
-is_cycle* insert_while(is_expression *expression, is_condition_code *code, int line);
-is_cycle* insert_do_while(is_condition_code *code, is_expression *expression, int line);
+is_cycle* insert_for(is_for_init *init, is_if_expression *expression, is_increase_list *inc, is_condition_code *code, int line);
+is_cycle* insert_while(is_if_expression *expression, is_condition_code *code, int line);
+is_cycle* insert_do_while(is_condition_code *code, is_if_expression *expression, int line);
 
 is_increase* insert_assign_inc( is_assignment *assign);
 is_increase* insert_unary_inc(is_unary *unary);

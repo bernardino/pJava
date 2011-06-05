@@ -38,7 +38,20 @@ void translate_if_else_expression(prog_env *pe, environment_list *env, is_if_els
 void translate_control(prog_env *pe,environment_list *env, is_control *control);
 void printType();
 void translate_switch(prog_env *pe,environment_list *env, is_switch *sw);
-void translate_switch_case(prog_env *pe, environment_list *env, is_switch_case *c);
+void translate_switch_case(prog_env *pe, environment_list *env, is_switch_case *c, int offset);
+
+void translate_cycle(prog_env *pe,environment_list *env, is_cycle *cycle);
+void translate_for(prog_env *pe, environment_list *env, is_for *f);
+void translate_init(prog_env *pe, environment_list *env, is_for_init *init);
+void translate_cycle_expression(prog_env *pe, environment_list *env, is_if_expression *_if);
+void translate_increase_list(prog_env *pe, environment_list *env, is_increase_list *list);
+void translate_increase(prog_env *pe, environment_list *env, is_increase *inc);
+
+void translate_while(prog_env *pe, environment_list *env, is_while *whil);
+
+void translate_do_while(prog_env *pe, environment_list *env, is_do_while *whil);
+void translate_do_while_expression(prog_env *pe, environment_list *env, is_if_expression *_if);
+void logicOperator(if_exp_type type);
 
 void translate_unary(prog_env *pe, environment_list *env, is_unary *unary);
 void translate_local_variable(table_element *el);

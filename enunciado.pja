@@ -2,27 +2,17 @@ class gcd_rec {
 	public static int var;
 	public static void main(String[] args) {
 		int a = 1;
-                /*char c = 'c';
-                String s = "s";
-                double d = 1.0;
-                boolean b = true;*/
-                if( a){
-                    a++;
-                }
-                else if(a == 1){
-                    a--;
-                }
-                System.out.println(a);
-		/*int a = 0, b = 1;
-                a = a + 6;
-                b = 1;
-		b%=7;
-                String str = "ola";
-                if(a == b){
-                    a++;
-                }
-                else
-                    System.out.println(a);*/
+		int i = 0;
+
+                do{
+                    i++;
+                }while( i < 10);
+		/*String str = "ola";
+		if(a == b){
+			a++;
+		}
+		else
+			System.out.println(a);*/
                       
 	}
 	public static int gcd(int a,int b) {
