@@ -221,9 +221,9 @@ unsignedVariableType semantic_analysis_var_expression(prog_env *pe,environment_l
         case is_exp:
             return semantic_analysis_var_expression(pe,env,variables,type,expression->exp.expression,line,analysis);
             break;
-        case is_if_exp:
+        /*case is_if_exp:
             semantic_analysis_if_expression(pe,env,expression->exp.if_expression,line);
-            break; 
+            break;*/ 
     }
     
 }
@@ -231,12 +231,20 @@ unsignedVariableType semantic_analysis_var_expression(prog_env *pe,environment_l
 void semantic_analysis_if_expression(prog_env *pe, environment_list *env,is_if_expression *exp, int line){
     
     if(exp != NULL){
-        unsignedVariableType typ = semantic_analysis_var_expression(pe,env,env->locals,is_void, exp->exp1,line,0);
+        if(exp->type != is_iden){
+            unsignedVariableType typ = semantic_analysis_var_expression(pe,env,env->locals,is_void, exp->exp1,line,0);
 
-        unsignedVariableType typ2 = semantic_analysis_var_expression(pe,env,env->locals,is_void, exp->exp2,line,0);
+            unsignedVariableType typ2 = semantic_analysis_var_expression(pe,env,env->locals,is_void, exp->exp2,line,0);
 
-        if(typ != typ2 && exp->type != is_OP_LOR && exp->type != is_OP_LAND){
-            printf("%d - Incompatible type in condition clause\n",line);
+            if(typ != typ2 && exp->type != is_OP_LOR && exp->type != is_OP_LAND){
+                printf("%d - Incompatible type in condition clause\n",line);
+            }
+        }
+        else{
+            
+            semantic_analysis_value(pe,env,env->locals,is_void, exp->val,line,0);
+            
+            
         }
     }
     
@@ -253,6 +261,7 @@ unsignedVariableType semantic_analysis_value(prog_env *pe,environment_list *env,
         
         if(!aux){
             printf("%d - %s cannot be resolved\n",line,id);
+            errors++;
             return is_void;
         }
         else{
@@ -668,7 +677,6 @@ void semantic_analysis_if(prog_env *pe,environment_list *env, table_element *var
     cond->returnType = env->returnType;
     cond->child_id = counterif++;
     environment_list *aux = env->local_environment;
-    
     if(aux == NULL){
         env->local_environment = cond;
     }
@@ -678,7 +686,6 @@ void semantic_analysis_if(prog_env *pe,environment_list *env, table_element *var
     }
     
     /*semantic_analysis_var_expression(pe,cond,cond->locals,is_void,stat->expression,stat->expression->line,0);*/
-    
     semantic_analysis_if_expression(pe,env,stat->expression,stat->expression->line);
     
     if(stat->code->operation_list != NULL){
@@ -687,6 +694,7 @@ void semantic_analysis_if(prog_env *pe,environment_list *env, table_element *var
     else{
         semantic_analysis_operation(pe,cond,stat->code->operation);
     }
+    
     
 }
 

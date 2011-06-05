@@ -1,14 +1,20 @@
 class gcd_rec {
 	public static int var;
 	public static void main(String[] args) {
-		var = -10;
 		int a = 1;
-                a = var;
-                if( a == 1){
-                    var = 2;
+                /*char c = 'c';
+                String s = "s";
+                double d = 1.0;
+                boolean b = true;*/
+                if( a){
+                    a++;
                 }
+                else if(a == 1){
+                    a--;
+                }
+                System.out.println(a);
 		/*int a = 0, b = 1;
-		a = a + 6;
+                a = a + 6;
                 b = 1;
 		b%=7;
                 String str = "ola";
