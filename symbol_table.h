@@ -14,7 +14,7 @@ typedef struct _t1{
 } table_element;
 
 
-typedef enum {func, loop_for, loop_while, loop_do, if_else, global} environmentType;
+typedef enum {func, loop_for, loop_while, loop_do, if_else, global, if_switch} environmentType;
 //lista de procedimentos definidos no programa
 typedef struct _t4{
 	char* name;

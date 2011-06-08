@@ -74,13 +74,40 @@ int temp6 = 0;
 (*((int*)sp->locals[5])) = temp6;
 /* CYCLE STATEMENT */
 CYCLE0:
+int temp7 = (*((int*)sp->locals[5]));
+int temp8 = 10;
+if(temp7 >= temp8) goto ENDCYCLE0;
+/* CYCLE STATEMENT */
+CYCLE1:
+int temp9 = (*((int*)sp->locals[5]));
+int temp10 = 10;
+if(temp9 <= temp10) goto ENDCYCLE1;
 
 /*Unary operation of variable - i*/
 (*((int*)sp->locals[5]))++;
-int temp7 = (*((int*)sp->locals[5]));
-int temp8 = 10;
-if(temp7 < temp8) goto CYCLE0;
-ENDFOR0:
+goto CYCLE1;
+ENDCYCLE1:
+
+/*Unary operation of variable - i*/
+(*((int*)sp->locals[5]))++;
+goto CYCLE0;
+ENDCYCLE0:
+/* CYCLE STATEMENT */
+/* For Init*/
+
+/*Assignment to variable - i*/
+int temp11 = 0;
+(*((int*)sp->locals[5])) = temp11;
+CYCLE2:
+int temp12 = (*((int*)sp->locals[5]));
+int temp13 = 10;
+if(temp12 >= temp13) goto ENDCYCLE2;
+goto ENDCYCLE2;
+
+/*Unary operation of variable - i*/
+(*((int*)sp->locals[5]))++;
+goto CYCLE2;
+ENDCYCLE2:
 
 /*Redirector*/
 goto exit;

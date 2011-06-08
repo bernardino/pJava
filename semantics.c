@@ -367,6 +367,7 @@ void semantic_analysis_function(prog_env *pe, is_function *function){
 	}
 	else{
 		environment_list *env = create_environment(function);
+                env->type = func;
 		if(pe->procs == NULL){
 			pe->procs = env;
 		}
@@ -540,6 +541,7 @@ void semantic_analysis_for(prog_env *pe, environment_list *env,table_element *va
     
     cycle->father = env;
     cycle->child_id = counterif++;
+    cycle->type = loop_for;
     environment_list *aux = env->local_environment;
     
     if(aux== NULL){
@@ -602,6 +604,7 @@ void semantic_analysis_while(prog_env *pe, environment_list *env, table_element 
     
     cycle->father = env;
     cycle->child_id = counterif++;
+    cycle->type = loop_while;
     
     environment_list *aux = env->local_environment;
     
@@ -632,6 +635,7 @@ void semantic_analysis_do_while(prog_env *pe, environment_list *env, table_eleme
     
     cycle->father = env;
     cycle->child_id = counterif++;
+    cycle->type = loop_do;
     environment_list *aux = env->local_environment;
     
     if(aux== NULL){
@@ -680,6 +684,7 @@ void semantic_analysis_if(prog_env *pe,environment_list *env, table_element *var
     cond->father = env;
     cond->returnType = env->returnType;
     cond->child_id = counterif++;
+    cond->type = if_else;
     environment_list *aux = env->local_environment;
     if(aux == NULL){
         env->local_environment = cond;
@@ -709,6 +714,7 @@ void semantic_analysis_if_else(prog_env *pe,environment_list *env, table_element
     cond->father = env;
     cond->returnType = env->returnType;
     cond->child_id = counterif++;
+    cond->type = if_else;
     environment_list *aux = env->local_environment;
     
     if(aux== NULL){
@@ -746,6 +752,7 @@ void semantic_analysis_switch(prog_env *pe,environment_list *env, table_element 
     cond->father = env;
     cond->returnType = env->returnType;
     cond->child_id = counterif++;
+    cond->type = if_switch;
     environment_list *aux = env->local_environment;
     
     if(aux== NULL){
@@ -789,18 +796,44 @@ void semantic_analysis_case_value(prog_env *pe,environment_list *env, table_elem
     
 }
 
+int breakable(environment_list *env){
+    
+    environment_list *aux = env;
+    
+    while(aux != NULL){
+        if(aux->type == loop_for || aux->type == loop_while || aux->type == loop_do || aux->type == if_switch){
+            return 1;
+        }
+        aux = aux->father;
+    }
+    return 0;
+}
+
+int withinCycle(environment_list *env){
+    
+    environment_list *aux = env;
+    
+    while(aux != NULL){
+        if(aux->type == loop_for || aux->type == loop_while || aux->type == loop_do){
+            return 1;
+        }
+        aux = aux->father;
+    }
+    return 0;
+}
+
 void semantic_analysis_control(prog_env *pe,environment_list *env, table_element *variables, is_control *control){
     
     switch(control->type){
         
         case is_break:
-            if(env->father == NULL){
+            if(!breakable(env)){
                 printf("%d - break cannot be used outside loop or switch\n", control->line);
                 errors++;
             }
             break;
         case is_continue:
-            if(env->father == NULL){
+            if(!withinCycle(env)){
                 printf("%d - continue cannot be used outside loop\n", control->line);
                 errors++;
             }

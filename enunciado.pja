@@ -4,9 +4,18 @@ class gcd_rec {
 		int a = 1;
 		int i = 0;
 
-                do{
+                while( i < 10){
+                    while( i > 10){
+                        i++;
+                    }
                     i++;
-                }while( i < 10);
+                }
+
+                for(i=0;i<10;i++){
+                    break;
+                }
+
+
 		/*String str = "ola";
 		if(a == b){
 			a++;
