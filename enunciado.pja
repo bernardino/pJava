@@ -4,18 +4,6 @@ class gcd_rec {
 		int a = 1;
 		int i = 0;
 
-                while( i < 10){
-                    while( i > 10){
-                        i++;
-                    }
-                    i++;
-                }
-
-                for(i=0;i<10;i++){
-                    break;
-                }
-
-
 		/*String str = "ola";
 		if(a == b){
 			a++;
@@ -31,6 +19,7 @@ class gcd_rec {
                 if(c == 2){
                     temp = 1.0;
                 }
+                return 1 + 1 + 10;
                 /*for(int i = 0; i< 10; i++){
                     for(int d = 0; d < 10 ;d++){
                         a++;
@@ -49,7 +38,7 @@ class gcd_rec {
 		else if (a > b)
 			return gcd(a % b, b);
 		else  
-			b = a;*/
-		return gcd(a, b % a);
+			b = a;
+		return gcd(a, b % a);*/
 	}
 }

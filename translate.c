@@ -145,6 +145,7 @@ void translate_function(prog_env *pe, is_function *function) {
     translate_operation_list(pe, env, function->code->operation_list);
 
     fprintf(dest, "/*Epilogue */\n");
+    fprintf(dest, "ENDFUNC%s:\n",function->id);
     fprintf(dest, "_ra=sp->return_address;\n"); //Restauro do valor de retorno, a ser utilizando aquando do redireccionamento do fluxo
     fprintf(dest, "sp=sp->parent;\n"); //"pop" da pilha de frames
     fprintf(dest, "fp=sp->parent;\n"); //actualizacao do registo FP de acordo
@@ -488,8 +489,8 @@ void translate_infix_expression(prog_env *pe, environment_list *env, is_infix_ex
     if (actualTemp != is_void) {
         convertType(actualTemp);
         actualTemp = is_void;
-        fprintf(dest, "temp%d = ", temp);
-        fprintf(dest, "temp%d", p1);
+        fprintf(dest, " temp%d = ", temp);
+        fprintf(dest, " temp%d", p1);
 
         switch (exp->oper) {
             case is_plus:
@@ -557,7 +558,7 @@ void translate_if_expression(prog_env *pe, environment_list *env, is_if *st) {
         else
             translate_operation(pe, env, st->code->operation);
 
-        fprintf(dest, "ELSE%d:\n", temporary);
+        fprintf(dest, "ELSE%d:\n;\n", temporary);
 
 
     } else {
@@ -575,7 +576,7 @@ void translate_if_expression(prog_env *pe, environment_list *env, is_if *st) {
         else
             translate_operation(pe, env, st->code->operation);
 
-        fprintf(dest, "ELSE%d:\n", temporary);
+        fprintf(dest, "ELSE%d:\n;\n", temporary);
 
 
     }
@@ -679,7 +680,7 @@ void translate_if_else_expression(prog_env *pe, environment_list *env, is_if_els
 
         fprintf(dest, "goto ENDIF%d;\n", ifblock);
 
-        fprintf(dest, "ELSE%d:\n", temporary);
+        fprintf(dest, "ELSE%d:\n;\n", temporary);
 
 
     } else {
@@ -699,7 +700,7 @@ void translate_if_else_expression(prog_env *pe, environment_list *env, is_if_els
 
         fprintf(dest, "goto ENDIF%d;\n", ifblock);
 
-        fprintf(dest, "ELSE%d:\n", temporary);
+        fprintf(dest, "ELSE%d:\n;\n", temporary);
 
 
     }
@@ -713,7 +714,7 @@ void translate_if_else_expression(prog_env *pe, environment_list *env, is_if_els
     }
 
     if (boolif) {
-        fprintf(dest, "ENDIF%d:\n", ifblock);
+        fprintf(dest, "ENDIF%d:\n;\n", ifblock);
         ifblock++;
         boolif = 0;
         printed = 1;
@@ -742,6 +743,7 @@ void translate_control(prog_env *pe, environment_list *env, is_control *control)
                 }
                 else if(aux->type == if_switch){
                     fprintf(dest, "goto ENDSWITCH%d;\n",label);
+                    return;
                 }
                 aux = aux->father;
             }
@@ -756,8 +758,10 @@ void translate_control(prog_env *pe, environment_list *env, is_control *control)
             }
             break;
         case is_return:
+            fprintf(dest, "goto ENDFUNC%s;\n",env->name);
             break;
         case is_return_exp:
+            translate_return(pe,env,control);
             break;
         case is_println:
             translate_expression(pe, env, control->expression);
@@ -774,6 +778,39 @@ void translate_control(prog_env *pe, environment_list *env, is_control *control)
             break;
     }
 
+}
+
+void translate_return(prog_env *pe, environment_list *env, is_control *c){
+    
+    int ret = translate_expression(pe,env,c->expression);
+    
+    switch(env->returnType){
+        case is_char:
+            fprintf(dest,"sp->parent->return_value = (char*)malloc(sizeof(char));\n");
+            break;
+        case is_int:
+            fprintf(dest,"sp->parent->return_value = (int*)malloc(sizeof(int));\n");
+            break;
+        case is_boolean:
+            fprintf(dest,"sp->parent->return_value = (int*)malloc(sizeof(int));\n");
+            break;
+        case is_double:
+            fprintf(dest,"sp->parent->return_value = (double*)malloc(sizeof(double));\n");
+            break;
+        case is_string:
+            fprintf(dest,"sp->parent->return_value = (char*)malloc(sizeof(char)*200);\n");
+            break;
+        default:
+            break;
+    }
+    
+    fprintf(dest, "(*((");
+    convertType(env->returnType);
+    fprintf(dest,"*) sp->parent->return_value)) = temp%d;\n",ret );
+    
+    
+    fprintf(dest, "goto ENDFUNC%s;\n",env->name);
+    
 }
 
 void printType() {
@@ -801,18 +838,33 @@ void printType() {
 }
 
 void translate_switch(prog_env *pe, environment_list *env, is_switch *sw) {
-
+    int temporary, localLoop;
+    
     environment_list *aux = lookupByID(env);
     int offset = translate_expression(pe, aux, sw->expression);
 
     is_switch_case *cases = sw->cases;
-    int temporary = switchblock++;
+    temporary = switchblock++;
+    
+    localLoop = outsideLoop;
+    
+    if(outsideLoop){
+        outsideLoop = 0;
+        label = temporary;
+    }
+    else
+        label++;
     
     for (; cases != NULL; cases = cases->next) {
         translate_switch_case(pe, aux, cases, offset);
     }
-
-    fprintf(dest, "ENDSWITCH%d:\n", temporary);
+    fprintf(dest, "ENDSWITCH%d:\n;\n", temporary);
+    
+    if(localLoop){
+        outsideLoop = 1;
+    }
+    else
+        label--;
 
 }
 
@@ -820,15 +872,14 @@ void translate_switch_case(prog_env *pe, environment_list *env, is_switch_case *
 
     if (c->type == is_NORMAL) {
         translate_value(pe, env, c->value);
-
         fprintf(dest, "\nif(temp%d != temp%d) goto ELSE%d;\n", offset, temp - 1, blockcounter);
 
         int temporary = blockcounter++;
 
         if (c->operation_list != NULL)
             translate_operation_list(pe, env, c->operation_list);
-
-        fprintf(dest, "ELSE%d:\n", temporary);
+        fprintf(dest, "ELSE%d:\n;\n", temporary);
+        
     } else {
         if (c->operation_list != NULL)
             translate_operation_list(pe, env, c->operation_list);
@@ -859,7 +910,7 @@ void translate_for(prog_env *pe, environment_list *env, is_for *f) {
     blockcounter++;
     
     translate_init(pe, aux, f->init);
-    fprintf(dest, "CYCLE%d:\n", cycleblock);
+    fprintf(dest, "CYCLE%d:\n;\n", cycleblock);
     translate_cycle_expression(pe, aux, f->if_expression);
     temporary = cycleblock++;
     
@@ -877,7 +928,7 @@ void translate_for(prog_env *pe, environment_list *env, is_for *f) {
     translate_increase_list(pe, aux, f->increase);
 
     fprintf(dest, "goto CYCLE%d;\n", temporary);
-    fprintf(dest, "ENDCYCLE%d:\n", temporary);
+    fprintf(dest, "ENDCYCLE%d:\n;\n", temporary);
     
     if(localLoop){
         outsideLoop = 1;
@@ -956,7 +1007,7 @@ void translate_while(prog_env *pe, environment_list *env, is_while *whil) {
     
     blockcounter++;
     
-    fprintf(dest, "CYCLE%d:\n", cycleblock);
+    fprintf(dest, "CYCLE%d:\n;\n", cycleblock);
     translate_cycle_expression(pe, aux, whil->if_expression);
     temporary = cycleblock++;
     
@@ -973,7 +1024,7 @@ void translate_while(prog_env *pe, environment_list *env, is_while *whil) {
     translate_operation_list(pe, aux, whil->code->operation_list);
 
     fprintf(dest, "goto CYCLE%d;\n", temporary);
-    fprintf(dest, "ENDCYCLE%d:\n", temporary);
+    fprintf(dest, "ENDCYCLE%d:\n;\n", temporary);
     
     if(localLoop){
         outsideLoop = 1;
@@ -988,7 +1039,7 @@ void translate_do_while(prog_env *pe, environment_list *env, is_do_while *whil){
     environment_list *aux = lookupByID(env);
     blockcounter++;
 
-    fprintf(dest, "CYCLE%d:\n", cycleblock);
+    fprintf(dest, "CYCLE%d:\n;\n", cycleblock);
     temporary = cycleblock++;
     
     localLoop = outsideLoop;
@@ -1003,9 +1054,9 @@ void translate_do_while(prog_env *pe, environment_list *env, is_do_while *whil){
     
     translate_operation_list(pe, aux, whil->code->operation_list);
 
-    translate_do_while_expression(pe,aux,whil->if_expression);
+    translate_do_while_expression(pe,aux,whil->if_expression, temporary);
 
-    fprintf(dest, "ENDCYCLE%d:\n", temporary);
+    fprintf(dest, "ENDCYCLE%d:\n;\n", temporary);
     
     if(localLoop){
         outsideLoop = 1;
@@ -1015,7 +1066,7 @@ void translate_do_while(prog_env *pe, environment_list *env, is_do_while *whil){
 
 }
 
-void translate_do_while_expression(prog_env *pe, environment_list *env, is_if_expression *_if) {
+void translate_do_while_expression(prog_env *pe, environment_list *env, is_if_expression *_if, int temporary) {
 
     if (_if->type != is_iden) {
 
@@ -1027,7 +1078,7 @@ void translate_do_while_expression(prog_env *pe, environment_list *env, is_if_ex
 
         logicOperator(_if->type);
 
-        fprintf(dest, "temp%d) goto CYCLE%d;\n", ret1, cycleblock);
+        fprintf(dest, "temp%d) goto CYCLE%d;\n", ret1, temporary);
 
 
     } else {
@@ -1036,7 +1087,7 @@ void translate_do_while_expression(prog_env *pe, environment_list *env, is_if_ex
 
         fprintf(dest, "if( temp%d", temp - 1);
 
-        fprintf(dest, ") goto CYCLE%d;\n", cycleblock);
+        fprintf(dest, ") goto CYCLE%d;\n", temporary);
 
     }
 

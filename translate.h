@@ -36,6 +36,7 @@ environment_list* lookupByID(environment_list *env);
 void translate_if_else_expression(prog_env *pe, environment_list *env, is_if_else *st);
 
 void translate_control(prog_env *pe,environment_list *env, is_control *control);
+void translate_return(prog_env *pe, environment_list *env, is_control *c);
 void printType();
 void translate_switch(prog_env *pe,environment_list *env, is_switch *sw);
 void translate_switch_case(prog_env *pe, environment_list *env, is_switch_case *c, int offset);
@@ -50,7 +51,7 @@ void translate_increase(prog_env *pe, environment_list *env, is_increase *inc);
 void translate_while(prog_env *pe, environment_list *env, is_while *whil);
 
 void translate_do_while(prog_env *pe, environment_list *env, is_do_while *whil);
-void translate_do_while_expression(prog_env *pe, environment_list *env, is_if_expression *_if);
+void translate_do_while_expression(prog_env *pe, environment_list *env, is_if_expression *_if, int temporary);
 void logicOperator(if_exp_type type);
 
 void translate_unary(prog_env *pe, environment_list *env, is_unary *unary);

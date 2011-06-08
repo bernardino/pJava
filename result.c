@@ -50,7 +50,17 @@ if(temp2 != temp3) goto ELSE0;
 double temp4 = 1.000000;
 (*((double*)sp->locals[2])) = temp4;
 ELSE0:
+;
+int temp5 = 1;
+int temp6 = 1;
+int temp7 =  temp5 + temp6;
+int temp8 = 10;
+int temp9 =  temp7 + temp8;
+sp->parent->return_value = (int*)malloc(sizeof(int));
+(*((int*) sp->parent->return_value)) = temp9;
+goto ENDFUNCgcd;
 /*Epilogue */
+ENDFUNCgcd:
 _ra=sp->return_address;
 sp=sp->parent;
 fp=sp->parent;
@@ -65,49 +75,13 @@ sp=(frame*)malloc(sizeof(frame));
 
 /*Declaration of variable - a*/
 sp->locals[4]=(int *)malloc(sizeof(int));
-int temp5 = 1;
-(*((int*)sp->locals[4])) = temp5;
+int temp10 = 1;
+(*((int*)sp->locals[4])) = temp10;
 
 /*Declaration of variable - i*/
 sp->locals[5]=(int *)malloc(sizeof(int));
-int temp6 = 0;
-(*((int*)sp->locals[5])) = temp6;
-/* CYCLE STATEMENT */
-CYCLE0:
-int temp7 = (*((int*)sp->locals[5]));
-int temp8 = 10;
-if(temp7 >= temp8) goto ENDCYCLE0;
-/* CYCLE STATEMENT */
-CYCLE1:
-int temp9 = (*((int*)sp->locals[5]));
-int temp10 = 10;
-if(temp9 <= temp10) goto ENDCYCLE1;
-
-/*Unary operation of variable - i*/
-(*((int*)sp->locals[5]))++;
-goto CYCLE1;
-ENDCYCLE1:
-
-/*Unary operation of variable - i*/
-(*((int*)sp->locals[5]))++;
-goto CYCLE0;
-ENDCYCLE0:
-/* CYCLE STATEMENT */
-/* For Init*/
-
-/*Assignment to variable - i*/
 int temp11 = 0;
 (*((int*)sp->locals[5])) = temp11;
-CYCLE2:
-int temp12 = (*((int*)sp->locals[5]));
-int temp13 = 10;
-if(temp12 >= temp13) goto ENDCYCLE2;
-goto ENDCYCLE2;
-
-/*Unary operation of variable - i*/
-(*((int*)sp->locals[5]))++;
-goto CYCLE2;
-ENDCYCLE2:
 
 /*Redirector*/
 goto exit;

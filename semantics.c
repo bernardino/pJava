@@ -540,6 +540,7 @@ void semantic_analysis_for(prog_env *pe, environment_list *env,table_element *va
     environment_list *cycle = (environment_list*)malloc(sizeof(environment_list));
     
     cycle->father = env;
+    cycle->name = cycle->father->name;
     cycle->child_id = counterif++;
     cycle->type = loop_for;
     environment_list *aux = env->local_environment;
@@ -603,6 +604,7 @@ void semantic_analysis_while(prog_env *pe, environment_list *env, table_element 
     environment_list *cycle = (environment_list*)malloc(sizeof(environment_list));
     
     cycle->father = env;
+    cycle->name = cycle->father->name;
     cycle->child_id = counterif++;
     cycle->type = loop_while;
     
@@ -634,6 +636,7 @@ void semantic_analysis_do_while(prog_env *pe, environment_list *env, table_eleme
     environment_list *cycle = (environment_list*)malloc(sizeof(environment_list));
     
     cycle->father = env;
+    cycle->name = cycle->father->name;
     cycle->child_id = counterif++;
     cycle->type = loop_do;
     environment_list *aux = env->local_environment;
@@ -682,6 +685,7 @@ void semantic_analysis_if(prog_env *pe,environment_list *env, table_element *var
     environment_list *cond = (environment_list*)malloc(sizeof(environment_list));
     
     cond->father = env;
+    cond->name = cond->father->name;
     cond->returnType = env->returnType;
     cond->child_id = counterif++;
     cond->type = if_else;
@@ -712,6 +716,7 @@ void semantic_analysis_if_else(prog_env *pe,environment_list *env, table_element
     environment_list *cond = (environment_list*)malloc(sizeof(environment_list));
     
     cond->father = env;
+    cond->name = cond->father->name;
     cond->returnType = env->returnType;
     cond->child_id = counterif++;
     cond->type = if_else;
@@ -750,6 +755,7 @@ void semantic_analysis_switch(prog_env *pe,environment_list *env, table_element 
     environment_list *cond = (environment_list*)malloc(sizeof(environment_list));
     
     cond->father = env;
+    cond->name = cond->father->name;
     cond->returnType = env->returnType;
     cond->child_id = counterif++;
     cond->type = if_switch;
