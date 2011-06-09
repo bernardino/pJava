@@ -14,7 +14,9 @@ void translate_global_var(table_element *var);
 void translate_function_list(prog_env *pe, is_function_list *list);
 void translate_function(prog_env *pe, is_function *function);
 void translate_argument_list(prog_env *pe, environment_list *env, is_argument_list *list);
-void translate_argument(prog_env *pe,table_element *variables, is_argument *arg);
+void translate_argument(prog_env *pe, table_element *variable, is_argument *arg, int outgoing);
+
+void translate_parameter_list(prog_env *pe, environment_list*env, is_parameter_list *list);
 
 void translate_variable(table_element *var);
 

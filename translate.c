@@ -161,18 +161,22 @@ void translate_argument_list(prog_env *pe, environment_list *env, is_argument_li
     fprintf(dest, "\n/*Arguments */\n");
 
     is_argument_list *aux = list;
-
+    int outgoing = 0;
     for (; aux != NULL; aux = aux->next) {
-        translate_argument(pe, variables, aux->argument);
+        translate_argument(pe, variables, aux->argument,outgoing++);
         variables = variables->next;
     }
 }
 
-void translate_argument(prog_env *pe, table_element *variable, is_argument *arg) {
+void translate_argument(prog_env *pe, table_element *variable, is_argument *arg, int outgoing){
 
     fprintf(dest, "\n/*Argument %s - %s */\n", arg->id, variable->name);
 
     translate_variable(variable);
+    translate_local_variable(variable);
+    fprintf(dest, "= (*((");
+    convertType(variable->type);
+    fprintf(dest, "*)sp->parent->outgoing[%d]));\n",outgoing);
 
 }
 
@@ -319,16 +323,28 @@ void translate_assignment(prog_env *pe, environment_list *env, is_assignment *as
         /* LOCAL VARIABLE */
         translate_expression(pe, aux, assign->expression);
         translate_local_variable(el);
-
+        
+        
+        if(assign->type != is_ASS_EQ){
+            fprintf(dest," = ");
+            translate_local_variable(el);
+        }
+        translate_assignment_operator(assign->type);
+        
 
     } else {
         /*GLOBAL VARIABLE*/
         el = lookupElement(pe->global, assign->id);
         translate_expression(pe, aux, assign->expression);
         fprintf(dest, "g%d", el->offset);
+        
+        if(assign->type != is_ASS_EQ){
+            fprintf(dest," = ");
+            fprintf(dest, "g%d", el->offset);
+        }
+        translate_assignment_operator(assign->type);
     }
 
-    translate_assignment_operator(assign->type);
 
     fprintf(dest, "temp%d;\n", temp - 1);
 
@@ -364,28 +380,28 @@ void translate_assignment_operator(assignmentType type) {
             fprintf(dest, " = ");
             break;
         case is_ASS_ADD:
-            fprintf(dest, " += ");
+            fprintf(dest, " + ");
             break;
         case is_ASS_SUB:
-            fprintf(dest, " -= ");
+            fprintf(dest, " - ");
             break;
         case is_ASS_MUL:
-            fprintf(dest, " *= ");
+            fprintf(dest, " * ");
             break;
         case is_ASS_DIV:
-            fprintf(dest, " /= ");
+            fprintf(dest, " / ");
             break;
         case is_ASS_AND:
-            fprintf(dest, " &= ");
+            fprintf(dest, " & ");
             break;
         case is_ASS_PERC:
-            fprintf(dest, " %%= ");
+            fprintf(dest, " %% ");
             break;
         case is_ASS_LS:
-            fprintf(dest, " <<= ");
+            fprintf(dest, " << ");
             break;
         case is_ASS_RS:
-            fprintf(dest, " >>= ");
+            fprintf(dest, " >> ");
             break;
     }
 }
@@ -421,6 +437,7 @@ table_element* translate_value(prog_env *pe, environment_list *env, is_value *va
                 convertType(element->type);
                 fprintf(dest, " temp%d = g%d;\n", temp++, element->offset);
             }
+            actualTemp = element->type;
             return element;
             break;
         default:
@@ -488,7 +505,6 @@ void translate_infix_expression(prog_env *pe, environment_list *env, is_infix_ex
 
     if (actualTemp != is_void) {
         convertType(actualTemp);
-        actualTemp = is_void;
         fprintf(dest, " temp%d = ", temp);
         fprintf(dest, " temp%d", p1);
 
@@ -528,13 +544,43 @@ void translate_infix_expression(prog_env *pe, environment_list *env, is_infix_ex
 
 void translate_function_call(prog_env *pe, environment_list *env, is_function_call *call) {
 
+    translate_parameter_list(pe,env,call->parameter_list);
+            
     fprintf(dest, "_ra=%d;\n", returncounter); //guarda de endereco de retorno
     fprintf(dest, "goto %s;\n", call->id); //Salto para codigo do procedimento
-    fprintf(dest, "return%d:\n", returncounter); //label de retorno
+    fprintf(dest, "return%d:\n;\n", returncounter); //label de retorno
     returncounter++;
+    
+    actualTemp = lookupEnvironment(pe->procs, call->id)->returnType;
+    
+    convertType(actualTemp);
+    fprintf(dest, " temp%d = (*((",temp++);
+    convertType(actualTemp);
+    fprintf(dest, "*)sp->return_value));\n");
+    
 
+}
 
-
+void translate_parameter_list(prog_env *pe, environment_list*env, is_parameter_list *list){
+    
+    is_parameter_list *aux = list;
+    int ret, outgoing = 0;
+    for(; aux != NULL; aux = aux->next){
+        ret = translate_expression(pe,env,aux->expression);
+        
+        fprintf(dest, "sp->outgoing[%d] = (", outgoing);
+        convertType(actualTemp);
+        fprintf(dest, "*)malloc(sizeof(");
+        convertType(actualTemp);
+        fprintf(dest, "));\n");        
+        
+        fprintf(dest, "(*((");
+        convertType(actualTemp);
+        fprintf(dest, "*)sp->outgoing[%d])) = temp%d;\n",outgoing++, ret);
+        actualTemp = is_void;
+        
+    }
+    
 }
 
 void translate_if_expression(prog_env *pe, environment_list *env, is_if *st) {

@@ -216,7 +216,7 @@ unsignedVariableType semantic_analysis_var_expression(prog_env *pe,environment_l
             }
             break;
         case is_funct_call:
-            return semantic_analysis_function_call(pe,env,variables,type,expression->exp.function,1);
+            return semantic_analysis_function_call(pe,env,variables,type,expression->exp.function,analysis);
             break;
         case is_exp:
             return semantic_analysis_var_expression(pe,env,variables,type,expression->exp.expression,line,analysis);
