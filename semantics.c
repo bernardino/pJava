@@ -244,20 +244,27 @@ unsignedVariableType semantic_analysis_var_expression(prog_env *pe,environment_l
 void semantic_analysis_if_expression(prog_env *pe, environment_list *env,is_if_expression *exp, int line){
     
     if(exp != NULL){
-        if(exp->type != is_iden){
-            unsignedVariableType typ = semantic_analysis_var_expression(pe,env,env->locals,is_void, exp->exp1,line,0);
-
-            unsignedVariableType typ2 = semantic_analysis_var_expression(pe,env,env->locals,is_void, exp->exp2,line,0);
-
-            if(typ != typ2 && exp->type != is_OP_LOR && exp->type != is_OP_LAND){
-                printf("%d - Incompatible type in condition clause\n",line);
-            }
+        if(exp->type == is_OP_LOR || exp->type == is_OP_LAND){
+            semantic_analysis_if_expression(pe, env, exp->if_exp1, line);
+            semantic_analysis_if_expression(pe, env, exp->if_exp2, line);
+            
         }
         else{
-            
-            semantic_analysis_value(pe,env,env->locals,is_void, exp->val,line,0);
-            
-            
+            if(exp->type != is_iden){
+                unsignedVariableType typ = semantic_analysis_var_expression(pe,env,env->locals,is_void, exp->exp1,line,0);
+
+                unsignedVariableType typ2 = semantic_analysis_var_expression(pe,env,env->locals,is_void, exp->exp2,line,0);
+
+                if(typ != typ2 && exp->type != is_OP_LOR && exp->type != is_OP_LAND){
+                    printf("%d - Incompatible type in condition clause\n",line);
+                }
+            }
+            else{
+
+                semantic_analysis_value(pe,env,env->locals,is_void, exp->val,line,0);
+
+
+            }
         }
     }
     

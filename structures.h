@@ -262,6 +262,8 @@ struct _if_expression{
 	is_expression  *exp1;
 	if_exp_type type;
 	is_expression  *exp2;
+        is_if_expression *if_exp1;
+        is_if_expression *if_exp2;
         is_value *val;
         int line;
 };

@@ -172,6 +172,15 @@ void show_control_statement(is_control *control) {
             printf(" RETURN ");
             show_expression(control->expression);
             break;
+        case is_println:
+            printf("PRINTLN - ");
+            if(control->expression != NULL)
+                show_expression(control->expression);
+            break;
+        case is_print:
+            printf("PRINT");
+            if(control->expression != NULL)
+                show_expression(control->expression);
     }
 }
 
@@ -262,31 +271,31 @@ void show_operation(is_operation *operation) {
 
     switch (operation->type) {
         case is_dec:
-            printf("Declaration:");
+            printf("\nDeclaration:");
             show_declaration((is_declaration*) operation->oper.declaration);
             break;
         case is_assign:
-            printf("Assignment: ");
+            printf("\nAssignment: ");
             show_assignment(operation->oper.assignment);
             break;
         case is_funct:
-            printf("Function Call:");
+            printf("\nFunction Call:");
             show_function_call(operation->oper.function);
             break;
         case is_un:
-            printf("Unary: ");
+            printf("\nUnary: ");
             show_unary_expression(operation->oper.unary);
             break;
         case is_cyc:
-            printf("Cycle: ");
+            printf("\nCycle: ");
             show_cycle(operation->oper.cycle);
             break;
         case is_cond:
-            printf("Choice:");
+            printf("\nChoice:");
             show_condition_statement(operation->oper.condition);
             break;
         case is_cont:
-            printf("Control: ");
+            printf("\nControl: ");
             show_control_statement(operation->oper.control);
             break;
 
@@ -310,14 +319,14 @@ void show_variable_list(is_variable_list *list) {
             if (aux->next)
                 printf(", ");
         }
-        printf("\n");
     }
 }
 
 void show_variable(is_variable *var) {
 
     printf("%s ", var->id);
-    show_expression(var->expression);
+    if(var->expression != NULL)
+        show_expression(var->expression);
 
 
 }
@@ -470,9 +479,16 @@ void show_if_statement(is_if *if_statement) {
 
 void show_if_expression(is_if_expression *exp) {
 
-    show_expression(exp->exp1);
-    show_if_type(exp->type);
-    show_expression(exp->exp2);
+    if(exp->type == is_OP_LOR || exp->type == is_OP_LAND){
+        show_if_expression(exp->if_exp1);
+        show_if_type(exp->type);
+        show_if_expression(exp->if_exp2);
+    }
+    else{
+        show_expression(exp->exp1);
+        show_if_type(exp->type);
+        show_expression(exp->exp2);
+    }
 
 }
 

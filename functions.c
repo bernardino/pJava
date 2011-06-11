@@ -356,6 +356,19 @@ is_if_expression* insert_if_value(is_value *value, if_exp_type type, int line){
     
 }
 
+is_if_expression* insert_if_exp(is_if_expression *exp1, if_exp_type type, is_if_expression *exp2, int line){
+    
+    is_if_expression *if_expression = (is_if_expression*)malloc(sizeof(is_if_expression));
+
+    if_expression->if_exp1 = exp1;
+    if_expression->type = type;
+    if_expression->if_exp2 = exp2;
+    if_expression->line = line;
+
+    return if_expression;
+    
+}
+
 is_if_expression* insert_if(is_expression *exp1, if_exp_type type, is_expression *exp2, int line){
 
 	is_if_expression *if_expression = (is_if_expression*)malloc(sizeof(is_if_expression));

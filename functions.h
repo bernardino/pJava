@@ -47,6 +47,7 @@ is_expression* insert_expression_unary(is_unary *unary, int line);
 is_infix_expression* insert_infix( is_expression* exp1, infixType type, is_expression *exp2);
 is_if_expression* insert_if(is_expression *exp1, if_exp_type type, is_expression *exp2, int line);
 is_if_expression* insert_if_value(is_value *value, if_exp_type type, int line);
+is_if_expression* insert_if_exp(is_if_expression *exp1, if_exp_type type, is_if_expression *exp2, int line);
 is_control* insert_control(controlType type, is_expression *exp, int line);
 
 /* insert conditions */

@@ -15,6 +15,7 @@ int boolif = 1;
 int printed = 0;
 int label;
 int outsideLoop = 1;
+int internalIf = 0;
 unsignedVariableType actualTemp = is_void;
 
 void translate_program(is_program *program, prog_env *pe) {
@@ -141,7 +142,6 @@ void translate_function(prog_env *pe, is_function *function) {
     fprintf(dest, "/*Function Body */\n");
 
     translate_argument_list(pe, env, function->argument_list);
-
     translate_operation_list(pe, env, function->code->operation_list);
 
     fprintf(dest, "/*Epilogue */\n");
@@ -495,32 +495,36 @@ void translate_unary_expression(prog_env *pe, environment_list *env, is_unary *u
 }
 
 int translate_expression(prog_env *pe, environment_list *env, is_expression *exp) {
-
-    switch (exp->type) {
-        case is_val:
-            translate_value(pe, env, exp->exp.value);
-            return temp - 1;
-            break;
-        case is_infix:
-            translate_infix_expression(pe, env, exp->exp.infix);
-            return temp - 1;
-            break;
-        case is_funct_call:
-            translate_function_call(pe, env, exp->exp.function);
-            return temp - 1;
-            break;
-        case is_exp:
-            return translate_expression(pe, env, exp->exp.expression);
-            break;
-            /*case is_if_exp:
-                translate_if_expression(pe, env, exp->exp.if_expression);
-                break;*/
-        case is_unary_exp:
-            translate_unary_expression(pe, env, exp->exp.unary);
-            return temp - 1;
-            break;
-        default:
-            break;
+    if(exp != NULL){
+        switch (exp->type) {
+            case is_val:
+                translate_value(pe, env, exp->exp.value);
+                return temp - 1;
+                break;
+            case is_infix:
+                translate_infix_expression(pe, env, exp->exp.infix);
+                return temp - 1;
+                break;
+            case is_funct_call:
+                translate_function_call(pe, env, exp->exp.function);
+                return temp - 1;
+                break;
+            case is_exp:
+                return translate_expression(pe, env, exp->exp.expression);
+                break;
+                /*case is_if_exp:
+                    translate_if_expression(pe, env, exp->exp.if_expression);
+                    break;*/
+            case is_unary_exp:
+                translate_unary_expression(pe, env, exp->exp.unary);
+                return temp - 1;
+                break;
+            default:
+                break;
+        }
+    }
+    else{
+            fprintf(dest,"ola ola\n");
     }
 
 }
@@ -610,48 +614,122 @@ void translate_parameter_list(prog_env *pe, environment_list*env, is_parameter_l
 
 }
 
+int translate_if_expression_double(prog_env *pe, environment_list *env, is_if *st, is_if_expression *exp1, is_if_expression *exp2, if_exp_type type){
+    
+    int temp11,temp12, temp21,temp22;
+    int internal;
+    if(exp1->type != is_OP_LOR && exp1->type != is_OP_LAND && exp2->type != is_OP_LOR && exp2->type != is_OP_LAND){
+        if (exp1->type != is_iden) {
+            
+            fprintf(dest, "int temp%d = 0;\n",temp);
+            internal = temp++;
+            
+            temp11 = translate_expression(pe, env, exp1->exp1);
+            temp12  = translate_expression(pe, env, exp1->exp2);
+            
+            temp21 = translate_expression(pe, env, exp2->exp1);
+            temp22 = translate_expression(pe, env, exp2->exp2);
+            
+            
+            fprintf(dest, "if( temp%d", temp11);
+            
+            invertOperator(exp1->type);
+            
+            fprintf(dest, "temp%d", temp12);
+            
+            invertOperator(type);
+            fprintf(dest, "temp%d",temp21);
+            invertOperator(exp2->type);
+            fprintf(dest, "temp%d ) goto nextif%d;\n",temp22,internalIf);
+            
+            fprintf(dest, "temp%d = 1;\n",internal);
+            
+            fprintf(dest, "nextif%d:\n;\n",internalIf++);
+            
+            return internal;
+            
+            
+        }
+        
+    }
+    else if(exp1->type == is_OP_LOR || exp1->type == is_OP_LAND){
+        internal = translate_if_expression_double(pe,env,st,exp1->if_exp1, exp1->if_exp2,exp1->type);   
+        
+        temp11 = translate_expression(pe, env, exp2->exp1);
+        temp12  = translate_expression(pe, env, exp2->exp2);
+        
+        
+        fprintf(dest, "int temp%d = 0;\n",temp);
+        int t = temp++;
+        
+        fprintf(dest, "if(!temp%d && ", internal);
+        fprintf(dest, "(temp%d", temp11);   
+        invertOperator(exp2->type);
+        fprintf(dest, "temp%d)) goto nextif%d;\n", temp12, internalIf);
+        fprintf(dest, "temp%d = 1;\n",t);
+        fprintf(dest, "nextif%d:\n;\n",internalIf++);
+        return t;
+    }
+    
+    
+    
+}
+
 void translate_if_expression(prog_env *pe, environment_list *env, is_if *st) {
     is_if_expression *exp = st->expression;
-    int temporary;
-
-    if (exp->type != is_iden) {
-        int ret = translate_expression(pe, env, exp->exp1);
-
-
-        int ret1 = translate_expression(pe, env, exp->exp2);
-
-        fprintf(dest, "if(temp%d", ret);
-        invertOperator(exp->type);
-
-        fprintf(dest, "temp%d) goto ELSE%d;\n", ret1, blockcounter);
-        temporary = blockcounter++;
-
+    int temporary, internal;
+    if(exp->type == is_OP_LOR || exp->type == is_OP_LAND){
+        internal = translate_if_expression_double(pe,env,st,exp->if_exp1, exp->if_exp2, exp->type);
+        
+        fprintf(dest, "if( !temp%d ) goto ELSEFINAL%d;\n",internal,blockcounter);
         if (st->code->operation_list != NULL)
             translate_operation_list(pe, env, st->code->operation_list);
         else
             translate_operation(pe, env, st->code->operation);
-
-        fprintf(dest, "ELSE%d:\n;\n", temporary);
-
-
-    } else {
-
-        table_element * el = translate_value(pe, env, st->expression->val);
-
-        fprintf(dest, "if( !temp%d", temp - 1);
-
-        fprintf(dest, ") goto ELSE%d;\n", blockcounter);
-
-        temporary = blockcounter++;
-
-        if (st->code->operation_list != NULL)
-            translate_operation_list(pe, env, st->code->operation_list);
-        else
-            translate_operation(pe, env, st->code->operation);
-
-        fprintf(dest, "ELSE%d:\n;\n", temporary);
+        
+        fprintf(dest, "ELSEFINAL%d:\n;\n",blockcounter++);
+        
+    }
+    else{
+        if (exp->type != is_iden) {
+            int ret = translate_expression(pe, env, exp->exp1);
 
 
+            int ret1 = translate_expression(pe, env, exp->exp2);
+
+            fprintf(dest, "if(temp%d", ret);
+            invertOperator(exp->type);
+
+            fprintf(dest, "temp%d) goto ELSE%d;\n", ret1, blockcounter);
+            temporary = blockcounter++;
+
+            if (st->code->operation_list != NULL)
+                translate_operation_list(pe, env, st->code->operation_list);
+            else
+                translate_operation(pe, env, st->code->operation);
+
+            fprintf(dest, "ELSE%d:\n;\n", temporary);
+
+
+        } else {
+
+            table_element * el = translate_value(pe, env, st->expression->val);
+
+            fprintf(dest, "if( !temp%d", temp - 1);
+
+            fprintf(dest, ") goto ELSE%d;\n", blockcounter);
+
+            temporary = blockcounter++;
+
+            if (st->code->operation_list != NULL)
+                translate_operation_list(pe, env, st->code->operation_list);
+            else
+                translate_operation(pe, env, st->code->operation);
+
+            fprintf(dest, "ELSE%d:\n;\n", temporary);
+
+
+        }
     }
 
 }
@@ -729,55 +807,130 @@ translate_if_else(prog_env *pe, environment_list *env, is_if_else *st) {
 
 }
 
+int translate_if_expression_double_else(prog_env *pe, environment_list *env, is_if_else *st, is_if_expression *exp1, is_if_expression *exp2, if_exp_type type){
+    
+    int temp11,temp12, temp21,temp22;
+    int internal;
+    if(exp1->type != is_OP_LOR && exp1->type != is_OP_LAND && exp2->type != is_OP_LOR && exp2->type != is_OP_LAND){
+        if (exp1->type != is_iden) {
+            
+            fprintf(dest, "int temp%d = 0;\n",temp);
+            internal = temp++;
+            
+            temp11 = translate_expression(pe, env, exp1->exp1);
+            temp12  = translate_expression(pe, env, exp1->exp2);
+            
+            temp21 = translate_expression(pe, env, exp2->exp1);
+            temp22 = translate_expression(pe, env, exp2->exp2);
+            
+            
+            fprintf(dest, "if( temp%d", temp11);
+            
+            invertOperator(exp1->type);
+            
+            fprintf(dest, "temp%d", temp12);
+            
+            invertOperator(type);
+            fprintf(dest, "temp%d",temp21);
+            invertOperator(exp2->type);
+            fprintf(dest, "temp%d ) goto nextif%d;\n",temp22,internalIf);
+            
+            fprintf(dest, "temp%d = 1;\n",internal);
+            
+            fprintf(dest, "nextif%d:\n;\n",internalIf++);
+            
+            return internal;
+            
+            
+        }
+        
+    }
+    else if(exp1->type == is_OP_LOR || exp1->type == is_OP_LAND){
+        internal = translate_if_expression_double_else(pe,env,st,exp1->if_exp1, exp1->if_exp2,exp1->type);   
+        
+        temp11 = translate_expression(pe, env, exp2->exp1);
+        temp12  = translate_expression(pe, env, exp2->exp2);
+        
+        
+        fprintf(dest, "int temp%d = 0;\n",temp);
+        int t = temp++;
+        
+        fprintf(dest, "if(!temp%d && ", internal);
+        fprintf(dest, "(temp%d", temp11);   
+        invertOperator(exp2->type);
+        fprintf(dest, "temp%d)) goto nextif%d;\n", temp12, internalIf);
+        fprintf(dest, "temp%d = 1;\n",t);
+        fprintf(dest, "nextif%d:\n;\n",internalIf++);
+        return t;
+    }
+    
+    
+    
+}
+
 void translate_if_else_expression(prog_env *pe, environment_list *env, is_if_else *st) {
 
     is_if_expression *exp = st->expression;
-    int temporary;
-    if (exp->type != is_iden) {
-
-        int ret = translate_expression(pe, env, exp->exp1);
-
-
-        int ret1 = translate_expression(pe, env, exp->exp2);
-
-        fprintf(dest, "if(temp%d", ret);
-        invertOperator(exp->type);
-
-        fprintf(dest, "temp%d) goto ELSE%d;\n", ret1, blockcounter);
-        temporary = blockcounter++;
-
-        if (st->if_code->operation_list != NULL)
+    int temporary, internal;
+    if(exp->type == is_OP_LOR || exp->type == is_OP_LAND){
+        internal = translate_if_expression_double_else(pe,env,st,exp->if_exp1, exp->if_exp2, exp->type);
+        
+        fprintf(dest, "if( !temp%d ) goto ELSEFINAL%d;\n",internal,blockcounter);
+        if (st->else_code->operation_list != NULL)
             translate_operation_list(pe, env, st->if_code->operation_list);
         else
             translate_operation(pe, env, st->if_code->operation);
-
-        fprintf(dest, "goto ENDIF%d;\n", ifblock);
-
-        fprintf(dest, "ELSE%d:\n;\n", temporary);
-
-
-    } else {
-
-        translate_value(pe, env, st->expression->val);
-
-        fprintf(dest, "if( !temp%d", temp - 1);
-
-        fprintf(dest, ") goto ELSE%d;\n", blockcounter);
-
-        temporary = blockcounter++;
-
-        if (st->if_code->operation_list != NULL)
-            translate_operation_list(pe, env, st->if_code->operation_list);
-        else
-            translate_operation(pe, env, st->if_code->operation);
-
-        fprintf(dest, "goto ENDIF%d;\n", ifblock);
-
-        fprintf(dest, "ELSE%d:\n;\n", temporary);
-
-
+        
+        fprintf(dest, "ELSEFINAL%d:\n;\n",blockcounter++);
+        
     }
+    else{
+        if (exp->type != is_iden) {
 
+            int ret = translate_expression(pe, env, exp->exp1);
+
+
+            int ret1 = translate_expression(pe, env, exp->exp2);
+
+            fprintf(dest, "if(temp%d", ret);
+            invertOperator(exp->type);
+
+            fprintf(dest, "temp%d) goto ELSE%d;\n", ret1, blockcounter);
+            temporary = blockcounter++;
+
+            if (st->if_code->operation_list != NULL)
+                translate_operation_list(pe, env, st->if_code->operation_list);
+            else
+                translate_operation(pe, env, st->if_code->operation);
+
+            fprintf(dest, "goto ENDIF%d;\n", ifblock);
+
+            fprintf(dest, "ELSE%d:\n;\n", temporary);
+
+
+        } else {
+
+            translate_value(pe, env, st->expression->val);
+
+            fprintf(dest, "if( !temp%d", temp - 1);
+
+            fprintf(dest, ") goto ELSE%d;\n", blockcounter);
+
+            temporary = blockcounter++;
+
+            if (st->if_code->operation_list != NULL)
+                translate_operation_list(pe, env, st->if_code->operation_list);
+            else
+                translate_operation(pe, env, st->if_code->operation);
+
+            fprintf(dest, "goto ENDIF%d;\n", ifblock);
+
+            fprintf(dest, "ELSE%d:\n;\n", temporary);
+
+
+        }
+    }
+    
     if (st->else_code) {
         if (st->else_code->operation_list != NULL) {
             translate_operation_list(pe, env->father, st->else_code->operation_list);

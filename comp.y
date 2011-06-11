@@ -229,15 +229,15 @@ infix_expression:
 	;
 
 if_expression:
-            value                       { $$ = insert_if_value($1, is_iden,line);}
+        value                       { $$ = insert_if_value($1, is_iden,line);}
+	| if_expression OP_LOR if_expression	{ $$ = insert_if_exp($1, is_OP_LOR, $3,line);}
+	| if_expression OP_LAND if_expression { $$ = insert_if_exp($1, is_OP_LAND, $3,line);}
         | expression '>' expression 	{ $$ = insert_if($1, is_OP_BIGGER, $3,line);}
 	| expression '<' expression 	{ $$ = insert_if($1, is_OP_LOWER, $3,line);}
 	| expression OP_EQ expression	{ $$ = insert_if($1, is_OP_EQ, $3,line);}
 	| expression OP_LE expression	{ $$ = insert_if($1, is_OP_LE, $3,line);}
 	| expression OP_GE expression	{ $$ = insert_if($1, is_OP_GE, $3,line);}
 	| expression OP_NE expression 	{ $$ = insert_if($1, is_OP_NE, $3,line);}
-	| expression OP_LOR expression	{ $$ = insert_if($1, is_OP_LOR, $3,line);}
-	| expression OP_LAND expression { $$ = insert_if($1, is_OP_LAND, $3,line);}
 	;
 
 parameter_list:	
@@ -348,13 +348,13 @@ type:
 
 int yyerror (char *s)
 {
-	printf ("%s\n", s);
+	printf ("%s - line %d\n", s,line);
 }
 
 int main(){
 	yyparse();
 	ambient = semantic_analysis(myprogram,&errors);
-	//show_program(myprogram);
+	show_program(myprogram);
         if(errors > 0){
             printf("You have %d errors!\n",errors);
         }
