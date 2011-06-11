@@ -5,7 +5,7 @@ typedef enum { is_char, is_int, is_boolean, is_double, is_string, is_void, is_id
 typedef enum { is_id, is_array} identiferType;
 typedef enum { is_plus, is_minus, is_mult, is_div, is_and, is_percent, is_lshift, is_rshift} infixType;
 typedef enum { is_ASS_EQ, is_ASS_ADD, is_ASS_SUB, is_ASS_MUL, is_ASS_DIV , is_ASS_AND, is_ASS_PERC, is_ASS_LS, is_ASS_RS} assignmentType;
-typedef enum { is_infix, is_val, is_funct_call, is_exp, is_if_exp } expressionType;
+typedef enum { is_infix, is_val, is_funct_call, is_exp, is_if_exp, is_unary_exp } expressionType;
 typedef enum { is_before_plus, is_before_minus, is_after_plus, is_after_minus } unaryType;
 typedef enum { is_dec, is_assign, is_funct, is_un, is_cyc, is_cond, is_cont} operationType;
 typedef enum { is_OP_BIGGER, is_OP_LOWER, is_OP_EQ, is_OP_NE, is_OP_LE, is_OP_GE, is_OP_LOR, is_OP_LAND, is_iden } if_exp_type;
@@ -245,7 +245,8 @@ struct _expression{
 		is_infix_expression *infix;
 		is_function_call *function;
 		is_expression *expression;
-		is_if_expression *if_expression;	
+		is_if_expression *if_expression;
+                is_unary *unary;
 	}exp;
 	is_expression *next;	
 

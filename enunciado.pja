@@ -5,6 +5,7 @@ class gcd_rec {
 		int i = 0;
 
                 i += 10;
+                System.out.println("LOL\n");
 
 		/*String str = "ola";
 		if(a == b){
@@ -14,14 +15,14 @@ class gcd_rec {
 			System.out.println(a);*/
                       
 	}
-	public static int gcd(int a,int b) {
+	/*public static int gcd(int a,int b) {
                 double temp = 1.9;
                 temp++;
                 int c = 1;
                 if(c == 2){
                     temp = 1.0;
                 }
-                /*for(int i = 0; i< 10; i++){
+                for(int i = 0; i< 10; i++){
                     for(int d = 0; d < 10 ;d++){
                         a++;
                     }
@@ -39,7 +40,7 @@ class gcd_rec {
 		else if (a > b)
 			return gcd(a % b, b);
 		else  
-			b = a;*/
+			b = a;
 		return gcd(a, b % a);
-	}
+	}*/
 }

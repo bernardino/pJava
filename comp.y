@@ -208,6 +208,7 @@ expression:
 	| value			{ $$ = insert_expression_value($1,line);}
 	| function_call		{ $$ = insert_expression_func($1,line);}
 	| infix_expression 	{ $$ = insert_expression_infix($1,line);}
+        | unary                 { $$ = insert_expression_unary($1, line);}
 	/*| if_expression		{ $$ = insert_expression_if($1,line);}*/
 	;
 

@@ -1,0 +1,21 @@
+/*class gcd_rec {
+public static void main(String[] args) {
+int a, i;
+int b;
+a = 315;
+b = 1932;
+i = gcd(a,b);
+System.out.println(i);
+}
+public static int gcd(int a, int b) {
+int c;
+return a;
+}
+}*/
+class gcd_rec{
+    public static int var = 0;
+    public static void main(String[] args) {
+        int a = 1;
+	a = --i;
+    }
+}

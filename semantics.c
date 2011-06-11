@@ -193,6 +193,16 @@ table_element* insertVariable(prog_env* pe, environment_list *env,table_element 
     
 }
 
+unsignedVariableType semantic_analysis_unary_expression(prog_env *pe,environment_list *env,table_element *variables, unsignedVariableType type, is_unary *unary, int line, int analysis){
+    
+    table_element *var = searchVar(env, pe->global, env->locals, unary->id);
+    if(var->type != type && analysis){
+        printf("%d - Type mismatch: assignment with incompatible types\n",line);
+        errors++;
+    }
+    return var->type;
+}
+
 
 unsignedVariableType semantic_analysis_var_expression(prog_env *pe,environment_list *env, table_element *variables, unsignedVariableType type, is_expression *expression, int line, int analysis){
     
@@ -220,6 +230,9 @@ unsignedVariableType semantic_analysis_var_expression(prog_env *pe,environment_l
             break;
         case is_exp:
             return semantic_analysis_var_expression(pe,env,variables,type,expression->exp.expression,line,analysis);
+            break;
+        case is_unary_exp:
+            return semantic_analysis_unary_expression(pe,env,variables,type,expression->exp.unary,line,analysis);
             break;
         /*case is_if_exp:
             semantic_analysis_if_expression(pe,env,expression->exp.if_expression,line);

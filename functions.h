@@ -42,6 +42,7 @@ is_expression* insert_expression_value( is_value *val, int line);
 is_expression* insert_expression_func( is_function_call *call, int line);
 is_expression* insert_expression_infix(is_infix_expression *infix, int line);
 is_expression* insert_expression_if(is_if_expression *if_expression, int line);
+is_expression* insert_expression_unary(is_unary *unary, int line);
 
 is_infix_expression* insert_infix( is_expression* exp1, infixType type, is_expression *exp2);
 is_if_expression* insert_if(is_expression *exp1, if_exp_type type, is_expression *exp2, int line);
